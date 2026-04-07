@@ -99,28 +99,13 @@ export default function PartCard({ part }) {
               </span>
             </div>
           )}
-
-          {/* Discount overlay on image bottom-left */}
-          {discount > 0 && (
-            <div style={{ position: 'absolute', bottom: 12, left: 12 }}>
-              <span style={{
-                background: '#E53935', color: 'white',
-                fontSize: '0.6rem', fontWeight: 950,
-                padding: '2px 8px', borderRadius: '4px',
-                fontFamily: 'Rajdhani, sans-serif'
-              }}>
-                -{discount}% OFF
-              </span>
-            </div>
-          )}
-
           {/* Out of stock overlay */}
           {effectiveStock === 0 && (
             <div style={{
               position: 'absolute', inset: 0,
               background: 'rgba(255,255,255,0.7)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              backdropFilter: 'blur(1px)'
+              backdropFilter: 'blur(1px)', zIndex: 5
             }}>
               <span style={{
                 color: '#111', fontWeight: 950, fontSize: '0.8rem',
@@ -179,11 +164,6 @@ export default function PartCard({ part }) {
               <span className="product-card-price" style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.2rem', fontWeight: 950, color: '#E53935', lineHeight: 1 }}>
                 ₹{effectivePrice?.toLocaleString('en-IN')}
               </span>
-              {discount > 0 && (
-                <span style={{ color: '#AAA', fontSize: '0.7rem', textDecoration: 'line-through', fontWeight: 600 }}>
-                  ₹{effectiveOriginalPrice?.toLocaleString('en-IN')}
-                </span>
-              )}
             </div>
 
             <div style={{ display: 'flex', gap: '0.4rem' }}>

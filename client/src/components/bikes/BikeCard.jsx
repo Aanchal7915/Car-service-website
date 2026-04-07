@@ -104,20 +104,6 @@ export default function BikeCard({ bike, hideBadges = false }) {
             </span>
           </div>
 
-          {/* Discount Badge */}
-          {discount > 0 && (
-            <div style={{ position: 'absolute', bottom: 12, left: 12 }}>
-              <span style={{
-                background: '#E53935', color: 'white',
-                fontSize: '0.65rem', fontWeight: 950,
-                padding: '3px 10px', borderRadius: '6px',
-                fontFamily: 'Rajdhani, sans-serif',
-                boxShadow: '0 4px 10px rgba(0,0,0,0.2)'
-              }}>
-                -{discount}% OFF
-              </span>
-            </div>
-          )}
         </div>
 
         {/* Bottom Content Section */}
@@ -164,17 +150,9 @@ export default function BikeCard({ bike, hideBadges = false }) {
 
           {/* Price row + Action */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.6rem' }}>
-              <span className="product-card-price" style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.2rem', fontWeight: 950, color: '#E53935', lineHeight: 1 }}>
-                ₹{effectivePrice?.toLocaleString('en-IN')}
-              </span>
-              {discount > 0 && (
-                <span style={{ color: '#AAA', fontSize: '0.7rem', textDecoration: 'line-through', fontWeight: 600 }}>
-                  ₹{effectiveOriginalPrice?.toLocaleString('en-IN')}
-                </span>
-              )}
-            </div>
-
+            <span className="product-card-price" style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.2rem', fontWeight: 950, color: '#E53935', lineHeight: 1 }}>
+              ₹{effectivePrice?.toLocaleString('en-IN')}
+            </span>
             <div className="product-card-btn" style={{
               height: '28px', padding: '0 0.7rem',
               background: '#111', borderRadius: '6px', color: 'white',
