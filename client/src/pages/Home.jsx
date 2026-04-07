@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Shield, Clock, MapPin, Star, Zap, Wrench, ShoppingBag, TrendingUp } from 'lucide-react';
 import { getFeaturedBikes } from '../api/bikeApi';
-import { getParts } from '../api/storeApi';
+import { getParts, getBestsellerParts } from '../api/storeApi';
 import BikeCard from '../components/bikes/BikeCard';
 import PartCard from '../components/parts/PartCard';
 import { PageLoader } from '../components/common/LoadingSpinner';
 import heroBike from '../assets/hero-bike.png';
+import heroBikeMobile from '../assets/hero-bike (2).png';
 import instantQuote from '../assets/instant-quote.png';
 
 const heroSlides = [
@@ -25,6 +26,7 @@ const stats = [
 export default function Home() {
   const [featured, setFeatured] = useState([]);
   const [featuredParts, setFeaturedParts] = useState([]);
+  const [bestsellerParts, setBestsellerParts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [partsLoading, setPartsLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -32,7 +34,8 @@ export default function Home() {
   useEffect(() => {
     Promise.all([
       getFeaturedBikes().then(({ data }) => setFeatured(data.bikes)),
-      getParts({ limit: 4, sort: '-createdAt' }).then(({ data }) => setFeaturedParts(data.parts || []))
+      getParts({ limit: 4, sort: '-createdAt' }).then(({ data }) => setFeaturedParts(data.parts || [])),
+      getBestsellerParts({ limit: 4 }).then(({ data }) => setBestsellerParts(data.parts || []))
     ])
       .catch(() => {})
       .finally(() => {
@@ -47,13 +50,33 @@ export default function Home() {
   const slide = heroSlides[currentSlide];
 
   return (
-    <div>
+    <div style={{ background: '#000' }}>
+      <style>{`
+        @media (max-width: 768px) {
+          .hero-split { min-height: auto !important; }
+          .hero-split > div:first-child > div { padding: 1rem !important; padding-top: 0.5rem !important; }
+          .hero-split > div:first-child > div h1 { font-size: 1.5rem !important; }
+          .hero-split > div:first-child > div p { font-size: 0.75rem !important; }
+          .hero-split .hero-right { min-height: 180px !important; max-height: 220px !important; }
+        }
+        @media (max-width: 640px) {
+          section { padding: 2rem 0 !important; }
+          section h2 { font-size: 1.3rem !important; }
+          section p { font-size: 0.8rem !important; }
+          .hero-extra-desc { margin-bottom: 1rem !important; font-size: 0.75rem !important; }
+          .home-hero-stats { gap: 0.6rem !important; font-size: 0.85rem !important; }
+          .home-hero-stats > div > div:first-child { font-size: 0.9rem !important; }
+          .home-hero-stats > div > div:last-child { font-size: 0.5rem !important; }
+          .home-parts-grid, .home-bikes-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 0.6rem !important; }
+        }
+      `}</style>
       {/* HERO — Split layout: left content / right bike image */}
       <section className="hero-split" style={{ minHeight: '92vh', display: 'flex', position: 'relative', overflow: 'hidden' }}>
         <style>{`
           @media (max-width: 768px) {
-            .hero-split { flex-direction: column !important; }
-            .hero-split > .hero-right { min-height: 320px !important; }
+            .hero-split { flex-direction: column !important; min-height: auto !important; }
+            .hero-split > .hero-right { min-height: 200px !important; max-height: 240px !important; }
+            .hero-split > .hero-right img { transform: translate(-5%, -30%) !important; max-height: 220px !important; }
           }
         `}</style>
 
@@ -83,15 +106,15 @@ export default function Home() {
             </p>
 
             {/* Extra content paragraph */}
-            <p style={{ color: '#666', fontSize: '0.85rem', lineHeight: 1.7, maxWidth: 420, marginBottom: '2rem' }}>
+            <p className="hero-extra-desc" style={{ color: '#666', fontSize: '0.85rem', lineHeight: 1.7, maxWidth: 420, marginBottom: '2rem' }}>
               Whether you're looking to upgrade your ride, sell your old bike at the best price, or need expert service — MotoXpress has you covered with doorstep pickup, certified mechanics, and same-day payment.
             </p>
 
             {/* CTA Buttons — both restored */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '2.2rem' }}>
               <Link to={slide.href} style={{
-                background: '#E53935', color: 'white', padding: '0.8rem 2.2rem', borderRadius: '6px',
-                textDecoration: 'none', fontWeight: 700, fontSize: '0.95rem',
+                background: '#E53935', color: 'white', padding: '0.6rem 1.5rem', borderRadius: '6px',
+                textDecoration: 'none', fontWeight: 700, fontSize: '0.82rem',
                 display: 'inline-flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.2s',
                 boxShadow: '0 4px 20px rgba(229,57,53,0.35)',
               }}
@@ -100,8 +123,8 @@ export default function Home() {
                 {slide.cta} <ArrowRight size={16} />
               </Link>
               <Link to="/services" style={{
-                background: 'transparent', color: 'white', padding: '0.8rem 2.2rem', borderRadius: '6px',
-                textDecoration: 'none', fontWeight: 600, fontSize: '0.95rem',
+                background: 'transparent', color: 'white', padding: '0.6rem 1.5rem', borderRadius: '6px',
+                textDecoration: 'none', fontWeight: 600, fontSize: '0.82rem',
                 display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
                 border: '1.5px solid rgba(255,255,255,0.2)', transition: 'all 0.2s',
               }}
@@ -112,11 +135,11 @@ export default function Home() {
             </div>
 
             {/* Stats row */}
-            <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', paddingTop: '1.2rem', borderTop: '1px solid #1A1A1A' }}>
+            <div className="home-hero-stats" style={{ display: 'flex', gap: '1.2rem', flexWrap: 'nowrap', paddingTop: '0.8rem', borderTop: '1px solid #1A1A1A' }}>
               {stats.map(({ value, label }) => (
-                <div key={label}>
-                  <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.5rem', fontWeight: 900, color: '#E53935', lineHeight: 1 }}>{value}</div>
-                  <div style={{ color: '#555', fontSize: '0.72rem', marginTop: '0.2rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{label}</div>
+                <div key={label} style={{ flex: '1 1 0' }}>
+                  <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.1rem', fontWeight: 900, color: '#E53935', lineHeight: 1 }}>{value}</div>
+                  <div style={{ color: '#555', fontSize: '0.6rem', marginTop: '0.15rem', textTransform: 'uppercase', letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>{label}</div>
                 </div>
               ))}
             </div>
@@ -140,22 +163,26 @@ export default function Home() {
 
           {/* Bike image wrapper with floating animation */}
           <div style={{ position: 'relative', zIndex: 1, width: '100%', height: '100%', display: 'flex', alignItems: 'flex-start', justifyContent: 'center' }}>
-            <img
-              src={heroBike}
-              alt="Hero Bike"
-              style={{
-                maxWidth: '115%',
-                maxHeight: '95%',
-                objectFit: 'contain',
-                filter: 'drop-shadow(0 30px 60px rgba(0,0,0,0.6))',
-                transition: 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                animation: 'float 6s ease-in-out infinite',
-                transform: 'translate(-5%, -80%)',
-                objectPosition: 'top'
-              }}
-              onMouseEnter={e => e.target.style.transform = 'scale(1.08) rotate(-2deg)'}
-              onMouseLeave={e => e.target.style.transform = 'scale(1) rotate(0deg)'}
-            />
+            <picture>
+              <source media="(max-width: 768px)" srcSet={heroBikeMobile} />
+              <img
+                src={heroBike}
+                alt="Hero Bike"
+                style={{
+                  background:"black",
+                  maxWidth: '115%',
+                  maxHeight: '95%',
+                  objectFit: 'contain',
+                  filter: 'drop-shadow(0 30px 60px rgba(0,0,0,0.6))',
+                  transition: 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                  animation: 'float 6s ease-in-out infinite',
+                  transform: 'translate(-5%, -80%)',
+                  objectPosition: 'top'
+                }}
+                onMouseEnter={e => e.target.style.transform = 'scale(1.08) rotate(-2deg)'}
+                onMouseLeave={e => e.target.style.transform = 'scale(1) rotate(0deg)'}
+              />
+            </picture>
             {/* Pulsing glow under image */}
             <div style={{ position: 'absolute', bottom: '20%', width: '60%', height: '20px', background: 'rgba(229,57,53,0.15)', borderRadius: '50%', filter: 'blur(20px)', animation: 'pulse 4s infinite' }} />
           </div>
@@ -178,94 +205,42 @@ export default function Home() {
         </div>
       </section>
 
-      {/* WHY CHOOSE US */}
-      <section style={{ background: '#F5F5F5', padding: '5rem 0' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.5rem', fontWeight: 800, color: '#111111' }}>Why <span className="gradient-text">MotoXpress?</span></h2>
-            <p style={{ color: '#555', marginTop: '0.5rem' }}>India's most trusted bike platform</p>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '1rem' }}>
-            {[
-              { title: 'Instant Quote', desc: 'Get a free, instant valuation for your bike in seconds with our AI engine.', image: instantQuote },
-              { title: 'Schedule Inspection', desc: 'Choose a time and our expert mechanics will visit your doorstep for a full inspection.', image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=400&auto=format&fit=crop' },
-              { title: 'Money Transfer', desc: 'Receive secure, instant payment directly to your bank account within 60 minutes.', image: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?q=80&w=400&auto=format&fit=crop' },
-              { title: '1-Hour Service', desc: 'Expert mechanics arrive at your location within 60 minutes for doorstep service.', image: 'https://images.unsplash.com/photo-1625047509168-a7026f36de04?q=80&w=400&auto=format&fit=crop' },
-              { title: 'Verified Sellers', desc: 'All bikes go through a rigorous 150-point check by experts before listing.', image: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=400&auto=format&fit=crop' },
-              { title: 'Doorstep Help', desc: 'Enjoy free pickup and drop for all your bike needs from the comfort of home.', image: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=400&auto=format&fit=crop' },
-            ].map(({ title, desc, image }) => (
-              <div key={title} style={{ background: 'white', overflow: 'hidden', borderRadius: '12px', border: '1px solid #EAEAEA', boxShadow: '0 4px 15px rgba(0,0,0,0.02)', transition: 'all 0.4s' }}
-                   onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.boxShadow = '0 15px 30px rgba(229,57,53,0.08)'; }}
-                   onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.02)'; }}>
-                <div style={{ height: '120px', width: '100%', overflow: 'hidden' }}>
-                  <img src={image} alt={title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                       onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1449491073997-d0ce9a901507?q=65&w=400&auto=format&fit=crop'; }} />
-                </div>
-                <div style={{ padding: '1rem', textAlign: 'left' }}>
-                  <h3 style={{ color: '#111', fontWeight: 800, fontSize: '0.95rem', marginBottom: '0.4rem', fontFamily: 'Rajdhani, sans-serif' }}>{title}</h3>
-                  <p style={{ color: '#777', fontSize: '0.72rem', lineHeight: 1.5, marginBottom: '0.8rem' }}>{desc}</p>
-                  <Link to="/contact" style={{ 
-                    display: 'block', background: '#E53935', color: 'white', 
-                    textAlign: 'center', padding: '0.5rem', borderRadius: '6px', 
-                    fontSize: '0.75rem', fontWeight: 700, textDecoration: 'none',
-                    transition: 'background 0.2s'
-                  }}
-                    onMouseEnter={e => e.currentTarget.style.background = '#C62828'}
-                    onMouseLeave={e => e.currentTarget.style.background = '#E53935'}>
-                    Contact Us
-                  </Link>
-                </div>
+      {/* BUY BIKES section — Hide if empty (after loading) */}
+      {(loading || featured.length > 0) && (
+        <section style={{ background: '#F5F5F5', padding: '5rem 0' }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+              <div>
+                <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.3rem', fontWeight: 800, color: '#111' }}>
+                  Buy <span className="gradient-text">Bikes</span>
+                </h2>
+                <p style={{ color: '#555', marginTop: '0.3rem' }}>Handpicked deals you'll love</p>
               </div>
-            ))}
-          </div>
-          <style>{`
-            @media (max-width: 1200px) {
-              div[style*="grid-template-columns: repeat(6, 1fr)"] { grid-template-columns: repeat(3, 1fr) !important; gap: 1.5rem !important; }
-            }
-            @media (max-width: 640px) {
-              div[style*="grid-template-columns: repeat(6, 1fr)"] { grid-template-columns: repeat(1, 1fr) !important; }
-            }
-          `}</style>
-        </div>
-      </section>
+              <Link to="/bikes" className="btn-outline-dark" style={{ padding: '0.6rem 1.4rem', fontSize: '0.9rem' }}>
+                View All <ArrowRight size={16} />
+              </Link>
+            </div>
 
-      {/* FEATURED SPARE PARTS */}
-      <section style={{ background: '#FFFFFF', padding: '5rem 0' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-            <div>
-              <p style={{ color: '#E53935', fontWeight: 800, fontSize: '0.85rem', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Genuine Parts</p>
-              <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.3rem', fontWeight: 800, color: '#111' }}>
-                <span className="gradient-text">Spare Parts</span>
-              </h2>
-              <p style={{ color: '#555', marginTop: '0.3rem' }}>High-quality components for every ride</p>
-            </div>
-            <Link to="/parts" style={{ 
-              background: '#000', color: 'white', padding: '0.6rem 1.4rem', 
-              fontSize: '0.9rem', borderRadius: '6px', textDecoration: 'none',
-              fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.5rem'
-            }}>
-              View All Parts <ArrowRight size={16} />
-            </Link>
+            {loading ? (
+              <div className="home-bikes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.5rem' }}>
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="card-dark" style={{ height: 320 }}>
+                    <div className="skeleton" style={{ height: 200 }} />
+                    <div style={{ padding: '1rem' }}>
+                      <div className="skeleton" style={{ height: 18, width: '60%', marginBottom: '0.5rem' }} />
+                      <div className="skeleton" style={{ height: 14, width: '40%' }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="home-bikes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.5rem' }}>
+                {featured.map((bike) => <BikeCard key={bike._id} bike={bike} />)}
+              </div>
+            )}
           </div>
-
-          {partsLoading ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.5rem' }}>
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="skeleton" style={{ height: 300, background: '#eee' }} />
-              ))}
-            </div>
-          ) : featuredParts.length > 0 ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.5rem' }}>
-              {featuredParts.map((part) => <PartCard key={part._id} part={part} />)}
-            </div>
-          ) : (
-            <div style={{ textAlign: 'center', padding: '3rem', color: '#555' }}>
-              <p>No featured parts available right now.</p>
-            </div>
-          )}
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* SERVICE CATEGORIES */}
       <section style={{ background: '#FFFFFF', padding: '6rem 0' }}>
@@ -297,7 +272,7 @@ export default function Home() {
             </Link>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '1rem' }}>
+          <div className="home-services-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '1rem' }}>
             {[
               { label: 'General Service', desc: 'Full oil change, filter cleaning, and chain lubrication.', href: '/services?type=regular_service' },
               { label: 'Engine Repair', desc: 'Expert engine heath check and fine-tuning.', href: '/services?type=engine_repair' },
@@ -338,55 +313,121 @@ export default function Home() {
             ))}
           </div>
           <style>{`
-            @media (max-width: 1200px) {
-              div[style*="grid-template-columns: repeat(6, 1fr)"] { grid-template-columns: repeat(3, 1fr) !important; gap: 1.5rem !important; }
+            @media (min-width: 1024px) {
+              .home-why-grid { grid-template-columns: repeat(6, 1fr) !important; gap: 0.8rem !important; }
             }
-            @media (max-width: 640px) {
-              div[style*="grid-template-columns: repeat(6, 1fr)"] { grid-template-columns: repeat(1, 1fr) !important; }
+            @media (max-width: 768px) {
+              .home-why-grid, .home-services-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 0.6rem !important; }
+            }
+            @media (max-width: 480px) {
+              .home-why-grid, .home-services-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 0.5rem !important; }
             }
           `}</style>
         </div>
       </section>
 
-      {/* FEATURED BIKES */}
-      <section style={{ background: '#F5F5F5', padding: '5rem 0' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-            <div>
-              <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.3rem', fontWeight: 800, color: '#111' }}>
-                Featured <span className="gradient-text">Bikes</span>
-              </h2>
-              <p style={{ color: '#555', marginTop: '0.3rem' }}>Handpicked deals you'll love</p>
-            </div>
-            <Link to="/bikes" className="btn-outline-dark" style={{ padding: '0.6rem 1.4rem', fontSize: '0.9rem' }}>
-              View All <ArrowRight size={16} />
-            </Link>
-          </div>
-
-          {loading ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="card-dark" style={{ height: 320 }}>
-                  <div className="skeleton" style={{ height: 200 }} />
-                  <div style={{ padding: '1rem' }}>
-                    <div className="skeleton" style={{ height: 18, width: '60%', marginBottom: '0.5rem' }} />
-                    <div className="skeleton" style={{ height: 14, width: '40%' }} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : featured.length > 0 ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
-              {featured.map((bike) => <BikeCard key={bike._id} bike={bike} />)}
-            </div>
-          ) : (
-            <div style={{ textAlign: 'center', padding: '3rem', color: '#555' }}>
-              <p>No featured bikes yet. Check back soon!</p>
-              <Link to="/bikes" className="btn-primary" style={{ marginTop: '1rem', display: 'inline-flex' }}>
-                Browse All Bikes
+      {/* FEATURED PRODUCTS section — Hide if empty (after loading) */}
+      {(partsLoading || featuredParts.length > 0) && (
+        <section style={{ background: '#FFFFFF', padding: '5rem 0' }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+              <div>
+                <p style={{ color: '#E53935', fontWeight: 800, fontSize: '0.85rem', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Premium Selection</p>
+                <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.3rem', fontWeight: 800, color: '#111' }}>
+                  Featured <span className="gradient-text">Products</span>
+                </h2>
+                <p style={{ color: '#555', marginTop: '0.3rem' }}>High-quality components for every ride</p>
+              </div>
+              <Link to="/parts" style={{ 
+                background: '#000', color: 'white', padding: '0.6rem 1.4rem', 
+                fontSize: '0.9rem', borderRadius: '6px', textDecoration: 'none',
+                fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.5rem'
+              }}>
+                View All Parts <ArrowRight size={16} />
               </Link>
             </div>
-          )}
+
+            {partsLoading ? (
+              <div className="home-parts-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.5rem' }}>
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="skeleton" style={{ height: 300, background: '#eee' }} />
+                ))}
+              </div>
+            ) : (
+              <div className="home-parts-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.5rem' }}>
+                {featuredParts.map((part) => <PartCard key={part._id} part={part} />)}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* BESTSELLER PRODUCTS section — Hide if empty (after loading) */}
+      {(partsLoading || bestsellerParts.length > 0) && (
+        <section style={{ background: '#F9F9F9', padding: '5rem 0' }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+              <div>
+                <p style={{ color: '#E53935', fontWeight: 800, fontSize: '0.85rem', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Most Popular</p>
+                <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.3rem', fontWeight: 800, color: '#111' }}>
+                  Bestseller <span className="gradient-text">Products</span>
+                </h2>
+                <p style={{ color: '#555', marginTop: '0.3rem' }}>Our most trusted items by riders</p>
+              </div>
+              <Link to="/parts" style={{ 
+                background: '#000', color: 'white', padding: '0.6rem 1.4rem', 
+                fontSize: '0.9rem', borderRadius: '6px', textDecoration: 'none',
+                fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.5rem'
+              }}>
+                View All <ArrowRight size={16} />
+              </Link>
+            </div>
+
+            {partsLoading ? (
+              <div className="home-parts-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.5rem' }}>
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="skeleton" style={{ height: 300, background: '#eee' }} />
+                ))}
+              </div>
+            ) : (
+              <div className="home-parts-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.5rem' }}>
+                {bestsellerParts.map((part) => <PartCard key={part._id} part={part} />)}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* WHY CHOOSE US */}
+      <section style={{ background: '#F5F5F5', padding: '5rem 0' }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.5rem', fontWeight: 800, color: '#111111' }}>Why <span className="gradient-text">MotoXpress?</span></h2>
+            <p style={{ color: '#555', marginTop: '0.5rem' }}>India's most trusted bike platform</p>
+          </div>
+          <div className="home-why-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '1rem' }}>
+            {[
+              { title: 'Instant Quote', desc: 'Get a free, instant valuation for your bike in seconds with our AI engine.', image: instantQuote },
+              { title: 'Schedule Inspection', desc: 'Choose a time and our expert mechanics will visit your doorstep for a full inspection.', image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=400&auto=format&fit=crop' },
+              { title: 'Money Transfer', desc: 'Receive secure, instant payment directly to your bank account within 60 minutes.', image: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?q=80&w=400&auto=format&fit=crop' },
+              { title: '1-Hour Service', desc: 'Expert mechanics arrive at your location within 60 minutes for doorstep service.', image: 'https://images.unsplash.com/photo-1625047509168-a7026f36de04?q=80&w=400&auto=format&fit=crop' },
+              { title: 'Verified Sellers', desc: 'All bikes go through a rigorous 150-point check by experts before listing.', image: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=400&auto=format&fit=crop' },
+              { title: 'Doorstep Help', desc: 'Enjoy free pickup and drop for all your bike needs from the comfort of home.', image: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=400&auto=format&fit=crop' },
+            ].map(({ title, desc, image }) => (
+              <div key={title} style={{ background: 'white', overflow: 'hidden', borderRadius: '12px', border: '1px solid #EAEAEA', boxShadow: '0 4px 15px rgba(0,0,0,0.02)', transition: 'all 0.4s' }}
+                   onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.boxShadow = '0 15px 30px rgba(229,57,53,0.08)'; }}
+                   onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.02)'; }}>
+                <div style={{ height: '110px', width: '100%', overflow: 'hidden' }}>
+                  <img src={image} alt={title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                       onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1449491073997-d0ce9a901507?q=65&w=400&auto=format&fit=crop'; }} />
+                </div>
+                <div style={{ padding: '0.8rem 0.7rem', textAlign: 'left' }}>
+                  <h3 style={{ color: '#111', fontWeight: 800, fontSize: '0.88rem', marginBottom: '0.3rem', fontFamily: 'Rajdhani, sans-serif' }}>{title}</h3>
+                  <p style={{ color: '#777', fontSize: '0.7rem', lineHeight: 1.4 }}>{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
