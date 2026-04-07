@@ -414,7 +414,11 @@ const PartsTab = () => {
             </div>
           </div>
 
-          {/* Status Flags — Featured/Bestseller removed as requested */}
+          {/* Status Flags */}
+          <div style={{ background: '#FFFFFF', padding: '1.5rem', borderRadius: '12px', border: '1px solid #EEE', display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: '#111', cursor: 'pointer', fontWeight: 800 }}><input type="checkbox" checked={formData.featured} onChange={e => setFormData({ ...formData, featured: e.target.checked })} style={{ width: 18, height: 18, accentColor: '#E53935' }} /> Featured</label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: '#111', cursor: 'pointer', fontWeight: 800 }}><input type="checkbox" checked={formData.bestSeller} onChange={e => setFormData({ ...formData, bestSeller: e.target.checked })} style={{ width: 18, height: 18, accentColor: '#E53935' }} /> Best Seller</label>
+          </div>
 
           {/* Sub-Categories */}
           <div className="admin-form-2col" style={{ background: '#F9F9F9', padding: '2rem', borderRadius: '20px', border: '1.5px solid #EEE', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
@@ -535,6 +539,10 @@ const PartsTab = () => {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.8rem' }}>
                 <span style={{ fontSize: '0.85rem', color: '#666', fontWeight: 600 }}>STOCK: <strong style={{ color: '#111', fontWeight: 900 }}>{item.stock || 0} UNITS</strong></span>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  {item.isFeatured && <span className="badge badge-orange" style={{ borderRadius: '8px', fontWeight: 900 }}>FEATURED</span>}
+                  {item.bestSeller && <span className="badge badge-green" style={{ borderRadius: '8px', fontWeight: 900 }}>HOT</span>}
+                </div>
               </div>
               <div style={{ borderTop: '1.5px dashed #EEE', marginTop: '1.2rem', paddingTop: '1.2rem' }}>
                 {Array.isArray(item.pincodePricing) && item.pincodePricing.length > 0 && (
