@@ -4,17 +4,17 @@ import { useAuth } from '../../context/AuthContext';
 import API from '../../api/axios';
 import * as adminApi from '../../api/adminApi';
 import toast from 'react-hot-toast';
-import { Users, Bike, Wrench, TrendingUp, Package, Clock, CheckCircle, AlertCircle, BarChart3, Settings, LogOut, Home, ShoppingBag, List, Loader, Plus, Edit2, Trash2 } from 'lucide-react';
+import { Users, Bike, Wrench, TrendingUp, Package, Clock, CheckCircle, AlertCircle, BarChart3, Settings, LogOut, Home, ShoppingBag, List, Loader, Plus, Edit2, Trash2, Menu, X } from 'lucide-react';
 
 const StatCard = ({ icon: Icon, label, value, color }) => (
-  <div style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '1.8rem', boxShadow: '0 10px 30px rgba(0,0,0,0.02)', transition: 'all 0.3s' }}>
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.2rem' }}>
-      <span style={{ color: '#888', fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{label}</span>
-      <div style={{ width: 48, height: 48, borderRadius: '14px', background: `${color}10`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Icon size={22} style={{ color }} />
+  <div style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '1.2rem 1.5rem', boxShadow: '0 10px 30px rgba(0,0,0,0.02)', transition: 'all 0.3s' }}>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.8rem' }}>
+      <span style={{ color: '#888', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{label}</span>
+      <div style={{ width: 40, height: 40, borderRadius: '12px', background: `${color}10`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Icon size={18} style={{ color }} />
       </div>
     </div>
-    <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.5rem', fontWeight: 950, color: '#111', letterSpacing: '-0.02em', lineHeight: 1 }}>{value}</div>
+    <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2rem', fontWeight: 950, color: '#111', letterSpacing: '-0.02em', lineHeight: 1 }}>{value}</div>
   </div>
 );
 
@@ -45,14 +45,14 @@ const UsersTab = () => {
   if(loading) return <div style={{textAlign:'center', padding:'3rem', color:'#888'}}><Loader style={{ animation: 'spin 1s linear infinite' }} size={24} /></div>;
 
   return (
-    <div style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '1.5rem', overflowX: 'auto', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
+    <div className="admin-table-wrap" style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '1.5rem', overflowX: 'auto', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
         <thead>
           <tr>
             <th style={{ padding: '0.75rem', textAlign: 'left', color: '#aaa', borderBottom: '1px solid #2A2A2A' }}>User Details</th>
             <th style={{ padding: '0.75rem', textAlign: 'left', color: '#aaa', borderBottom: '1px solid #2A2A2A' }}>Contact</th>
-            <th style={{ padding: '0.75rem', textAlign: 'left', color: '#aaa', borderBottom: '1px solid #2A2A2A' }}>Registered On</th>
-            <th style={{ padding: '0.75rem', textAlign: 'left', color: '#aaa', borderBottom: '1px solid #2A2A2A' }}>Role & Access Status</th>
+            <th style={{ padding: '0.75rem', textAlign: 'left', color: '#aaa', borderBottom: '1px solid #2A2A2A', whiteSpace: 'nowrap' }}>Registered On</th>
+            <th style={{ padding: '0.75rem', textAlign: 'left', color: '#aaa', borderBottom: '1px solid #2A2A2A', whiteSpace: 'nowrap' }}>Role & Access Status</th>
           </tr>
         </thead>
         <tbody>
@@ -106,7 +106,7 @@ const ServicesTab = () => {
   if(loading) return <div style={{textAlign:'center', padding:'3rem', color:'#888'}}><Loader style={{ animation: 'spin 1s linear infinite' }} size={24} /></div>;
 
   return (
-    <div style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '1.5rem', overflowX: 'auto', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
+    <div className="admin-table-wrap" style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '1.5rem', overflowX: 'auto', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
         <thead>
           <tr>
@@ -347,7 +347,7 @@ const PartsTab = () => {
 
   if (showForm) {
     return (
-      <div style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '2.5rem', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
+      <div className="admin-form-wrap" style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '2.5rem', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
         <h3 style={{ color: '#111', fontWeight: 950, marginBottom: '2rem', fontSize: '2rem', fontFamily: 'Rajdhani, sans-serif', textTransform: 'uppercase' }}>{editId ? 'UPDATE' : 'ADD NEW'} <span style={{ color: '#E53935' }}>PRODUCT</span></h3>
         <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '1.8rem' }}>
 
@@ -357,7 +357,7 @@ const PartsTab = () => {
             <div style={{ display: 'grid', gap: '1.2rem' }}>
               <div><label style={{ color: '#666', fontSize: '0.85rem', fontWeight: 800, marginBottom: '0.5rem', display: 'block' }}>PRODUCT NAME *</label><input required className="input-light" style={{ height: '54px', fontWeight: 600 }} value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} /></div>
               <div><label style={{ color: '#666', fontSize: '0.85rem', fontWeight: 800, marginBottom: '0.5rem', display: 'block' }}>DESCRIPTION</label><textarea className="input-light" style={{ minHeight: '120px', fontWeight: 600, padding: '1rem' }} value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} /></div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+              <div className="admin-form-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div><label style={{ color: '#666', fontSize: '0.85rem', fontWeight: 800, marginBottom: '0.5rem', display: 'block' }}>BRAND</label><input className="input-light" style={{ height: '54px', fontWeight: 600 }} value={formData.brand} onChange={e => setFormData({ ...formData, brand: e.target.value })} /></div>
                 <div>
                   <label style={{ color: '#666', fontSize: '0.85rem', fontWeight: 800, marginBottom: '0.5rem', display: 'block' }}>CATEGORY</label>
@@ -414,14 +414,10 @@ const PartsTab = () => {
             </div>
           </div>
 
-          {/* Status Flags */}
-          <div style={{ background: '#1A1A1A', padding: '1.5rem', borderRadius: '12px', border: '1px solid #2A2A2A', display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: 'white', cursor: 'pointer' }}><input type="checkbox" checked={formData.featured} onChange={e => setFormData({ ...formData, featured: e.target.checked })} style={{ width: 18, height: 18, accentColor: '#E53935' }} /> Featured</label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: 'white', cursor: 'pointer' }}><input type="checkbox" checked={formData.bestSeller} onChange={e => setFormData({ ...formData, bestSeller: e.target.checked })} style={{ width: 18, height: 18, accentColor: '#E53935' }} /> Best Seller</label>
-          </div>
+          {/* Status Flags — Featured/Bestseller removed as requested */}
 
           {/* Sub-Categories */}
-          <div style={{ background: '#F9F9F9', padding: '2rem', borderRadius: '20px', border: '1.5px solid #EEE', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+          <div className="admin-form-2col" style={{ background: '#F9F9F9', padding: '2rem', borderRadius: '20px', border: '1.5px solid #EEE', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
             <div><label style={{ color: '#666', fontSize: '0.85rem', fontWeight: 800, marginBottom: '0.5rem', display: 'block' }}>ITEM TYPE</label><input className="input-light" style={{ height: '54px', fontWeight: 600 }} placeholder="e.g. Disc Brake" value={formData.itemType} onChange={e => setFormData({ ...formData, itemType: e.target.value })} /></div>
             <div><label style={{ color: '#666', fontSize: '0.85rem', fontWeight: 800, marginBottom: '0.5rem', display: 'block' }}>SUB CATEGORY</label><input className="input-light" style={{ height: '54px', fontWeight: 600 }} placeholder="e.g. Front Brake" value={formData.subCategory} onChange={e => setFormData({ ...formData, subCategory: e.target.value })} /></div>
           </div>
@@ -439,7 +435,7 @@ const PartsTab = () => {
                 {pincodePricingRows.length > 1 && (
                   <button type="button" onClick={() => setPincodePricingRows(pincodePricingRows.filter((_, i) => i !== idx))} style={{ position: 'absolute', top: -10, right: -10, background: '#FFF1F0', color: '#E53935', border: '1.5px solid rgba(229,57,53,0.1)', width: 32, height: 32, borderRadius: '10px', cursor: 'pointer', fontWeight: 900, fontSize: '0.9rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
                 )}
-                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem', marginBottom: '1.2rem' }}>
+                <div className="admin-pincode-2col" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem', marginBottom: '1.2rem' }}>
                   <div>
                     <label style={{ color: '#666', fontSize: '0.8rem', fontWeight: 800, marginBottom: '0.4rem', display: 'block' }}>PINCODES (COMMA-SEPARATED) *</label>
                     <input className="input-light" name="pincodes" style={{ height: '50px', fontWeight: 600 }} placeholder="e.g. 110001, 132001" value={row.pincodes} onChange={e => handlePincodeRowChange(idx, e)} />
@@ -451,7 +447,7 @@ const PartsTab = () => {
                   </div>
                   <div><label style={{ color: '#666', fontSize: '0.8rem', fontWeight: 800, marginBottom: '0.4rem', display: 'block' }}>SIZE / VARIANT</label><input className="input-light" name="size" style={{ height: '50px', fontWeight: 600 }} placeholder="e.g. XL, 500ml" value={row.size} onChange={e => handlePincodeRowChange(idx, e)} /></div>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '1rem' }}>
+                <div className="admin-form-4col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '1rem' }}>
                   <div><label style={{ color: '#666', fontSize: '0.8rem', fontWeight: 800, marginBottom: '0.4rem', display: 'block' }}>ORIGINAL (₹)</label><input type="number" className="input-light" name="originalPrice" style={{ height: '50px', fontWeight: 700 }} value={row.originalPrice} onChange={e => handlePincodeRowChange(idx, e)} /></div>
                   <div><label style={{ color: '#666', fontSize: '0.8rem', fontWeight: 800, marginBottom: '0.4rem', display: 'block' }}>OFF (%)</label><input type="number" className="input-light" name="discount" style={{ height: '50px', fontWeight: 700 }} value={row.discount} onChange={e => handlePincodeRowChange(idx, e)} /></div>
                   <div><label style={{ color: '#666', fontSize: '0.8rem', fontWeight: 800, marginBottom: '0.4rem', display: 'block' }}>FINAL (₹)</label><input type="number" className="input-light" name="price" style={{ height: '50px', fontWeight: 900, color: '#E53935' }} value={row.price} onChange={e => handlePincodeRowChange(idx, e)} /></div>
@@ -462,12 +458,12 @@ const PartsTab = () => {
           </div>
 
           {/* Media */}
-          <div style={{ background: '#1A1A1A', padding: '1.5rem', borderRadius: '12px', border: '1px solid #2A2A2A' }}>
-            <h4 style={{ color: '#aaa', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', marginBottom: '1rem', letterSpacing: '1px' }}>Media</h4>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div style={{ background: '#FFFFFF', padding: '1.5rem', borderRadius: '12px', border: '1px solid #EEE' }}>
+            <h4 style={{ color: '#111', fontSize: '0.8rem', fontWeight: 900, textTransform: 'uppercase', marginBottom: '1rem', letterSpacing: '1px' }}>Media</h4>
+            <div className="admin-media-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               <div>
-                <label style={{ color: '#aaa', fontSize: '0.85rem', marginBottom: '0.3rem', display: 'block' }}>Product Images</label>
-                <div className="input-dark" style={{ borderStyle: 'dashed' }}>
+                <label style={{ color: '#666', fontSize: '0.85rem', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>Product Images</label>
+                <div className="input-light" style={{ borderStyle: 'dashed' }}>
                   <input type="file" multiple accept="image/*" style={{ color: '#aaa' }} onChange={e => {
                     const files = Array.from(e.target.files);
                     setImages(prev => [...prev, ...files]);
@@ -486,9 +482,9 @@ const PartsTab = () => {
                 )}
               </div>
               <div>
-                <label style={{ color: '#aaa', fontSize: '0.85rem', marginBottom: '0.3rem', display: 'block' }}>Product Video (Optional)</label>
-                <div className="input-dark" style={{ borderStyle: 'dashed', borderColor: '#2563eb44' }}>
-                  <input type="file" accept="video/*" style={{ color: '#aaa' }} onChange={e => setVideoFile(e.target.files[0] || null)} />
+                <label style={{ color: '#666', fontSize: '0.85rem', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>Product Video (Optional)</label>
+                <div className="input-light" style={{ borderStyle: 'dashed', borderColor: '#2563eb44' }}>
+                  <input type="file" accept="video/*" style={{ color: '#888' }} onChange={e => setVideoFile(e.target.files[0] || null)} />
                 </div>
                 {videoFile ? (
                   <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.4rem', background: 'rgba(37,99,235,0.12)', color: '#60a5fa', border: '1px solid rgba(37,99,235,0.3)', borderRadius: '4px', padding: '2px 8px', fontSize: '0.75rem' }}>
@@ -518,7 +514,7 @@ const PartsTab = () => {
         <h3 style={{ color: '#111', fontWeight: 950, margin: 0, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.8rem', letterSpacing: '-0.02em' }}>ACTIVE <span style={{ color: '#E53935' }}>INVENTORY</span></h3>
         <button className="btn-primary" style={{ padding: '0.8rem 1.6rem', borderRadius: '14px', gap: '0.6rem', fontWeight: 900 }} onClick={() => setShowForm(true)}><Plus size={20} /> ADD PRODUCT</button>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2rem' }}>
+      <div className="admin-card-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2rem' }}>
         {data.map((item) => (
           <div key={item._id} className="card-light" style={{ display: 'flex', flexDirection: 'column', background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', overflow: 'hidden', transition: 'all 0.3s' }}>
             <div style={{ padding: '1.8rem', flex: 1 }}>
@@ -539,10 +535,6 @@ const PartsTab = () => {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.8rem' }}>
                 <span style={{ fontSize: '0.85rem', color: '#666', fontWeight: 600 }}>STOCK: <strong style={{ color: '#111', fontWeight: 900 }}>{item.stock || 0} UNITS</strong></span>
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  {item.isFeatured && <span className="badge badge-orange" style={{ borderRadius: '8px', fontWeight: 900 }}>FEATURED</span>}
-                  {item.bestSeller && <span className="badge badge-green" style={{ borderRadius: '8px', fontWeight: 900 }}>HOT</span>}
-                </div>
               </div>
               <div style={{ borderTop: '1.5px dashed #EEE', marginTop: '1.2rem', paddingTop: '1.2rem' }}>
                 {Array.isArray(item.pincodePricing) && item.pincodePricing.length > 0 && (
@@ -737,13 +729,13 @@ const BikesTab = () => {
 
   if (showForm) {
     return (
-      <div style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '2.5rem', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
+      <div className="admin-form-wrap" style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '2.5rem', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
         <h3 style={{ color: '#111', fontWeight: 950, marginBottom: '2rem', fontSize: '2rem', fontFamily: 'Rajdhani, sans-serif', textTransform: 'uppercase' }}>{editId ? 'UPDATE' : 'ADD NEW'} <span style={{ color: '#E53935' }}>BIKE</span></h3>
         <form onSubmit={handleSubmit}>
           {/* Core Details */}
           <div style={{ background: '#F9F9F9', padding: '2rem', borderRadius: '20px', border: '1.5px solid #EEE', marginBottom: '1.8rem' }}>
             <h4 style={{ color: '#111', fontSize: '0.85rem', fontWeight: 900, textTransform: 'uppercase', marginBottom: '1.5rem', letterSpacing: '0.1em' }}>BIKE DETAILS</h4>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.2rem' }}>
+            <div className="admin-form-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.2rem' }}>
               <div><label style={{ color: '#666', fontSize: '0.85rem', fontWeight: 800, marginBottom: '0.5rem', display: 'block' }}>TITLE</label><input className="input-light" style={{ height: '54px', fontWeight: 600 }} placeholder="Auto-generated if empty" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} /></div>
               <div><label style={{ color: '#666', fontSize: '0.85rem', fontWeight: 800, marginBottom: '0.5rem', display: 'block' }}>BRAND *</label>
                 <select className="input-light" style={{ height: '54px', fontWeight: 700 }} value={formData.brand} onChange={e => {
@@ -818,7 +810,7 @@ const BikesTab = () => {
           {/* Specifications */}
           <div style={{ background: '#F9F9F9', padding: '2rem', borderRadius: '20px', border: '1.5px solid #EEE', marginBottom: '1.8rem' }}>
             <h4 style={{ color: '#111', fontSize: '0.85rem', fontWeight: 900, textTransform: 'uppercase', marginBottom: '1.5rem', letterSpacing: '0.1em' }}>ENGINE & SPECIFICATIONS</h4>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '1rem' }}>
+            <div className="admin-form-4col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '1rem' }}>
               {[
                 { key: 'power', label: 'POWER', ph: 'e.g. 11 BHP' },
                 { key: 'torque', label: 'TORQUE', ph: 'e.g. 10.6 Nm' },
@@ -835,7 +827,7 @@ const BikesTab = () => {
           </div>
 
           {/* Flags */}
-          <div style={{ background: '#F9F9F9', padding: '1.5rem 2rem', borderRadius: '20px', border: '1.5px solid #EEE', marginBottom: '1.8rem', display: 'flex', gap: '3rem', flexWrap: 'wrap' }}>
+          <div style={{ background: '#FFFFFF', padding: '1.5rem 2rem', borderRadius: '20px', border: '1.5px solid #EEE', marginBottom: '1.8rem', display: 'flex', gap: '3rem', flexWrap: 'wrap' }}>
             <label style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: '#111', cursor: 'pointer', fontWeight: 800, fontSize: '0.9rem' }}><input type="checkbox" checked={formData.isFeatured} onChange={e => setFormData({ ...formData, isFeatured: e.target.checked })} style={{ width: 20, height: 20, accentColor: '#E53935' }} /> FEATURED LISTING</label>
             <label style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: '#111', cursor: 'pointer', fontWeight: 800, fontSize: '0.9rem' }}><input type="checkbox" checked={formData.bestSeller} onChange={e => setFormData({ ...formData, bestSeller: e.target.checked })} style={{ width: 20, height: 20, accentColor: '#E53935' }} /> BEST SELLER</label>
           </div>
@@ -853,7 +845,7 @@ const BikesTab = () => {
                 {bikePincodeRows.length > 1 && (
                   <button type="button" onClick={() => setBikePincodeRows(bikePincodeRows.filter((_, i) => i !== idx))} style={{ position: 'absolute', top: -10, right: -10, background: '#FFF1F0', color: '#E53935', border: '1.5px solid rgba(229,57,53,0.1)', width: 32, height: 32, borderRadius: '10px', cursor: 'pointer', fontWeight: 900, fontSize: '0.9rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
                 )}
-                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem', marginBottom: '1.2rem' }}>
+                <div className="admin-pincode-2col" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem', marginBottom: '1.2rem' }}>
                   <div>
                     <label style={{ color: '#666', fontSize: '0.8rem', fontWeight: 800, marginBottom: '0.4rem', display: 'block' }}>PINCODES (COMMA-SEPARATED) *</label>
                     <input className="input-light" name="pincodes" style={{ height: '50px', fontWeight: 600 }} placeholder="e.g. 110001, 132001" value={row.pincodes} onChange={e => handleBikePincodeRowChange(idx, e)} />
@@ -865,7 +857,7 @@ const BikesTab = () => {
                   </div>
                   <div><label style={{ color: '#666', fontSize: '0.8rem', fontWeight: 800, marginBottom: '0.4rem', display: 'block' }}>VARIANT / COLOR</label><input className="input-light" name="size" style={{ height: '50px', fontWeight: 600 }} placeholder="e.g. Red, Matte Black" value={row.size} onChange={e => handleBikePincodeRowChange(idx, e)} /></div>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '1rem' }}>
+                <div className="admin-form-4col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '1rem' }}>
                   <div><label style={{ color: '#666', fontSize: '0.8rem', fontWeight: 800, marginBottom: '0.4rem', display: 'block' }}>ORIGINAL (₹)</label><input type="number" className="input-light" name="originalPrice" style={{ height: '50px', fontWeight: 700 }} value={row.originalPrice} onChange={e => handleBikePincodeRowChange(idx, e)} /></div>
                   <div><label style={{ color: '#666', fontSize: '0.8rem', fontWeight: 800, marginBottom: '0.4rem', display: 'block' }}>OFF (%)</label><input type="number" className="input-light" name="discount" style={{ height: '50px', fontWeight: 700 }} value={row.discount} onChange={e => handleBikePincodeRowChange(idx, e)} /></div>
                   <div><label style={{ color: '#666', fontSize: '0.8rem', fontWeight: 800, marginBottom: '0.4rem', display: 'block' }}>FINAL (₹)</label><input type="number" className="input-light" name="price" style={{ height: '50px', fontWeight: 900, color: '#E53935' }} value={row.price} onChange={e => handleBikePincodeRowChange(idx, e)} /></div>
@@ -876,9 +868,9 @@ const BikesTab = () => {
           </div>
 
           {/* Media */}
-          <div style={{ background: '#F9F9F9', padding: '2rem', borderRadius: '20px', border: '1.5px solid #EEE', marginBottom: '1.8rem' }}>
+          <div style={{ background: '#FFFFFF', padding: '2rem', borderRadius: '20px', border: '1.5px solid #EEE', marginBottom: '1.8rem' }}>
             <h4 style={{ color: '#111', fontSize: '0.85rem', fontWeight: 900, textTransform: 'uppercase', marginBottom: '1.5rem', letterSpacing: '0.1em' }}>MEDIA</h4>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+            <div className="admin-media-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
               <div>
                 <label style={{ color: '#666', fontSize: '0.85rem', fontWeight: 800, marginBottom: '0.6rem', display: 'block' }}>BIKE IMAGES</label>
                 <div className="input-light" style={{ borderStyle: 'dashed', minHeight: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -928,7 +920,7 @@ const BikesTab = () => {
         <h3 style={{ color: '#111', fontWeight: 950, margin: 0, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.8rem', letterSpacing: '-0.02em' }}>BIKE <span style={{ color: '#E53935' }}>LISTINGS</span> ({data.length})</h3>
         <button className="btn-primary" style={{ padding: '0.8rem 1.6rem', borderRadius: '14px', gap: '0.6rem', fontWeight: 900 }} onClick={() => setShowForm(true)}><Plus size={20} /> ADD NEW BIKE</button>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2rem' }}>
+      <div className="admin-card-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2rem' }}>
         {data.map((item) => (
           <div key={item._id} className="card-light" style={{ display: 'flex', flexDirection: 'column', background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', overflow: 'hidden', transition: 'all 0.3s' }}>
             <div style={{ padding: '1.8rem', flex: 1 }}>
@@ -1038,7 +1030,7 @@ const SellsTab = () => {
                 {s.offeredPrice && <div style={{ color: '#2E7D32', fontWeight: 950, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.5rem' }}>₹{s.offeredPrice?.toLocaleString('en-IN')}</div>}
               </div>
             </div>
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', flexWrap: 'wrap', alignItems: 'stretch' }}>
+            <div className="admin-sell-actions" style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', flexWrap: 'wrap', alignItems: 'stretch' }}>
               <select value={s.status} onChange={e => handleUpdate(s._id, e.target.value)} className="input-light" style={{ width: 'auto', fontSize: '0.85rem', fontWeight: 800, padding: '0.6rem 1rem', height: '48px' }}>
                 {statusOpts.map(o => <option key={o} value={o}>{o.replace(/_/g, ' ').toUpperCase()}</option>)}
               </select>
@@ -1080,7 +1072,7 @@ const OrdersTab = () => {
   const statusColors = { placed: 'badge-blue', confirmed: 'badge-blue', shipped: 'badge-orange', delivered: 'badge-green', cancelled: 'badge-red' };
 
   return (
-    <div style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '2rem', overflowX: 'auto', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
+    <div className="admin-table-wrap" style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '2rem', overflowX: 'auto', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
       <h3 style={{ color: '#111', fontWeight: 950, marginBottom: '2rem', fontFamily: 'Rajdhani, sans-serif', fontSize: '1.8rem', textTransform: 'uppercase', letterSpacing: '-0.02em' }}>CUSTOMER <span style={{ color: '#E53935' }}>ORDERS</span> ({orders.length})</h3>
       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
         <thead><tr>
@@ -1134,7 +1126,7 @@ const LeadsTab = () => {
     <div style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '2rem', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
       <h3 style={{ color: '#111', fontWeight: 950, marginBottom: '2rem', fontFamily: 'Rajdhani, sans-serif', fontSize: '1.8rem', textTransform: 'uppercase', letterSpacing: '-0.02em' }}>BUSINESS <span style={{ color: '#E53935' }}>LEADS</span></h3>
       {bikes.length > 0 ? (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '1.5rem' }}>
+        <div className="admin-leads-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '1.5rem' }}>
           {bikes.map(b => (
             <div key={b._id} style={{ background: '#F9F9F9', border: '1.5px solid #EEE', borderRadius: '20px', padding: '1.2rem', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
               <div style={{ display: 'flex', gap: '1.2rem', alignItems: 'center' }}>
@@ -1166,6 +1158,7 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState(null);
   const [recentServices, setRecentServices] = useState([]);
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!user || user.role !== 'admin') { navigate('/'); return; }
@@ -1191,8 +1184,50 @@ export default function AdminDashboard() {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', background: '#F5F5F5' }}>
+      <style>{`
+        @media (max-width: 768px) {
+          .admin-main > div { padding: 0.75rem !important; }
+          .admin-page-title { font-size: 1.4rem !important; }
+          .admin-main h3 { font-size: 1.2rem !important; }
+          .admin-main table { min-width: 600px; }
+          .admin-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+          .admin-form-2col { grid-template-columns: 1fr !important; }
+          .admin-form-4col { grid-template-columns: 1fr 1fr !important; }
+          .admin-card-grid { grid-template-columns: 1fr !important; }
+          .admin-media-grid { grid-template-columns: 1fr !important; }
+          .admin-pincode-2col { grid-template-columns: 1fr !important; }
+          .admin-form-wrap { padding: 1rem !important; }
+          .admin-form-wrap h3 { font-size: 1.4rem !important; }
+          .admin-sell-actions { flex-direction: column !important; }
+          .admin-sell-actions > * { width: 100% !important; flex: unset !important; min-width: unset !important; }
+          .admin-sell-actions select, .admin-sell-actions input { width: 100% !important; }
+          .admin-leads-grid { grid-template-columns: 1fr !important; }
+        }
+        @media (max-width: 480px) {
+          .admin-form-4col { grid-template-columns: 1fr !important; }
+          .admin-main table { min-width: 500px; font-size: 0.72rem; }
+          .admin-main table th, .admin-main table td { padding: 0.5rem 0.35rem !important; }
+          .admin-stat-grid { grid-template-columns: 1fr 1fr !important; }
+          .admin-main p { font-size: 0.85rem !important; }
+        }
+        @media (max-width: 640px) {
+          .admin-main table { font-size: 0.78rem; }
+          .admin-main table th, .admin-main table td { padding: 0.5rem 0.4rem !important; }
+        }
+      `}</style>
+      {/* Mobile top bar */}
+      <div className="admin-mobile-topbar" style={{ display: 'none', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 60, background: '#111', borderBottom: '1px solid #2A2A2A', padding: '0.7rem 1rem', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 950, color: 'white', fontSize: '1.3rem', letterSpacing: '-0.02em' }}>
+          <span style={{ color: '#E53935' }}>MOTO</span>XPRESS
+        </div>
+        <button onClick={() => setSidebarOpen(!sidebarOpen)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', padding: '0.3rem' }}>
+          {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+      {/* Sidebar overlay for mobile */}
+      {sidebarOpen && <div className="admin-sidebar-overlay" onClick={() => setSidebarOpen(false)} style={{ display: 'none', position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 69 }} />}
       {/* Sidebar */}
-      <div style={{ width: 280, background: '#111', borderRight: '1px solid #2A2A2A', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
+      <div className={`admin-sidebar${sidebarOpen ? ' open' : ''}`} style={{ width: 280, background: '#111', borderRight: '1px solid #2A2A2A', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
         <div style={{ padding: '2rem 1.5rem', borderBottom: '1px solid #2A2A2A' }}>
           <div style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 950, color: 'white', fontSize: '1.8rem', letterSpacing: '-0.02em', lineHeight: 1 }}>
             <span style={{ color: '#E53935' }}>MOTO</span>XPRESS
@@ -1202,7 +1237,7 @@ export default function AdminDashboard() {
 
         <nav style={{ flex: 1, padding: '1.5rem 0.75rem' }}>
           {sidebarLinks.map(({ id, icon: Icon, label }) => (
-            <button key={id} onClick={() => setActiveTab(id)}
+            <button key={id} onClick={() => { setActiveTab(id); setSidebarOpen(false); }}
               style={{
                 width: '100%', display: 'flex', alignItems: 'center', gap: '0.8rem',
                 padding: '0.9rem 1rem', borderRadius: '12px', border: 'none', cursor: 'pointer',
@@ -1232,9 +1267,9 @@ export default function AdminDashboard() {
       </div>
 
       {/* Main Content */}
-      <div style={{ flex: 1, overflow: 'auto' }}>
+      <div className="admin-main" style={{ flex: 1, overflow: 'auto' }}>
         <div style={{ padding: '3rem' }}>
-          <h2 style={{ color: '#111', fontFamily: 'Rajdhani, sans-serif', fontSize: '2.5rem', fontWeight: 950, marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '-0.02em' }}>
+          <h2 className="admin-page-title" style={{ color: '#111', fontFamily: 'Rajdhani, sans-serif', fontSize: '2.5rem', fontWeight: 950, marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '-0.02em' }}>
             {sidebarLinks.find(l => l.id === activeTab)?.label || 'DASHBOARD'}
           </h2>
           <p style={{ color: '#888', marginBottom: '3rem', fontSize: '1.1rem', fontWeight: 500 }}>Welcome back, <span style={{ color: '#111', fontWeight: 800 }}>{user?.name}</span></p>
@@ -1242,7 +1277,7 @@ export default function AdminDashboard() {
           {activeTab === 'dashboard' && stats && (
             <>
               {/* Stats Grid */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+              <div className="admin-stat-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.75rem', marginBottom: '2rem' }}>
                 <StatCard icon={Users} label="Total Users" value={stats.users?.toLocaleString()} color="#2196F3" />
                 <StatCard icon={Bike} label="Bike Listings" value={stats.bikes?.toLocaleString()} color="#E53935" />
                 <StatCard icon={Wrench} label="Services" value={stats.services?.toLocaleString()} color="#FB8C00" />
@@ -1252,7 +1287,7 @@ export default function AdminDashboard() {
               </div>
 
               {/* Recent Service Bookings */}
-              <div style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '32px', padding: '2.5rem', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
+              <div className="admin-table-wrap" style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '32px', padding: '2.5rem', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
                 <h3 style={{ color: '#111', fontWeight: 950, marginBottom: '2rem', fontFamily: 'Rajdhani, sans-serif', fontSize: '1.5rem', textTransform: 'uppercase' }}>RECENT <span style={{ color: '#E53935' }}>BOOKINGS</span></h3>
                 <div style={{ overflowX: 'auto' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
