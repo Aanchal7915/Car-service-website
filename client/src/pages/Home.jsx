@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Shield, Clock, MapPin, Star, Zap, Wrench, ShoppingBag, TrendingUp } from 'lucide-react';
-import { getFeaturedBikes } from '../api/bikeApi';
 import { getParts, getBestsellerParts } from '../api/storeApi';
+import { getFeaturedBikes, getBestsellerBikes } from '../api/bikeApi';
 import BikeCard from '../components/bikes/BikeCard';
 import PartCard from '../components/parts/PartCard';
 import { PageLoader } from '../components/common/LoadingSpinner';
@@ -27,6 +27,7 @@ export default function Home() {
   const [featured, setFeatured] = useState([]);
   const [featuredParts, setFeaturedParts] = useState([]);
   const [bestsellerParts, setBestsellerParts] = useState([]);
+  const [bestsellerBikes, setBestsellerBikes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [partsLoading, setPartsLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -35,7 +36,8 @@ export default function Home() {
     Promise.all([
       getFeaturedBikes().then(({ data }) => setFeatured(data.bikes)),
       getParts({ limit: 4, sort: '-createdAt' }).then(({ data }) => setFeaturedParts(data.parts || [])),
-      getBestsellerParts({ limit: 4 }).then(({ data }) => setBestsellerParts(data.parts || []))
+      getBestsellerParts({ limit: 4 }).then(({ data }) => setBestsellerParts(data.parts || [])),
+      getBestsellerBikes().then(({ data }) => setBestsellerBikes(data.bikes || []))
     ])
       .catch(() => {})
       .finally(() => {
@@ -390,6 +392,9 @@ export default function Home() {
             </div>
           ) : (
             <div className="home-parts-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.5rem' }}>
+              {bestsellerBikes.slice(0, 2).map((bike) => (
+                <BikeCard key={bike._id} bike={bike} />
+              ))}
               {(bestsellerParts.length > 0 ? bestsellerParts : featuredParts.slice(0, 4)).map((part) => (
                 <PartCard key={part._id} part={part} />
               ))}
