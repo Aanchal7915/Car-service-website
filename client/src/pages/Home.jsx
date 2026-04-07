@@ -362,41 +362,41 @@ export default function Home() {
         </section>
       )}
 
-      {/* BESTSELLER PRODUCTS section — Hide if empty (after loading) */}
-      {(partsLoading || bestsellerParts.length > 0) && (
-        <section style={{ background: '#FFFFFF', padding: '5rem 0' }}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-              <div>
-                <p style={{ color: '#E53935', fontWeight: 800, fontSize: '0.85rem', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Most Popular</p>
-                <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.3rem', fontWeight: 800, color: '#111' }}>
-                  Bestseller <span className="gradient-text">Products</span>
-                </h2>
-                <p style={{ color: '#555', marginTop: '0.3rem' }}>Our most trusted items by riders</p>
-              </div>
-              <Link to="/parts" style={{ 
-                background: '#000', color: 'white', padding: '0.6rem 1.4rem', 
-                fontSize: '0.9rem', borderRadius: '6px', textDecoration: 'none',
-                fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.5rem'
-              }}>
-                View All <ArrowRight size={16} />
-              </Link>
+      {/* BESTSELLER PRODUCTS section — Show fallback if empty */}
+      <section style={{ background: '#FFFFFF', padding: '5rem 0' }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+            <div>
+              <p style={{ color: '#E53935', fontWeight: 800, fontSize: '0.85rem', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Most Popular</p>
+              <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.3rem', fontWeight: 800, color: '#111' }}>
+                Bestseller <span className="gradient-text">Products</span>
+              </h2>
+              <p style={{ color: '#555', marginTop: '0.3rem' }}>Our most trusted items by riders</p>
             </div>
-
-            {partsLoading ? (
-              <div className="home-parts-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.5rem' }}>
-                {[...Array(4)].map((_, i) => (
-                  <div key={i} className="skeleton" style={{ height: 300, background: '#eee' }} />
-                ))}
-              </div>
-            ) : (
-              <div className="home-parts-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.5rem' }}>
-                {bestsellerParts.map((part) => <PartCard key={part._id} part={part} />)}
-              </div>
-            )}
+            <Link to="/parts" style={{ 
+              background: '#000', color: 'white', padding: '0.6rem 1.4rem', 
+              fontSize: '0.9rem', borderRadius: '6px', textDecoration: 'none',
+              fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.5rem'
+            }}>
+              View All <ArrowRight size={16} />
+            </Link>
           </div>
-        </section>
-      )}
+
+          {partsLoading ? (
+            <div className="home-parts-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.5rem' }}>
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="skeleton" style={{ height: 300, background: '#eee' }} />
+              ))}
+            </div>
+          ) : (
+            <div className="home-parts-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.5rem' }}>
+              {(bestsellerParts.length > 0 ? bestsellerParts : featuredParts.slice(0, 4)).map((part) => (
+                <PartCard key={part._id} part={part} />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
 
       {/* WHY CHOOSE US */}
       <section style={{ background: '#F5F5F5', padding: '5rem 0' }}>
