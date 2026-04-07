@@ -56,7 +56,7 @@ export default function PartCard({ part }) {
     >
       <Link to={`/parts/${part._id}`} style={{ textDecoration: 'none', height: '100%', display: 'flex', flexDirection: 'column' }}>
         {/* Top Image Section (Light background, rounded corners) */}
-        <div style={{ position: 'relative', height: '200px', background: '#F5F5F5', overflow: 'hidden' }}>
+        <div style={{ position: 'relative', height: '180px', background: '#F5F5F5', overflow: 'hidden' }}>
           <img
             src={part.images?.[0] || 'https://via.placeholder.com/400x300/F5F5F5/E53935?text=No+Image'}
             alt={part.name}
@@ -133,7 +133,7 @@ export default function PartCard({ part }) {
         </div>
 
         {/* Bottom Content Section (White background) */}
-        <div style={{ padding: '1rem', flex: 1, display: 'flex', flexDirection: 'column', background: '#FFFFFF', borderTop: '1px solid #EEE' }}>
+        <div style={{ padding: '0.75rem', flex: 1, display: 'flex', flexDirection: 'column', background: '#FFFFFF', borderTop: '1px solid #EEE' }}>
           {/* Category & Status */}
           <div style={{ marginBottom: '0.4rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{
@@ -146,28 +146,29 @@ export default function PartCard({ part }) {
           </div>
 
           {/* Name */}
-          <h3 style={{
-            color: '#111', fontWeight: 900, fontSize: '0.95rem',
+          <h3 className="product-card-title" style={{
+            color: '#111', fontWeight: 900, fontSize: '0.85rem',
             lineHeight: 1.2, marginBottom: '0.3rem',
             fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.02em',
-            textTransform: 'uppercase'
+            textTransform: 'uppercase',
+            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
           }}>
             {part.name}
           </h3>
 
           {part.brand && (
-            <p style={{ color: '#888', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.4rem' }}>
+            <p style={{ color: '#888', fontSize: '0.7rem', fontWeight: 600, marginBottom: '0.3rem' }}>
               {part.brand}
             </p>
           )}
           {/* Ratings Section */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '0.6rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '3px', marginBottom: '0.4rem' }}>
             <div style={{ display: 'flex', gap: '1px' }}>
               {[1, 2, 3, 4, 5].map(i => (
-                <Star key={i} size={11} fill="#FFB400" color="#FFB400" />
+                <Star key={i} size={9} fill="#FFB400" color="#FFB400" />
               ))}
             </div>
-            <span style={{ color: '#AAA', fontSize: '0.75rem', fontWeight: 600, marginLeft: '2px' }}>
+            <span style={{ color: '#AAA', fontSize: '0.65rem', fontWeight: 600, marginLeft: '2px' }}>
               ({part.numReviews || 12})
             </span>
           </div>
@@ -175,34 +176,35 @@ export default function PartCard({ part }) {
           {/* Price row + CTA */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.6rem' }}>
-              <span style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.5rem', fontWeight: 950, color: '#E53935', lineHeight: 1 }}>
+              <span className="product-card-price" style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.2rem', fontWeight: 950, color: '#E53935', lineHeight: 1 }}>
                 ₹{effectivePrice?.toLocaleString('en-IN')}
               </span>
               {discount > 0 && (
-                <span style={{ color: '#AAA', fontSize: '0.85rem', textDecoration: 'line-through', fontWeight: 600 }}>
+                <span style={{ color: '#AAA', fontSize: '0.7rem', textDecoration: 'line-through', fontWeight: 600 }}>
                   ₹{effectiveOriginalPrice?.toLocaleString('en-IN')}
                 </span>
               )}
             </div>
 
             <div style={{ display: 'flex', gap: '0.4rem' }}>
-              <button
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); addToCart({ ...part, effectivePrice }); }}
-                disabled={effectiveStock === 0}
-                style={{
-                  height: '34px',
-                  padding: '0 1rem',
-                  background: effectiveStock === 0 ? '#EEE' : '#111',
-                  border: 'none', borderRadius: '8px', color: 'white',
-                  cursor: effectiveStock === 0 ? 'not-allowed' : 'pointer',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  boxShadow: effectiveStock === 0 ? 'none' : '0 6px 15px rgba(0,0,0,0.1)',
-                  transition: 'all 0.2s',
-                  gap: '0.4rem', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif', fontSize: '0.75rem', letterSpacing: '0.04em'
-                }}
-              >
-                <ShoppingCart size={15} /> ADD TO CART
-              </button>
+                <button
+                  className="product-card-btn"
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); addToCart({ ...part, effectivePrice }); }}
+                  disabled={effectiveStock === 0}
+                  style={{
+                    height: '28px',
+                    padding: '0 0.7rem',
+                    background: effectiveStock === 0 ? '#EEE' : '#111',
+                    border: 'none', borderRadius: '6px', color: 'white',
+                    cursor: effectiveStock === 0 ? 'not-allowed' : 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    boxShadow: effectiveStock === 0 ? 'none' : '0 4px 10px rgba(0,0,0,0.1)',
+                    transition: 'all 0.2s',
+                    gap: '0.3rem', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif', fontSize: '0.65rem', letterSpacing: '0.04em'
+                  }}
+                >
+                  <ShoppingCart size={13} /> ADD
+                </button>
             </div>
           </div>
         </div>

@@ -62,7 +62,7 @@ export default function BikeCard({ bike, hideBadges = false }) {
     >
       <Link to={`/bikes/${bike._id}`} style={{ textDecoration: 'none', height: '100%', display: 'flex', flexDirection: 'column' }}>
         {/* Top Image Section (Light background) */}
-        <div style={{ position: 'relative', height: '200px', background: '#F5F5F5', overflow: 'hidden' }}>
+        <div style={{ position: 'relative', height: '180px', background: '#F5F5F5', overflow: 'hidden' }}>
           <img
             src={bike.images?.[0] || 'https://via.placeholder.com/400x300/F5F5F5/E53935?text=No+Image'}
             alt={bike.title}
@@ -121,42 +121,43 @@ export default function BikeCard({ bike, hideBadges = false }) {
         </div>
 
         {/* Bottom Content Section */}
-        <div style={{ padding: '1rem', flex: 1, display: 'flex', flexDirection: 'column', background: '#FFFFFF', borderTop: '1px solid #EEE' }}>
+        <div style={{ padding: '0.75rem', flex: 1, display: 'flex', flexDirection: 'column', background: '#FFFFFF', borderTop: '1px solid #EEE' }}>
           {/* Metadata Row 1 */}
-          <div style={{ marginBottom: '0.4rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', gap: '1rem' }}>
-              <span style={{ color: '#E53935', fontSize: '0.7rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '3px', fontFamily: 'Rajdhani, sans-serif' }}>
-                 <Calendar size={12} /> {bike.year}
+          <div style={{ marginBottom: '0.3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: '0.6rem' }}>
+              <span style={{ color: '#E53935', fontSize: '0.6rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '2px', fontFamily: 'Rajdhani, sans-serif' }}>
+                 <Calendar size={10} /> {bike.year}
               </span>
-              <span style={{ color: '#888', fontSize: '0.7rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '3px', fontFamily: 'Rajdhani, sans-serif' }}>
-                 <Gauge size={12} /> {bike.kmDriven?.toLocaleString()} KM
+              <span style={{ color: '#888', fontSize: '0.6rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '2px', fontFamily: 'Rajdhani, sans-serif' }}>
+                 <Gauge size={10} /> {bike.kmDriven?.toLocaleString()} KM
               </span>
             </div>
           </div>
 
           {/* Title */}
-          <h3 style={{
-            color: '#111', fontWeight: 900, fontSize: '0.95rem',
+          <h3 className="product-card-title" style={{
+            color: '#111', fontWeight: 900, fontSize: '0.85rem',
             lineHeight: 1.2, marginBottom: '0.3rem',
             fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.02em',
-            textTransform: 'uppercase'
+            textTransform: 'uppercase',
+            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
           }}>
             {bike.title || `${bike.brand} ${bike.model}`}
           </h3>
 
           {/* Subtitle/Brand */}
-          <p style={{ color: '#888', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.4rem' }}>
+          <p style={{ color: '#888', fontSize: '0.7rem', fontWeight: 600, marginBottom: '0.3rem' }}>
             {bike.brand?.toUpperCase()} {bike.engineCC ? `• ${bike.engineCC}CC` : ''}
           </p>
 
           {/* Ratings Section */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '0.6rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '3px', marginBottom: '0.4rem' }}>
             <div style={{ display: 'flex', gap: '1px' }}>
               {[1, 2, 3, 4, 5].map(i => (
-                <Star key={i} size={11} fill="#FFB400" color="#FFB400" />
+                <Star key={i} size={9} fill="#FFB400" color="#FFB400" />
               ))}
             </div>
-            <span style={{ color: '#AAA', fontSize: '0.75rem', fontWeight: 600, marginLeft: '2px' }}>
+            <span style={{ color: '#AAA', fontSize: '0.65rem', fontWeight: 600, marginLeft: '2px' }}>
                ({bike.numReviews || 15})
             </span>
           </div>
@@ -164,24 +165,24 @@ export default function BikeCard({ bike, hideBadges = false }) {
           {/* Price row + Action */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.6rem' }}>
-              <span style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.5rem', fontWeight: 950, color: '#E53935', lineHeight: 1 }}>
+              <span className="product-card-price" style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.2rem', fontWeight: 950, color: '#E53935', lineHeight: 1 }}>
                 ₹{effectivePrice?.toLocaleString('en-IN')}
               </span>
               {discount > 0 && (
-                <span style={{ color: '#AAA', fontSize: '0.85rem', textDecoration: 'line-through', fontWeight: 600 }}>
+                <span style={{ color: '#AAA', fontSize: '0.7rem', textDecoration: 'line-through', fontWeight: 600 }}>
                   ₹{effectiveOriginalPrice?.toLocaleString('en-IN')}
                 </span>
               )}
             </div>
 
-            <div style={{
-              height: '34px', padding: '0 1rem',
-              background: '#111', borderRadius: '8px', color: 'white',
-              display: 'flex', alignItems: 'center', gap: '0.4rem',
-              fontSize: '0.75rem', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif',
-              letterSpacing: '0.04em', boxShadow: '0 6px 15px rgba(0,0,0,0.1)'
+            <div className="product-card-btn" style={{
+              height: '28px', padding: '0 0.7rem',
+              background: '#111', borderRadius: '6px', color: 'white',
+              display: 'flex', alignItems: 'center', gap: '0.3rem',
+              fontSize: '0.65rem', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif',
+              letterSpacing: '0.04em', boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
             }}>
-              DETAILS <ArrowRight size={14} />
+              DETAILS <ArrowRight size={12} />
             </div>
           </div>
         </div>
