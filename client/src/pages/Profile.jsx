@@ -383,7 +383,7 @@ export default function Profile() {
                     </p>
                   </div>
                   <div style={{ background: locationSet ? '#2E7D32' : '#111', borderRadius: '12px', padding: '12px', color: 'white', display: 'flex', flexShrink: 0, marginLeft: '1.5rem', boxShadow: '0 5px 15px rgba(0,0,0,0.1)' }}>
-                    <MapIcon size={20} />
+                    <MapPin size={22} />
                   </div>
                 </div>
               </div>
