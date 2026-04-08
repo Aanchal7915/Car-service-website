@@ -986,6 +986,11 @@ const BikesTab = () => {
 const SellsTab = () => {
   const [sells, setSells] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editMode, setEditMode] = useState({}); // { 'id-field': true }
+
+  const toggleEdit = (id, field) => {
+    setEditMode(prev => ({ ...prev, [`${id}-${field}`]: !prev[`${id}-${field}`] }));
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -1037,37 +1042,57 @@ const SellsTab = () => {
                 {s.offeredPrice && <div style={{ color: '#2E7D32', fontWeight: 950, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.5rem' }}>₹{s.offeredPrice?.toLocaleString('en-IN')}</div>}
               </div>
             </div>
-            <div className="admin-sell-actions" style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', flexWrap: 'wrap', alignItems: 'stretch' }}>
-              <select value={s.status} onChange={e => handleUpdate(s._id, e.target.value)} className="input-light" style={{ width: 'auto', fontSize: '0.85rem', fontWeight: 800, padding: '0.6rem 1rem', height: '48px' }}>
+            <div className="admin-sell-actions" style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+              <select value={s.status} onChange={e => handleUpdate(s._id, e.target.value)} className="input-light" style={{ width: 'auto', fontSize: '0.85rem', fontWeight: 800, padding: '0.6rem 1rem', height: '48px', borderRadius: '12px' }}>
                 {statusOpts.map(o => <option key={o} value={o}>{o.replace(/_/g, ' ').toUpperCase()}</option>)}
               </select>
-              <div style={{ position: 'relative', flex: '0 0 190px', display: 'flex', gap: '0.4rem' }}>
-                <div style={{ position: 'relative', flex: 1 }}>
-                  <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#888', fontWeight: 900, fontSize: '0.85rem' }}>₹</span>
-                  <input type="number" placeholder="OFFER ₹" defaultValue={s.offeredPrice || ''}
-                    id={`price-${s._id}`}
-                    className="input-light" style={{ width: '100%', fontSize: '0.85rem', padding: '0.6rem 2.2rem 0.6rem 24px', height: '48px', fontWeight: 700 }} />
-                  <Edit2 size={12} style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', color: '#BBB' }} />
-                </div>
-                <button onClick={(e) => {
-                  const val = document.getElementById(`price-${s._id}`).value;
-                  handleUpdate(s._id, s.status, val);
-                }} style={{ background: '#2E7D32', color: 'white', border: 'none', borderRadius: '10px', width: '48px', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-                  <Check size={20} />
+
+              {/* Offer Field */}
+              <div style={{ position: 'relative', flex: '0 0 160px' }}>
+                <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#888', fontWeight: 900, fontSize: '0.85rem' }}>₹</span>
+                <input type="number" placeholder="OFFER ₹" defaultValue={s.offeredPrice || ''}
+                  id={`price-${s._id}`}
+                  readOnly={!editMode[`${s._id}-price`]}
+                  className="input-light" 
+                  style={{ 
+                    width: '100%', fontSize: '0.85rem', padding: '0.6rem 2.2rem 0.6rem 24px', height: '48px', fontWeight: 700,
+                    borderColor: editMode[`${s._id}-price`] ? '#E53935' : '#EEE',
+                    background: editMode[`${s._id}-price`] ? '#FFF' : '#FAFAFA'
+                  }} />
+                <button type="button" 
+                  onClick={() => {
+                    if (editMode[`${s._id}-price`]) {
+                      const val = document.getElementById(`price-${s._id}`).value;
+                      handleUpdate(s._id, s.status, val);
+                    }
+                    toggleEdit(s._id, 'price');
+                  }}
+                  style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#E53935' }}>
+                  {editMode[`${s._id}-price`] ? <Check size={18} /> : <Edit2 size={16} />}
                 </button>
               </div>
-              <div style={{ flex: 1, minWidth: 200, display: 'flex', gap: '0.4rem' }}>
-                <div style={{ position: 'relative', flex: 1 }}>
-                  <input placeholder="ADMIN NOTE..." defaultValue={s.adminNote || ''}
-                    id={`note-${s._id}`}
-                    className="input-light" style={{ width: '100%', fontSize: '0.85rem', padding: '0.6rem 2.2rem 0.6rem 1rem', height: '48px', fontWeight: 600 }} />
-                  <Edit2 size={12} style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', color: '#BBB' }} />
-                </div>
-                <button onClick={(e) => {
-                  const val = document.getElementById(`note-${s._id}`).value;
-                  handleUpdate(s._id, s.status, null, val);
-                }} style={{ background: '#1976D2', color: 'white', border: 'none', borderRadius: '10px', width: '48px', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-                  <Check size={20} />
+
+              {/* Note Field */}
+              <div style={{ flex: 1, minWidth: 200, position: 'relative' }}>
+                <input placeholder="ADMIN NOTE..." defaultValue={s.adminNote || ''}
+                  id={`note-${s._id}`}
+                  readOnly={!editMode[`${s._id}-note`]}
+                  className="input-light" 
+                  style={{ 
+                    width: '100%', fontSize: '0.85rem', padding: '0.6rem 2.2rem 0.6rem 1rem', height: '48px', fontWeight: 600,
+                    borderColor: editMode[`${s._id}-note`] ? '#E53935' : '#EEE',
+                    background: editMode[`${s._id}-note`] ? '#FFF' : '#FAFAFA'
+                  }} />
+                <button type="button" 
+                  onClick={() => {
+                    if (editMode[`${s._id}-note`]) {
+                      const val = document.getElementById(`note-${s._id}`).value;
+                      handleUpdate(s._id, s.status, null, val);
+                    }
+                    toggleEdit(s._id, 'note');
+                  }}
+                  style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#E53935' }}>
+                  {editMode[`${s._id}-note`] ? <Check size={18} /> : <Edit2 size={16} />}
                 </button>
               </div>
             </div>
