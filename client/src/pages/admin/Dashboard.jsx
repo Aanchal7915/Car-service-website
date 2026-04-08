@@ -88,37 +88,64 @@ const ServicesTab = () => {
   const [loading, setLoading] = useState(true);
   const [serviceTypes, setServiceTypes] = useState([]);
   const [stLoading, setStLoading] = useState(true);
-  const [editingId, setEditingId] = useState(null);
+  const [showStForm, setShowStForm] = useState(false);
+  const [editSt, setEditSt] = useState(null);
   const [stForm, setStForm] = useState({ value: '', label: '', price: '', desc: '', order: 0, isActive: true });
 
-  const resetStForm = () => { setShowStForm(false); setEditingId(null); setStForm({ value: '', label: '', price: '', desc: '', order: 0, isActive: true }); };
+  useEffect(() => {
+    Promise.all([adminApi.getServices(), adminApi.getMechanics(), adminApi.getServiceTypes()])
+      .then(([srvRes, mechRes, stRes]) => {
+        setData(srvRes.data.bookings || []);
+        setMechanics(mechRes.data.mechanics || []);
+        setServiceTypes(stRes.data.serviceTypes || []);
+      }).finally(() => { setLoading(false); setStLoading(false); });
+  }, []);
 
-  const handleStSubmit = async (e, id) => {
-    if(e) e.preventDefault();
+  const handleStatus = async (id, status, mechanicId) => {
     try {
-      if (id) {
-        const { data } = await adminApi.updateServiceType(id, stForm);
+      await adminApi.updateServiceStatus(id, { status, mechanic: mechanicId });
+      toast.success('Booking updated!');
+      setData(data.map(d => d._id === id ? { ...d, status, mechanic: mechanics.find(m => m._id === mechanicId) || d.mechanic } : d));
+    } catch { toast.error('Error updating service'); }
+  };
+
+  const resetStForm = () => { setShowStForm(false); setEditSt(null); setStForm({ value: '', label: '', price: '', desc: '', order: 0, isActive: true }); };
+
+  const handleStSubmit = async (e) => {
+    e.preventDefault();
+    console.log('UPDATING SERVICE TYPE:', { id: editSt, payload: stForm });
+    try {
+      if (editSt) {
+        const { data } = await adminApi.updateServiceType(editSt, stForm);
+        console.log('UPDATE RESPONSE:', data);
         if (data.serviceType) {
-          setServiceTypes(prev => prev.map(s => s._id === id ? data.serviceType : s).sort((a,b) => (a.order||0) - (b.order||0)));
-          toast.success('Updated');
-          setEditingId(null);
+          setServiceTypes(prev => prev.map(s => s._id === editSt ? data.serviceType : s));
+          toast.success('Service type updated!');
+          resetStForm();
+        } else {
+          toast.error('Update failed: Server did not return updated data');
         }
       } else {
         const { data } = await adminApi.createServiceType(stForm);
+        console.log('CREATE RESPONSE:', data);
         if (data.serviceType) {
-          setServiceTypes(prev => [...prev, data.serviceType].sort((a,b) => (a.order||0) - (b.order||0)));
-          toast.success('Added');
+          setServiceTypes(prev => [...prev, data.serviceType]);
+          toast.success('Service type added!');
           resetStForm();
+        } else {
+          toast.error('Add failed: Server did not return new data');
         }
       }
     } catch (err) { 
-      toast.error(err.response?.data?.message || 'Error'); 
+      console.error('SAVE ERROR:', err);
+      toast.error(err.response?.data?.message || 'Failed to save service type'); 
     }
   };
 
   const handleStEdit = (st) => {
-    setEditingId(st._id);
+    setEditSt(st._id);
     setStForm({ value: st.value, label: st.label, price: st.price, desc: st.desc || '', order: st.order || 0, isActive: st.isActive });
+    setShowStForm(true);
   };
 
   const handleStDelete = async (id) => {
@@ -179,46 +206,24 @@ const ServicesTab = () => {
           </form>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '0.8rem' }}>
           {serviceTypes.map(st => (
-            <div key={st._id} style={{ background: st.isActive ? '#FFF' : '#F9F9F9', border: '1.5px solid #EEE', borderRadius: '16px', padding: '1.2rem', boxShadow: '0 4px 15px rgba(0,0,0,0.02)', position: 'relative' }}>
-              {editingId === st._id ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                  <input className="input-light" style={{height:32, fontSize:'0.8rem'}} value={stForm.label} onChange={e=>setStForm({...stForm, label: e.target.value})} placeholder="Label" />
-                  <input className="input-light" style={{height:32, fontSize:'0.8rem'}} value={stForm.value} onChange={e=>setStForm({...stForm, value: e.target.value})} placeholder="Value ID" />
-                  <input className="input-light" style={{height:32, fontSize:'0.8rem'}} value={stForm.price} onChange={e=>setStForm({...stForm, price: e.target.value})} placeholder="Price text" />
-                  <input className="input-light" style={{height:32, fontSize:'0.8rem'}} value={stForm.desc} onChange={e=>setStForm({...stForm, desc: e.target.value})} placeholder="Description" />
-                  <div style={{display:'flex', gap:'0.5rem', alignItems:'center'}}>
-                    <input type="number" className="input-light" style={{height:32, width:60, fontSize:'0.8rem'}} value={stForm.order} onChange={e=>setStForm({...stForm, order: Number(e.target.value)})} placeholder="Ord" title="Display Order" />
-                    <label style={{fontSize:'0.75rem', fontWeight:700, display:'flex', alignItems:'center', gap:'0.3rem', cursor:'pointer'}}><input type="checkbox" checked={stForm.isActive} onChange={e=>setStForm({...stForm, isActive: e.target.checked})} /> Active</label>
-                    <div style={{marginLeft:'auto', display:'flex', gap:'0.4rem'}}>
-                      <button onClick={()=>handleStSubmit(null, st._id)} style={{background:'#E53935', color:'white', border:'none', borderRadius:'6px', width:30, height:30, display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer'}}><Check size={16} /></button>
-                      <button onClick={()=>setEditingId(null)} style={{background:'#F5F5F5', color:'#666', border:'none', borderRadius:'6px', width:30, height:30, display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer'}}><X size={16} /></button>
-                    </div>
-                  </div>
+            <div key={st._id} style={{ background: st.isActive ? '#FFF' : '#F9F9F9', border: '1px solid #EEE', borderRadius: '12px', padding: '1rem', opacity: st.isActive ? 1 : 0.6 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.3rem' }}>
+                <h4 style={{ color: '#111', fontWeight: 800, fontSize: '0.95rem', margin: 0, fontFamily: 'Rajdhani, sans-serif' }}>
+                  {st.label.toUpperCase()}
+                  <span style={{ fontSize: '0.65rem', color: '#AAA', marginLeft: '0.6rem', fontWeight: 600 }}>ID: {st.value}</span>
+                </h4>
+                <div style={{ display: 'flex', gap: '0.3rem' }}>
+                  <button onClick={() => handleStEdit(st)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#888', padding: '2px' }}><Edit2 size={14} /></button>
+                  <button onClick={() => handleStDelete(st._id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#E53935', padding: '2px' }}><Trash2 size={14} /></button>
                 </div>
-              ) : (
-                <>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.4rem' }}>
-                    <h4 style={{ color: '#111', fontWeight: 900, fontSize: '1rem', margin: 0, fontFamily: 'Rajdhani, sans-serif' }}>
-                      {st.label.toUpperCase()}
-                      <span style={{ fontSize: '0.65rem', color: '#AAA', marginLeft: '0.6rem', fontWeight: 700 }}>ID: {st.value}</span>
-                    </h4>
-                    <div style={{ display: 'flex', gap: '0.4rem' }}>
-                      <button onClick={() => handleStEdit(st)} style={{ background: '#F9F9F9', border: '1px solid #EEE', cursor: 'pointer', color: '#666', borderRadius: '8px', width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Edit2 size={13} /></button>
-                      <button onClick={() => handleStDelete(st._id)} style={{ background: '#F9F9F9', border: '1px solid #EEE', cursor: 'pointer', color: '#E53935', borderRadius: '8px', width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Trash2 size={13} /></button>
-                    </div>
-                  </div>
-                  <p style={{ color: '#666', fontSize: '0.78rem', fontWeight: 500, margin: '0 0 0.8rem', lineHeight: 1.4 }}>{st.desc}</p>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div>
-                      <span style={{ color: '#E53935', fontWeight: 950, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.1rem' }}>{st.price}</span>
-                      <span style={{ fontSize: '0.6rem', color: '#AAA', marginLeft: '0.5rem', fontWeight: 800 }}>ORDER: {st.order || 0}</span>
-                    </div>
-                    <span style={{ fontSize: '0.65rem', fontWeight: 800, color: st.isActive ? '#2E7D32' : '#888', background: st.isActive ? 'rgba(46,125,50,0.05)' : '#F5F5F5', padding: '0.2rem 0.5rem', borderRadius: '999px' }}>{st.isActive ? 'ACTIVE' : 'INACTIVE'}</span>
-                  </div>
-                </>
-              )}
+              </div>
+              <p style={{ color: '#666', fontSize: '0.72rem', margin: '0.2rem 0 0.5rem' }}>{st.desc}</p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ color: '#E53935', fontWeight: 800, fontFamily: 'Rajdhani, sans-serif', fontSize: '0.95rem' }}>{st.price}</span>
+                <span style={{ fontSize: '0.65rem', fontWeight: 700, color: st.isActive ? '#2E7D32' : '#888' }}>{st.isActive ? 'ACTIVE' : 'INACTIVE'}</span>
+              </div>
             </div>
           ))}
         </div>

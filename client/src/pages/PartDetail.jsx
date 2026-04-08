@@ -19,7 +19,8 @@ const isVideoUrl = (url = '') => /\.(mp4|mov|webm|ogg|m4v)(\?.*)?$/i.test(url) |
 export default function PartDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { addToCart } = useCart();
+  const { items, addToCart, updateQty } = useCart();
+  const cartItem = items.find(i => i._id === id);
   const { user, wishlist = [], toggleWishlist } = useAuth();
 
   const [part, setPart] = useState(null);
@@ -119,10 +120,8 @@ export default function PartDetail() {
     addToCart({ 
       ...part, 
       effectivePrice, 
-      selectedVariant: selectedSize ? { ...selectedSize, price: effectivePrice, originalPrice: effectiveOriginal, countInStock: effectiveStock } : null,
-      quantity: 1 
+      selectedVariant: selectedSize ? { ...selectedSize, price: effectivePrice, originalPrice: effectiveOriginal, countInStock: effectiveStock } : null
     });
-    toast.success(`${part.name} added to cart!`);
   };
 
   const handleShare = () => {
@@ -424,13 +423,30 @@ export default function PartDetail() {
 
             {/* CTA Action Bar */}
             <div className="mb-12">
-              <button
-                disabled={isUnavailable || effectiveStock === 0}
-                onClick={handleAddToCart}
-                className={`w-full h-14 font-bold text-lg rounded-lg transition-all flex items-center justify-center gap-2 ${isUnavailable || effectiveStock === 0 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-[#E53935] hover:bg-[#C62828] text-white shadow-lg'}`}
-              >
-                Add to Cart
-              </button>
+              {cartItem ? (
+                <div className="flex items-center gap-4 bg-gray-50 p-3 rounded-2xl border border-gray-100">
+                  <button 
+                    onClick={() => updateQty(id, cartItem.quantity - 1)}
+                    className="w-12 h-12 flex items-center justify-center bg-gray-900 text-white rounded-xl font-bold text-xl hover:bg-gray-800 transition"
+                  >-</button>
+                  <div className="flex-1 text-center">
+                    <span className="text-sm font-black text-gray-400 uppercase tracking-widest block mb-1">Quantity in Cart</span>
+                    <span className="text-2xl font-black text-gray-900">{cartItem.quantity}</span>
+                  </div>
+                  <button 
+                    onClick={() => updateQty(id, cartItem.quantity + 1)}
+                    className="w-12 h-12 flex items-center justify-center bg-gray-900 text-white rounded-xl font-bold text-xl hover:bg-gray-800 transition"
+                  >+</button>
+                </div>
+              ) : (
+                <button
+                  disabled={isUnavailable || effectiveStock === 0}
+                  onClick={handleAddToCart}
+                  className={`w-full h-14 font-bold text-lg rounded-lg transition-all flex items-center justify-center gap-2 ${isUnavailable || effectiveStock === 0 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-[#E53935] hover:bg-[#C62828] text-white shadow-lg'}`}
+                >
+                  <ShoppingCart size={20} /> Add to Cart
+                </button>
+              )}
             </div>
           </div>
         </div>

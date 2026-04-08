@@ -5,7 +5,8 @@ import { useAuth } from '../../context/AuthContext';
 import { ShoppingCart, Star, Heart } from 'lucide-react';
 
 export default function PartCard({ part }) {
-  const { addToCart } = useCart();
+  const { items, addToCart, updateQty } = useCart();
+  const cartItem = items.find(i => i._id === part._id);
   const { wishlist = [], toggleWishlist } = useAuth();
   const isWishlisted = Array.isArray(wishlist) && wishlist.includes(part._id);
   const [hovered, setHovered] = useState(false);
@@ -167,6 +168,39 @@ export default function PartCard({ part }) {
             </div>
 
             <div style={{ display: 'flex', gap: '0.4rem' }}>
+              {cartItem ? (
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '0.6rem', 
+                  background: '#F5F5F5', 
+                  borderRadius: '6px', 
+                  padding: '2px 6px',
+                  border: '1px solid #EEE'
+                }}>
+                  <button 
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); updateQty(part._id, cartItem.quantity - 1); }}
+                    style={{ 
+                      width: 24, height: 24, borderRadius: '4px', border: 'none', 
+                      background: '#111', color: 'white', display: 'flex', 
+                      alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+                      fontSize: '1rem', fontWeight: 900
+                    }}
+                  >-</button>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 950, color: '#111', fontFamily: 'Rajdhani, sans-serif', minWidth: '15px', textAlign: 'center' }}>
+                    {cartItem.quantity}
+                  </span>
+                  <button 
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); updateQty(part._id, cartItem.quantity + 1); }}
+                    style={{ 
+                      width: 24, height: 24, borderRadius: '4px', border: 'none', 
+                      background: '#111', color: 'white', display: 'flex', 
+                      alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+                      fontSize: '1rem', fontWeight: 900
+                    }}
+                  >+</button>
+                </div>
+              ) : (
                 <button
                   className="product-card-btn"
                   onClick={(e) => { e.preventDefault(); e.stopPropagation(); addToCart({ ...part, effectivePrice }); }}
@@ -185,6 +219,7 @@ export default function PartCard({ part }) {
                 >
                   <ShoppingCart size={13} /> ADD
                 </button>
+              )}
             </div>
           </div>
         </div>
