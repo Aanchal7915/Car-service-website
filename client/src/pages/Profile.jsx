@@ -375,8 +375,8 @@ export default function Profile() {
                   }}
                 >
                   <div style={{ flex: 1 }}>
-                    <h4 style={{ color: locationSet ? '#2E7D32' : '#333', fontSize: '1rem', fontWeight: 800, margin: 0, fontFamily: 'Rajdhani, sans-serif' }}>
-                      {locationSet ? '✓ LOCATION CONFIGURED' : 'PINPOINT ON MAP'}
+                    <h4 style={{ color: locationSet ? '#2E7D32' : '#333', fontSize: '1rem', fontWeight: 800, margin: 0, fontFamily: 'Rajdhani, sans-serif', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      {locationSet ? <><Check size={18} /> LOCATION CONFIGURED</> : <><MapPin size={18} style={{ color: '#E53935' }}/> PINPOINT ON MAP</>}
                     </h4>
                     <p style={{ color: '#666', fontSize: '0.88rem', margin: 0, marginTop: 4, display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden', fontWeight: 500 }}>
                       {locationSet ? (humanAddress || `Lat: ${mapLocation.lat.toFixed(4)}, Lng: ${mapLocation.lng.toFixed(4)}`) : 'Help us find your doorstep exactly'}
