@@ -105,7 +105,7 @@ export default function Cart() {
 
         const payRes = await createPartPayment(orderRes.data.order._id);
         const rzpOrder = payRes.data.order;
-        const rzpKey = payRes.data.key || payRes.data.keyId;
+        const rzpKey = import.meta.env.VITE_RAZORPAY_KEY_ID || payRes.data.key || payRes.data.keyId;
 
         await new Promise((resolve, reject) => {
           const rzp = new window.Razorpay({

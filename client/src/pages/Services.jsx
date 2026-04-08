@@ -43,9 +43,9 @@ export default function Services() {
       const loaded = await loadRazorpay();
       if (!loaded) { toast.error('Payment gateway failed to load'); setPaying(false); return; }
 
-      const { data } = await createServicePayment(bookingId, {});
+      const { data } = await createServicePayment(bookingId, { amount: 200 });
       const rzpOrder = data.order;
-      const rzpKey = data.key || data.keyId;
+      const rzpKey = import.meta.env.VITE_RAZORPAY_KEY_ID || data.key || data.keyId;
 
       await new Promise((resolve, reject) => {
         const rzp = new window.Razorpay({
@@ -60,6 +60,7 @@ export default function Services() {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,
+                amount: 200
               });
               resolve();
             } catch (err) { reject(err); }
