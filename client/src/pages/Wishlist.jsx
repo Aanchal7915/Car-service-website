@@ -261,14 +261,22 @@ export default function Wishlist() {
   return (
     <div style={{ minHeight: '100vh', background: '#FFFFFF' }}>
       <style>{`
-        @media (max-width: 640px) {
+        .wishlist-grid {
+          display: grid !important;
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important;
+          gap: 1.5rem !important;
+        }
+        @media (max-width: 768px) {
           .wishlist-grid { 
             grid-template-columns: repeat(2, 1fr) !important; 
             gap: 0.8rem !important;
           }
-          .wishlist-grid > div h3 { font-size: 0.95rem !important; }
-          .wishlist-grid > div p { font-size: 0.75rem !important; }
-          .wishlist-grid > div .font-size-price { font-size: 1.1rem !important; }
+          .wishlist-grid > div h3 { font-size: 0.85rem !important; }
+          .wishlist-grid > div p { font-size: 0.7rem !important; }
+          .wishlist-grid > div .font-size-price { font-size: 1rem !important; }
+        }
+        @media (max-width: 400px) {
+          .wishlist-grid { gap: 0.5rem !important; }
         }
       `}</style>
       <div style={{ height: '4px', background: 'linear-gradient(90deg, #E53935, #FF7043, transparent)' }} />
@@ -306,7 +314,7 @@ export default function Wishlist() {
           </div>
         )}
  
-        <div className="animate-fadeInUp wishlist-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
+        <div className="animate-fadeInUp wishlist-grid">
           {wishlist.map((id) => (
             <WishlistItemLoader key={id} partId={id} pincode={pincode} toggleWishlist={toggleWishlist} addToCart={addToCart} />
           ))}
