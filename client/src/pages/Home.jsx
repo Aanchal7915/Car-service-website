@@ -5,6 +5,7 @@ import { getFeaturedParts, getBestsellerParts } from '../api/storeApi';
 import { getFeaturedBikes, getBestsellerBikes } from '../api/bikeApi';
 import BikeCard from '../components/bikes/BikeCard';
 import PartCard from '../components/parts/PartCard';
+import { getActiveServiceTypes } from '../api/serviceApi';
 import { PageLoader } from '../components/common/LoadingSpinner';
 import heroBike from '../assets/hero-bike.png';
 import heroBikeMobile from '../assets/hero-bike (2).png';
@@ -31,18 +32,22 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [partsLoading, setPartsLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [serviceTypes, setServiceTypes] = useState([]);
+  const [servicesLoading, setServicesLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([
       getFeaturedBikes().then(({ data }) => setFeatured(data.bikes)),
       getFeaturedParts().then(({ data }) => setFeaturedParts(data.parts || [])),
       getBestsellerParts({ limit: 4 }).then(({ data }) => setBestsellerParts(data.parts || [])),
-      getBestsellerBikes().then(({ data }) => setBestsellerBikes(data.bikes || []))
+      getBestsellerBikes().then(({ data }) => setBestsellerBikes(data.bikes || [])),
+      getActiveServiceTypes().then(({ data }) => setServiceTypes(data.serviceTypes || []))
     ])
       .catch(() => {})
       .finally(() => {
         setLoading(false);
         setPartsLoading(false);
+        setServicesLoading(false);
       });
 
     const timer = setInterval(() => setCurrentSlide((s) => (s + 1) % heroSlides.length), 5000);
@@ -274,16 +279,14 @@ export default function Home() {
             </Link>
           </div>
 
+          {servicesLoading ? (
+            <div className="home-services-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '1rem' }}>
+              {[...Array(4)].map((_, i) => <div key={i} className="skeleton" style={{ height: 160, borderRadius: '10px' }} />)}
+            </div>
+          ) : (
           <div className="home-services-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '1rem' }}>
-            {[
-              { label: 'General Service', desc: 'Full oil change, filter cleaning, and chain lubrication.', href: '/services?type=regular_service' },
-              { label: 'Engine Repair', desc: 'Expert engine heath check and fine-tuning.', href: '/services?type=engine_repair' },
-              { label: 'Puncture Fix', desc: 'Instant doorstep tire repair for all bike types.', href: '/services?type=puncture' },
-              { label: 'Electricals', desc: 'Battery health, wiring fix, and bulb replacements.', href: '/services?type=battery' },
-              { label: 'Brake Fix', desc: 'Specialized pad change and fluid flushing.', href: '/services?type=brake' },
-              { label: 'Bike Wash', desc: 'Multi-layer foam wash and premium wax polish.', href: '/services?type=washing' },
-            ].map(({ label, desc, href }) => (
-              <div key={label} style={{ 
+            {serviceTypes.map((service) => (
+              <div key={service.value} style={{ 
                 background: 'white', 
                 border: '1px solid #F0F0F0',
                 borderLeft: '4px solid #E53935',
@@ -299,10 +302,10 @@ export default function Home() {
                 onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 12px 25px rgba(229,57,53,0.08)'; e.currentTarget.style.background = '#000'; e.currentTarget.querySelector('h3').style.color = '#fff'; e.currentTarget.querySelector('p').style.color = '#aaa'; }}
                 onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.02)'; e.currentTarget.style.background = '#fff'; e.currentTarget.querySelector('h3').style.color = '#111'; e.currentTarget.querySelector('p').style.color = '#666'; }}>
                 <div>
-                  <h3 style={{ color: '#111', fontWeight: 800, fontSize: '0.95rem', marginBottom: '0.5rem', fontFamily: 'Rajdhani, sans-serif' }}>{label}</h3>
-                  <p style={{ color: '#666', fontSize: '0.75rem', lineHeight: 1.5, marginBottom: '1.2rem' }}>{desc}</p>
+                  <h3 style={{ color: '#111', fontWeight: 800, fontSize: '0.95rem', marginBottom: '0.5rem', fontFamily: 'Rajdhani, sans-serif', textTransform: 'uppercase' }}>{service.label}</h3>
+                  <p style={{ color: '#666', fontSize: '0.75rem', lineHeight: 1.5, marginBottom: '1.2rem', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{service.desc}</p>
                 </div>
-                <Link to="/contact" style={{ 
+                <Link to="/services" style={{ 
                   display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
                   background: '#E53935', color: 'white', 
                   padding: '0.5rem 1rem', borderRadius: '4px', 
@@ -314,6 +317,7 @@ export default function Home() {
               </div>
             ))}
           </div>
+          )}
           <style>{`
             @media (min-width: 1024px) {
               .home-why-grid { grid-template-columns: repeat(6, 1fr) !important; gap: 0.8rem !important; }

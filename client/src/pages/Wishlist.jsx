@@ -78,75 +78,133 @@ function WishlistItemLoader({ partId, pincode, toggleWishlist, addToCart }) {
   }
 
   return (
-    <div style={{ background: '#FFF', border: '1px solid #EEE', borderRadius: '24px', overflow: 'hidden', display: 'flex', flexDirection: 'column', transition: 'all 0.3s', boxShadow: '0 4px 20px rgba(0,0,0,0.02)' }}
-      onMouseEnter={e => { e.currentTarget.style.borderColor = '#111'; e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 15px 40px rgba(0,0,0,0.05)'; }}
-      onMouseLeave={e => { e.currentTarget.style.borderColor = '#EEE'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.02)'; }}>
-
-      {/* Image */}
-      <Link to={detailUrl} style={{ display: 'block', position: 'relative', height: 220, overflow: 'hidden', background: '#F5F5F5', flexShrink: 0, borderBottom: '1px solid #F5F5F5' }}>
-        <img
-          src={images[0] || 'https://via.placeholder.com/400x300/F5F5F5/E53935?text=Product'}
-          alt={title}
-          style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '1.5rem', transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)' }}
-          onMouseEnter={e => e.target.style.transform = 'scale(1.1)'}
-          onMouseLeave={e => e.target.style.transform = 'scale(1)'}
-        />
-        {discount > 0 && (
-          <span style={{ position: 'absolute', top: 15, left: 15, background: '#E53935', color: 'white', fontSize: '0.75rem', fontWeight: 900, padding: '4px 10px', borderRadius: '8px', boxShadow: '0 4px 12px rgba(229,57,53,0.3)', letterSpacing: '0.05em' }}>
-            {discount}% OFF
-          </span>
-        )}
-      </Link>
-
-      {/* Info */}
-      <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
-          <span style={{ fontSize: '0.7rem', color: '#E53935', textTransform: 'uppercase', fontWeight: 900, letterSpacing: '0.1em' }}>
-            {isBike ? (item.type || 'BIKE') : (item.category?.replace('_', ' ') || 'PART')}
-          </span>
-          {!isBike && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
-              <Star size={12} fill="#FB8C00" color="#FB8C00" />
-              <span style={{ color: '#111', fontSize: '0.75rem', fontWeight: 800 }}>{item.ratings || '5.0'}</span>
-            </div>
-          )}
-        </div>
-        <Link to={detailUrl} style={{ textDecoration: 'none' }}>
-          <h3 style={{ color: '#111', fontWeight: 900, fontSize: '1.15rem', margin: '0 0 0.4rem', fontFamily: 'Rajdhani, sans-serif', lineHeight: 1.2, textTransform: 'uppercase' }}>{title}</h3>
-        </Link>
-        <p style={{ color: '#888', fontSize: '0.85rem', fontWeight: 600, margin: '0 0 1rem' }}>
-          {isBike ? `${item.year} • ${item.kmDriven?.toLocaleString()} KM • ${item.location?.city || 'India'}` : brand}
-        </p>
-
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.6rem', marginBottom: '1.5rem' }}>
-          <span style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.6rem', fontWeight: 900, color: '#111' }}>₹{price?.toLocaleString('en-IN')}</span>
-          {discount > 0 && <span style={{ color: '#AAA', fontSize: '0.9rem', textDecoration: 'line-through', fontWeight: 600 }}>₹{originalPrice?.toLocaleString('en-IN')}</span>}
-        </div>
-
-        {/* Actions */}
-        <div style={{ display: 'flex', gap: '0.8rem', marginTop: 'auto' }}>
-          {!isBike ? (
-            <button
-              onClick={() => addToCart({ ...item, effectivePrice: price })}
-              disabled={effectiveStock === 0}
-              style={{ flex: 1, height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem', padding: '0.5rem', background: effectiveStock === 0 ? '#EEE' : '#111', color: effectiveStock === 0 ? '#AAA' : 'white', border: 'none', borderRadius: '14px', fontWeight: 900, cursor: effectiveStock === 0 ? 'not-allowed' : 'pointer', fontSize: '0.85rem', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.08em', transition: 'all 0.2s' }}>
-              <ShoppingCart size={16} /> {effectiveStock === 0 ? 'OUT OF STOCK' : 'ADD TO CART'}
-            </button>
-          ) : (
-            <Link to={detailUrl} style={{ flex: 1, height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem', padding: '0.5rem', background: '#111', color: 'white', textDecoration: 'none', border: 'none', borderRadius: '14px', fontWeight: 900, cursor: 'pointer', fontSize: '0.85rem', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.08em', transition: 'all 0.2s' }}>
-              VIEW DETAILS
-            </Link>
-          )}
+    <div
+      style={{
+        position: 'relative',
+        borderRadius: '20px',
+        overflow: 'hidden',
+        background: '#FFF',
+        display: 'flex',
+        flexDirection: 'column',
+        boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
+        transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        height: '100%',
+      }}
+    >
+      <Link to={detailUrl} style={{ textDecoration: 'none', height: '100%', display: 'flex', flexDirection: 'column' }}>
+        {/* Top Image Section */}
+        <div style={{ position: 'relative', height: '180px', background: '#F5F5F5', overflow: 'hidden' }}>
+          <img
+            src={images[0] || 'https://via.placeholder.com/400x300/F5F5F5/E53935?text=No+Image'}
+            alt={title}
+            style={{
+              width: '100%', height: '100%', objectFit: 'contain', padding: '1rem',
+              transition: 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+            }}
+            onMouseEnter={e => e.target.style.transform = 'scale(1.08)'}
+            onMouseLeave={e => e.target.style.transform = 'scale(1)'}
+          />
+          
+          {/* Top-right: Trash (Remove) */}
           <button
-            onClick={() => toggleWishlist(item._id)}
-            style={{ width: 48, height: 48, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FFF1F0', border: '1.5px solid rgba(229,57,53,0.1)', borderRadius: '14px', cursor: 'pointer', transition: 'all 0.2s' }}
-            title="Remove from wishlist"
-            onMouseEnter={e => { e.currentTarget.style.background = '#E53935'; e.currentTarget.firstChild.style.color = 'white'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = '#FFF1F0'; e.currentTarget.firstChild.style.color = '#E53935'; }}>
-            <Trash2 size={18} style={{ color: '#E53935', transition: 'color 0.2s' }} />
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist(item._id); }}
+            style={{
+              position: 'absolute', top: 12, right: 12,
+              width: 34, height: 34, borderRadius: '50%',
+              background: 'rgba(17,17,17,0.85)',
+              border: 'none',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer', backdropFilter: 'blur(10px)',
+              transition: 'all 0.25s',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+              zIndex: 10
+            }}
+            onMouseEnter={e => e.currentTarget.style.background = '#E53935'}
+            onMouseLeave={e => e.currentTarget.style.background = 'rgba(17,17,17,0.85)'}
+          >
+            <Trash2 size={14} color="white" />
           </button>
+
+          {/* Top-left: Type Badge */}
+          <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', gap: '0.5rem' }}>
+            <span style={{
+              background: isBike ? '#111' : '#E53935', color: 'white',
+              fontSize: '0.65rem', fontWeight: 950,
+              padding: '3px 12px', borderRadius: '30px',
+              letterSpacing: '0.04em', textTransform: 'uppercase'
+            }}>
+              {isBike ? 'BIKE' : 'PART'}
+            </span>
+            {discount > 0 && (
+              <span style={{ background: '#2E7D32', color: 'white', fontSize: '0.65rem', fontWeight: 950, padding: '3px 10px', borderRadius: '30px' }}>
+                {discount}% OFF
+              </span>
+            )}
+          </div>
         </div>
-      </div>
+
+        {/* Bottom Content Section */}
+        <div style={{ padding: '0.75rem', flex: 1, display: 'flex', flexDirection: 'column', background: '#FFFFFF', borderTop: '1px solid #EEE' }}>
+          {/* Metadata Row */}
+          <div style={{ marginBottom: '0.3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: '0.6rem' }}>
+              <span style={{ color: '#888', fontSize: '0.6rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '2px', fontFamily: 'Rajdhani, sans-serif' }}>
+                 {isBike ? <Calendar size={10} /> : <div style={{width: 4, height: 4, background: '#E53935', borderRadius: '50%'}} />} 
+                 {isBike ? item.year : brand?.toUpperCase()}
+              </span>
+            </div>
+            {!isBike && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                <Star size={9} fill="#FFB400" color="#FFB400" />
+                <span style={{ color: '#AAA', fontSize: '0.65rem', fontWeight: 600 }}>{item.ratings || '5.0'}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Title */}
+          <h3 style={{
+            color: '#111', fontWeight: 900, fontSize: '0.85rem',
+            lineHeight: 1.2, marginBottom: '0.3rem',
+            fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.02em',
+            textTransform: 'uppercase',
+            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
+          }}>
+            {title}
+          </h3>
+
+          {/* Price row + Action */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: '4px' }}>
+              <span style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.2rem', fontWeight: 950, color: '#E53935', lineHeight: 1 }}>
+                ₹{price?.toLocaleString('en-IN')}
+              </span>
+              {discount > 0 && (
+                <span style={{ color: '#AAA', fontSize: '0.75rem', textDecoration: 'line-through', fontWeight: 600 }}>₹{originalPrice?.toLocaleString('en-IN')}</span>
+              )}
+            </div>
+            
+            <div style={{ display: 'flex', gap: '4px' }}>
+              {!isBike && effectiveStock > 0 && (
+                <button 
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); addToCart({ ...item, effectivePrice: price }); }}
+                  style={{ width: '28px', height: '28px', background: '#F5F5F5', border: 'none', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#111' }}
+                >
+                  <ShoppingCart size={13} />
+                </button>
+              )}
+              <div style={{
+                height: '28px', padding: '0 0.7rem',
+                background: '#111', borderRadius: '6px', color: 'white',
+                display: 'flex', alignItems: 'center', gap: '0.3rem',
+                fontSize: '0.65rem', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif',
+                letterSpacing: '0.04em', boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
+              }}>
+                VIEW <ArrowRight size={12} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </Link>
     </div>
   );
 }
@@ -202,6 +260,17 @@ export default function Wishlist() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#FFFFFF' }}>
+      <style>{`
+        @media (max-width: 640px) {
+          .wishlist-grid { 
+            grid-template-columns: repeat(2, 1fr) !important; 
+            gap: 0.8rem !important;
+          }
+          .wishlist-grid > div h3 { font-size: 0.95rem !important; }
+          .wishlist-grid > div p { font-size: 0.75rem !important; }
+          .wishlist-grid > div .font-size-price { font-size: 1.1rem !important; }
+        }
+      `}</style>
       <div style={{ height: '4px', background: 'linear-gradient(90deg, #E53935, #FF7043, transparent)' }} />
  
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style={{ paddingTop: '3rem', paddingBottom: '4rem' }}>
@@ -230,7 +299,7 @@ export default function Wishlist() {
           </div>
         )}
  
-        <div className="animate-fadeInUp" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.2rem' }}>
+        <div className="animate-fadeInUp wishlist-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
           {wishlist.map((id) => (
             <WishlistItemLoader key={id} partId={id} pincode={pincode} toggleWishlist={toggleWishlist} addToCart={addToCart} />
           ))}
