@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useNavigate, Link } from 'react-router-dom';
-import { Heart, ShoppingCart, Trash2, ArrowLeft, Star, ArrowRight } from 'lucide-react';
+import { Heart, ShoppingCart, Trash2, ArrowLeft, Star, ArrowRight, Calendar } from 'lucide-react';
 import { getPart } from '../api/storeApi';
 import { getBike } from '../api/bikeApi';
 import toast from 'react-hot-toast';
