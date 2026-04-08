@@ -155,7 +155,18 @@ export default function Profile() {
           .profile-header { flex-direction: column; text-align: center; padding: 1.2rem !important; gap: 0.8rem !important; }
           .profile-header > div:first-child { width: 70px !important; height: 70px !important; }
           .profile-header h1 { font-size: 1.5rem !important; }
-          .profile-tabs button { font-size: 0.8rem !important; padding: 0.6rem 0.8rem !important; }
+          .profile-tabs-btn { font-size: 0.75rem !important; padding: 0.6rem 0.8rem !important; gap: 0.4rem !important; }
+          .profile-content { padding: 1.2rem !important; }
+          .profile-content h3 { font-size: 1.2rem !important; margin-bottom: 1.2rem !important; }
+          .profile-form-grid { gap: 1rem !important; }
+          .profile-form-grid input { height: 44px !important; font-size: 0.85rem !important; }
+          .profile-form-grid label { font-size: 0.75rem !important; }
+          .profile-save-btn { width: 100% !important; padding: 0.8rem !important; font-size: 0.9rem !important; }
+          .address-card { padding: 1.2rem !important; }
+          .address-card h4 { font-size: 0.95rem !important; }
+          .map-locate-btn { padding: 0.5rem 0.8rem !important; font-size: 0.75rem !important; bottom: 1rem !important; }
+          .map-modal-content { padding: 1rem !important; }
+          .map-modal-header { padding: 1rem 1.2rem !important; }
         }
       `}</style>
       <div className="max-w-4xl mx-auto px-4">
@@ -186,22 +197,24 @@ export default function Profile() {
             { id: 'addresses', label: 'Saved Addresses', icon: MapPin },
             { id: 'add_address', label: editingAddressId ? 'Edit Address' : 'Add New Address', icon: Plus },
           ].map(({ id, label, icon: Icon }) => (
-            <button key={id} onClick={() => {
-              setActiveTab(id);
-              if (id === 'add_address' && editingAddressId) {
-                setEditingAddressId(null);
-                resetAddr({}); 
-                setMapLocation(defaultCenter);
-                setLocationSet(false);
-                setHumanAddress('');
-              } else if (id !== 'add_address') {
-                setEditingAddressId(null);
-                resetAddr();
-                setMapLocation(defaultCenter);
-                setLocationSet(false);
-                setHumanAddress('');
-              }
-            }}
+            <button key={id} 
+              className="profile-tabs-btn"
+              onClick={() => {
+                setActiveTab(id);
+                if (id === 'add_address' && editingAddressId) {
+                  setEditingAddressId(null);
+                  resetAddr({}); 
+                  setMapLocation(defaultCenter);
+                  setLocationSet(false);
+                  setHumanAddress('');
+                } else if (id !== 'add_address') {
+                  setEditingAddressId(null);
+                  resetAddr();
+                  setMapLocation(defaultCenter);
+                  setLocationSet(false);
+                  setHumanAddress('');
+                }
+              }}
               style={{
                 display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.8rem 1.4rem', borderRadius: '12px', border: '1.5px solid',
                 borderColor: activeTab === id ? '#E53935' : '#EEE',
@@ -217,14 +230,14 @@ export default function Profile() {
         </div>
  
         {/* Content Area */}
-        <div style={{ background: '#FFF', border: '1px solid #EEE', borderRadius: '24px', padding: '2.5rem', boxShadow: '0 15px 50px rgba(0,0,0,0.03)' }}>
+        <div className="profile-content" style={{ background: '#FFF', border: '1px solid #EEE', borderRadius: '24px', padding: '2.5rem', boxShadow: '0 15px 50px rgba(0,0,0,0.03)' }}>
           
           {/* PERSONAL DETAILS TAB */}
           {activeTab === 'details' && (
             <form onSubmit={handleProfileSubmit(onProfileUpdate)} className="animate-fadeInUp">
               <h3 style={{ color: '#111', fontSize: '1.4rem', fontWeight: 900, marginBottom: '2rem', fontFamily: 'Rajdhani, sans-serif' }}>UPDATE PROFILE</h3>
               
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+              <div className="profile-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
                 <div>
                   <label style={{ color: '#333', fontSize: '0.85rem', fontWeight: 700, display: 'block', marginBottom: '0.6rem' }}>Full Name</label>
                   <div style={{ position: 'relative' }}>
@@ -255,7 +268,7 @@ export default function Profile() {
                 </div>
               </div>
  
-              <button type="submit" className="btn-primary" style={{ marginTop: '2.5rem', padding: '0.8rem 2.5rem', fontWeight: 700, borderRadius: '10px' }} disabled={loading}>
+              <button type="submit" className="btn-primary profile-save-btn" style={{ marginTop: '2.5rem', padding: '0.8rem 2.5rem', fontWeight: 700, borderRadius: '10px' }} disabled={loading}>
                 {loading ? <Loader size={20} style={{ animation: 'spin 1s linear infinite' }} /> : <><Save size={20} /> SAVE PROFILE</>}
               </button>
             </form>
@@ -276,7 +289,7 @@ export default function Profile() {
               ) : (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
                   {user.addresses.map((addr, i) => (
-                    <div key={i} style={{ background: '#FFF', padding: '1.80rem', borderRadius: '20px', border: '1px solid #EEE', position: 'relative', transition: 'all 0.3s', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}
+                    <div key={i} className="address-card" style={{ background: '#FFF', padding: '1.80rem', borderRadius: '20px', border: '1px solid #EEE', position: 'relative', transition: 'all 0.3s', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}
                       onMouseEnter={e => e.currentTarget.style.borderColor = '#111'}
                       onMouseLeave={e => e.currentTarget.style.borderColor = '#EEE'}>
                       <div style={{ position: 'absolute', top: 18, right: 18, display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
@@ -310,7 +323,7 @@ export default function Profile() {
             <form onSubmit={handleAddrSubmit(onAddAddress)} className="animate-fadeInUp">
               <h3 style={{ color: '#111', fontSize: '1.4rem', fontWeight: 900, marginBottom: '2rem', fontFamily: 'Rajdhani, sans-serif' }}>{editingAddressId ? 'EDIT ADDRESS' : 'ADD NEW ADDRESS'}</h3>
               
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+              <div className="profile-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
                 <div>
                   <label style={{ color: '#333', fontSize: '0.85rem', fontWeight: 700, display: 'block', marginBottom: '0.6rem' }}>Label (e.g. Home, Work)</label>
                   <input className="input-light" placeholder="Home" {...regAddr('label')} style={{ height: '52px' }} />
@@ -373,8 +386,8 @@ export default function Profile() {
                 </div>
               </div>
  
-              <div style={{ marginTop: '3rem', display: 'flex', gap: '1.2rem' }}>
-                <button type="button" className="btn-outline-dark" style={{ fontWeight: 700, padding: '0.8rem 2.5rem' }} onClick={() => {
+              <div style={{ marginTop: '3rem', display: 'flex', gap: '1.2rem', flexWrap: 'wrap' }}>
+                <button type="button" className="btn-outline-dark profile-save-btn" style={{ fontWeight: 700, padding: '0.8rem 2.5rem', flex: 1 }} onClick={() => {
                   setActiveTab('addresses');
                   setEditingAddressId(null);
                   resetAddr();
@@ -382,8 +395,8 @@ export default function Profile() {
                   setLocationSet(false);
                   setHumanAddress('');
                 }}>CANCEL</button>
-                <button type="submit" className="btn-primary" style={{ fontWeight: 700, padding: '0.8rem 2.5rem', borderRadius: '12px' }} disabled={addrLoading}>
-                  {addrLoading ? <Loader size={20} style={{ animation: 'spin 1s linear infinite' }} /> : <><Save size={20} /> {editingAddressId ? 'UPDATE ADDRESS' : 'SAVE ADDRESS'}</>}
+                <button type="submit" className="btn-primary profile-save-btn" style={{ fontWeight: 700, padding: '0.8rem 2.5rem', borderRadius: '12px', flex: 1 }} disabled={addrLoading}>
+                  {addrLoading ? <Loader size={20} style={{ animation: 'spin 1s linear infinite' }} /> : <><Save size={20} /> {editingAddressId ? 'UPDATE' : 'SAVE'}</>}
                 </button>
               </div>
             </form>
@@ -398,7 +411,7 @@ export default function Profile() {
           <div style={{ background: '#FFF', width: '100%', maxWidth: '550px', borderRadius: '24px', border: '1px solid #EEE', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 25px 60px rgba(0,0,0,0.15)' }}>
             
             {/* Modal Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem 2rem', borderBottom: '1px solid #EEE' }}>
+            <div className="map-modal-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem 2rem', borderBottom: '1px solid #EEE' }}>
               <div>
                 <h3 style={{ color: '#111', fontWeight: 900, margin: 0, fontSize: '1.2rem', fontFamily: 'Rajdhani, sans-serif' }}>PINPOINT LOCATION</h3>
                 <p style={{ color: '#666', margin: 0, fontSize: '0.85rem', fontWeight: 500 }}>Select the exact service location</p>
@@ -425,6 +438,7 @@ export default function Profile() {
                 {/* Locate Me Button Overlay */}
                 <button 
                   type="button"
+                  className="map-locate-btn"
                   onClick={() => {
                     if (navigator.geolocation) {
                       navigator.geolocation.getCurrentPosition(
@@ -444,7 +458,7 @@ export default function Profile() {
               </div>
  
               {/* Final Address Details Label */}
-              <div style={{ background: '#F9F9F9', borderRadius: '16px', padding: '1.2rem', border: '1px solid #EEE', marginTop: '1.5rem' }}>
+              <div className="map-modal-content" style={{ background: '#F9F9F9', borderRadius: '16px', padding: '1.2rem', border: '1px solid #EEE', marginTop: '1.5rem' }}>
                 <p style={{ color: '#E53935', fontSize: '0.75rem', fontWeight: 900, margin: 0, marginBottom: '0.5rem', letterSpacing: '0.04em' }}>SELECTED ADDRESS:</p>
                 
                 {isGeocoding ? (
