@@ -61,7 +61,7 @@ export default function Home() {
     <div style={{ minHeight: '100vh', background: '#FFFFFF' }}>
       <style>{`
         @media (max-width: 768px) {
-          .hero-split { background: #050505 !important; }
+          .hero-split { background: #000 !important; }
           .hero-split > div:first-child > div { padding: 1rem !important; padding-top: 0.5rem !important; background: transparent !important; }
           .hero-split > div:first-child > div h1 { font-size: 1.5rem !important; }
           .hero-split > div:first-child > div p { font-size: 0.75rem !important; }
