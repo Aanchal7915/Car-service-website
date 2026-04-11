@@ -252,17 +252,19 @@ export default function Navbar() {
                 )}
               </div>
             ) : (
-              <div className="flex items-center gap-1.5">
-                <Link to="/login" className="btn-outline-dark hidden sm:inline-flex" style={{ padding: '0.4rem 0.9rem', fontSize: '0.78rem' }}>Login</Link>
-                <Link to="/register" className="btn-primary" style={{ padding: '0.4rem 0.9rem', fontSize: '0.78rem' }}>Sign Up</Link>
+              <div className="flex items-center gap-1.5 whitespace-nowrap">
+                <Link to="/login" className="btn-outline-dark" style={{ padding: '0.4rem 0.8rem', fontSize: '0.7rem', fontWeight: 700 }}>Login</Link>
+                <Link to="/register" className="btn-primary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.7rem', fontWeight: 700 }}>Sign Up</Link>
               </div>
             )}
 
 
             {/* Mobile hamburger */}
-            <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden" style={{ color: '#0F172A', background: 'none', border: 'none', cursor: 'pointer' }}>
-              {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-            </button>
+            {user && (
+              <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden" style={{ color: '#0F172A', background: 'none', border: 'none', cursor: 'pointer' }}>
+                {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+              </button>
+            )}
           </div>
         </div>
 
