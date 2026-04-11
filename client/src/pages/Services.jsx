@@ -50,10 +50,10 @@ export default function Services() {
       await new Promise((resolve, reject) => {
         const rzp = new window.Razorpay({
           key: rzpKey, amount: rzpOrder.amount, currency: rzpOrder.currency || 'INR',
-          name: 'MotoXpress', description: `Service: ${selectedService.label}`,
+          name: 'AutoXpress', description: `Service: ${selectedService.label}`,
           order_id: rzpOrder.id,
           prefill: { name: user.name, email: user.email, contact: user.phone || '' },
-          theme: { color: '#E53935' },
+          theme: { color: '#2563EB' },
           handler: async (response) => {
             try {
               await verifyServicePayment(bookingId, {
@@ -113,12 +113,12 @@ export default function Services() {
         }
       `}</style>
       {/* Header */}
-      <div style={{ background: '#F9F9F9', borderBottom: '1px solid #EEE', padding: '1rem 0' }}>
+      <div style={{ background: '#FFFFFF', borderBottom: '1px solid #F1F5F9', padding: '2.5rem 0' }}>
         <div className="max-w-4xl mx-auto px-4">
-          <h1 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.8rem', fontWeight: 800, color: '#111', margin: 0 }}>
-            Book <span style={{ color: '#E53935' }}>Service</span>
+          <h1 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.4rem', fontWeight: 950, color: '#0F172A', margin: 0 }}>
+            Premium Car <span style={{ color: '#2563EB' }}>Services</span>
           </h1>
-          <p style={{ color: '#666', marginTop: '0.3rem', fontWeight: 500 }}>Professional bike service at your doorstep</p>
+          <p style={{ color: '#64748B', marginTop: '0.4rem', fontWeight: 600 }}>Elite maintenance for your luxury vehicle at your doorstep</p>
  
           {/* Steps */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0', marginTop: '0.8rem' }}>
@@ -127,13 +127,14 @@ export default function Services() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                   <div style={{
                     width: 32, height: 32, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    background: step > i + 1 ? '#2E7D32' : step === i + 1 ? '#E53935' : '#EEE',
-                    color: i + 1 <= step ? 'white' : '#999', fontSize: '0.9rem', fontWeight: 800,
-                    boxShadow: step === i + 1 ? '0 4px 10px rgba(229,57,53,0.2)' : 'none'
+                    background: step > i + 1 ? '#10B981' : step === i + 1 ? '#0F172A' : '#FFF',
+                    color: i + 1 <= step ? 'white' : '#64748B', fontSize: '0.9rem', fontWeight: 800,
+                    boxShadow: step === i + 1 ? '0 6px 15px rgba(15, 23, 42, 0.15)' : 'none',
+                    border: step === i + 1 ? 'none' : '1px solid rgba(156, 163, 175, 0.2)'
                   }}>
                     {step > i + 1 ? '✓' : i + 1}
                   </div>
-                  <span className="svc-step-label" style={{ color: step === i + 1 ? '#111' : '#888', fontSize: '0.9rem', fontWeight: step === i + 1 ? 700 : 500 }}>{s}</span>
+                  <span className="svc-step-label" style={{ color: step === i + 1 ? '#0F172A' : '#64748B', fontSize: '0.9rem', fontWeight: step === i + 1 ? 800 : 600 }}>{s}</span>
                 </div>
                 {i < 2 && <div style={{ width: 40, height: 2, background: '#EEE', margin: '0 0.8rem' }} />}
               </div>
@@ -146,8 +147,8 @@ export default function Services() {
         {/* Step 1: Service Selection */}
         {step === 1 && (
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '1.2rem', padding: '0.6rem 1rem', background: 'rgba(251,140,0,0.05)', border: '1px solid rgba(251,140,0,0.15)', borderRadius: '8px' }}>
-              <span style={{ color: '#FB8C00', fontSize: '0.8rem', fontWeight: 700 }}>1-Hour Service Available — Mechanic at your doorstep!</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.5rem', padding: '0.8rem 1.2rem', background: 'rgba(37, 99, 235, 0.1)', border: '1px solid rgba(37, 99, 235, 0.2)', borderRadius: '12px' }}>
+              <span style={{ color: '#2563EB', fontSize: '0.85rem', fontWeight: 850, fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.04em' }}>EXCLUSIVE DOORSTEP SERVICE — ELITE MECHANICS AT YOUR SERVICE!</span>
             </div>
  
             {typesLoading ? (
@@ -158,14 +159,14 @@ export default function Services() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '0.8rem' }}>
               {serviceTypes.map((service) => (
                 <button key={service.value} onClick={() => handleServiceSelect(service)}
-                  style={{ textAlign: 'left', background: '#FFF', border: '1px solid #EEE', borderRadius: '12px', padding: '1rem', cursor: 'pointer', transition: 'all 0.3s', width: '100%', boxShadow: '0 4px 10px rgba(0,0,0,0.02)' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#111'; e.currentTarget.style.transform = 'translateY(-3px)'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#EEE'; e.currentTarget.style.transform = 'translateY(0)'; }}>
-                  <h3 style={{ color: '#111', fontWeight: 800, fontSize: '1rem', marginBottom: '0.2rem', fontFamily: 'Rajdhani, sans-serif' }}>{service.label.toUpperCase()}</h3>
-                  <p style={{ color: '#666', fontSize: '0.75rem', marginBottom: '0.8rem', lineHeight: 1.4 }}>{service.desc}</p>
+                  style={{ textAlign: 'left', background: '#FFF', border: '1px solid rgba(156, 163, 175, 0.15)', borderRadius: '20px', padding: '1.5rem', cursor: 'pointer', transition: 'all 0.4s', width: '100%', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#2563EB'; e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 12px 30px rgba(0,0,0,0.06)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(156, 163, 175, 0.15)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.02)'; }}>
+                  <h3 style={{ color: '#0F172A', fontWeight: 900, fontSize: '1rem', marginBottom: '0.2rem', fontFamily: 'Rajdhani, sans-serif' }}>{service.label.toUpperCase()}</h3>
+                  <p style={{ color: '#64748B', fontSize: '0.75rem', marginBottom: '0.8rem', lineHeight: 1.4, fontWeight: 600 }}>{service.desc}</p>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ color: '#E53935', fontWeight: 800, fontFamily: 'Rajdhani, sans-serif', fontSize: '1rem' }}>{service.price}</span>
-                    <ChevronRight size={16} style={{ color: '#E53935' }} />
+                    <span style={{ color: '#2563EB', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.1rem' }}>{service.price}</span>
+                    <ChevronRight size={18} style={{ color: '#2563EB' }} />
                   </div>
                 </button>
               ))}
@@ -177,33 +178,33 @@ export default function Services() {
         {/* Step 2: Booking Form */}
         {step === 2 && selectedService && (
           <div className="animate-fadeInUp">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', background: '#F9F9F9', borderRadius: '12px', marginBottom: '1.2rem', border: '1px solid #EEE' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', padding: '1.5rem', background: '#FFF', borderRadius: '16px', marginBottom: '1.5rem', border: '1px solid rgba(156, 163, 175, 0.15)', boxShadow: '0 8px 30px rgba(0,0,0,0.03)' }}>
               <div style={{ flex: 1 }}>
-                <h3 style={{ color: '#111', fontWeight: 800, fontSize: '1.1rem', fontFamily: 'Rajdhani, sans-serif' }}>{selectedService.label}</h3>
-                <span style={{ color: '#E53935', fontWeight: 700, fontFamily: 'Rajdhani, sans-serif', fontSize: '1rem' }}>{selectedService.price}</span>
+                <h3 style={{ color: '#0F172A', fontWeight: 950, fontSize: '1.25rem', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.05em' }}>{selectedService.label}</h3>
+                <span style={{ color: '#2563EB', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.15rem' }}>{selectedService.price}</span>
               </div>
-              <button onClick={() => setStep(1)} style={{ background: '#FFF', border: '1.5px solid #EEE', borderRadius: '8px', color: '#666', padding: '0.4rem 1rem', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 700 }}>
-                Change
+              <button onClick={() => setStep(1)} style={{ background: '#0F172A', border: 'none', borderRadius: '8px', color: 'white', padding: '0.6rem 1.2rem', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif' }}>
+                CHANGE
               </button>
             </div>
  
-            <form onSubmit={handleSubmit(onSubmit)} style={{ background: '#FFF', border: '1px solid #EEE', borderRadius: '16px', padding: '1.2rem', boxShadow: '0 10px 40px rgba(0,0,0,0.03)' }}>
-              <div className="svc-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
+            <form onSubmit={handleSubmit(onSubmit)} style={{ background: '#FFF', border: '1px solid rgba(156, 163, 175, 0.15)', borderRadius: '20px', padding: '1.5rem', boxShadow: '0 15px 50px rgba(0,0,0,0.05)' }}>
+              <div className="svc-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
-                  <label style={{ color: '#333', fontSize: '0.75rem', fontWeight: 700, display: 'block', marginBottom: '0.3rem' }}>Bike Brand *</label>
-                  <input className="input-light" placeholder="Brand" {...register('bikeBrand', { required: 'Required' })} style={{ height: '42px', fontSize: '0.85rem' }} />
+                  <label style={{ color: '#475569', fontSize: '0.75rem', fontWeight: 900, display: 'block', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Car Brand *</label>
+                  <input className="input-light" placeholder="e.g. Mercedes, BMW" {...register('bikeBrand', { required: 'Required' })} style={{ height: '48px', fontSize: '0.9rem', borderRadius: '10px', background: '#F8FAFC', border: '1px solid #E2E8F0', fontWeight: 600 }} />
                 </div>
                 <div>
-                  <label style={{ color: '#333', fontSize: '0.75rem', fontWeight: 700, display: 'block', marginBottom: '0.3rem' }}>Bike Model *</label>
-                  <input className="input-light" placeholder="Model" {...register('bikeModel', { required: 'Required' })} style={{ height: '42px', fontSize: '0.85rem' }} />
+                  <label style={{ color: '#475569', fontSize: '0.75rem', fontWeight: 900, display: 'block', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Car Model *</label>
+                  <input className="input-light" placeholder="e.g. S-Class, M5" {...register('bikeModel', { required: 'Required' })} style={{ height: '48px', fontSize: '0.9rem', borderRadius: '10px', background: '#F8FAFC', border: '1px solid #E2E8F0', fontWeight: 600 }} />
                 </div>
                 <div>
-                  <label style={{ color: '#333', fontSize: '0.75rem', fontWeight: 700, display: 'block', marginBottom: '0.3rem' }}>Date *</label>
-                  <input type="date" className="input-light" {...register('scheduledDate', { required: 'Required' })} min={new Date().toISOString().split('T')[0]} style={{ height: '42px', fontSize: '0.85rem' }} />
+                  <label style={{ color: '#475569', fontSize: '0.75rem', fontWeight: 900, display: 'block', marginBottom: '0.3rem', textTransform: 'uppercase' }}>Date *</label>
+                  <input type="date" className="input-light" {...register('scheduledDate', { required: 'Required' })} min={new Date().toISOString().split('T')[0]} style={{ height: '48px', fontSize: '0.9rem', background: '#F8FAFC', border: '1px solid #E2E8F0', fontWeight: 600 }} />
                 </div>
                 <div>
-                  <label style={{ color: '#333', fontSize: '0.75rem', fontWeight: 700, display: 'block', marginBottom: '0.3rem' }}>Time *</label>
-                  <select className="input-light" {...register('scheduledTime', { required: 'Required' })} style={{ height: '42px', fontSize: '0.85rem', background: '#FFF' }}>
+                  <label style={{ color: '#475569', fontSize: '0.75rem', fontWeight: 900, display: 'block', marginBottom: '0.3rem', textTransform: 'uppercase' }}>Time *</label>
+                  <select className="input-light" {...register('scheduledTime', { required: 'Required' })} style={{ height: '48px', fontSize: '0.9rem', background: '#F8FAFC', border: '1px solid #E2E8F0', fontWeight: 700 }}>
                     <option value="">Time slot</option>
                     {['08:00 AM', '09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '02:00 PM', '03:00 PM', '04:00 PM', '05:00 PM', '06:00 PM'].map(t => (
                       <option key={t} value={t}>{t}</option>
@@ -213,29 +214,28 @@ export default function Services() {
               </div>
  
               <div style={{ marginTop: '0.8rem' }}>
-                <label style={{ color: '#333', fontSize: '0.75rem', fontWeight: 700, display: 'block', marginBottom: '0.3rem' }}>Description</label>
-                <textarea className="input-light" rows={2} placeholder="Description..."
-                  style={{ resize: 'vertical', padding: '0.6rem', fontSize: '0.85rem' }} {...register('problemDescription')} />
+                <label style={{ color: '#475569', fontSize: '0.75rem', fontWeight: 900, display: 'block', marginBottom: '0.4rem', textTransform: 'uppercase' }}>Description</label>
+                <textarea className="input-light" rows={2} placeholder="Brief details about the service required..."
+                  style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', resize: 'vertical', padding: '0.8rem', fontSize: '0.9rem', fontWeight: 600 }} {...register('problemDescription')} />
               </div>
- 
-              <div style={{ marginTop: '1rem', padding: '1rem', background: '#F9F9F9', borderRadius: '10px', border: '1px solid #EEE' }}>
-                <div style={{ color: '#111', fontWeight: 800, fontFamily: 'Rajdhani, sans-serif', fontSize: '0.9rem', marginBottom: '0.6rem' }}>PICKUP & DROP ADDRESS</div>
+              <div style={{ marginTop: '1rem', padding: '1rem', background: '#0F172A', borderRadius: '16px', border: 'none' }}>
+                <div style={{ color: '#FFF', fontWeight: 950, fontFamily: 'Rajdhani, sans-serif', fontSize: '0.9rem', marginBottom: '0.6rem', letterSpacing: '0.05em' }}>PICKUP & DROP ADDRESS</div>
                 <div className="svc-addr-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
-                  <input className="input-light" placeholder="Street" {...register('address.street')} style={{ height: '38px', fontSize: '0.8rem' }} />
-                  <input className="input-light" placeholder="City" {...register('address.city')} style={{ height: '38px', fontSize: '0.8rem' }} />
-                  <input className="input-light" placeholder="State" {...register('address.state')} style={{ height: '38px', fontSize: '0.8rem' }} />
-                  <input className="input-light" placeholder="Pin" {...register('address.pincode')} style={{ height: '38px', fontSize: '0.8rem' }} />
+                  <input className="input-light" placeholder="Street" {...register('address.street')} style={{ height: '40px', fontSize: '0.8rem', fontWeight: 700 }} />
+                  <input className="input-light" placeholder="City" {...register('address.city')} style={{ height: '40px', fontSize: '0.8rem', fontWeight: 700 }} />
+                  <input className="input-light" placeholder="State" {...register('address.state')} style={{ height: '40px', fontSize: '0.8rem', fontWeight: 700 }} />
+                  <input className="input-light" placeholder="Pin" {...register('address.pincode')} style={{ height: '40px', fontSize: '0.8rem', fontWeight: 700 }} />
                 </div>
               </div>
  
-              <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', flexWrap: 'wrap' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
-                  <input type="checkbox" value="true" {...register('isPickupDrop')} style={{ accentColor: '#E53935', width: 16, height: 16 }} />
-                  <span style={{ color: '#444', fontSize: '0.85rem', fontWeight: 600 }}>Pickup & Drop</span>
+              <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1.2rem', flexWrap: 'wrap' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer' }}>
+                  <input type="checkbox" value="true" {...register('isPickupDrop')} style={{ accentColor: '#2563EB', width: 22, height: 22 }} />
+                  <span style={{ color: '#0F172A', fontSize: '0.9rem', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif' }}>EXCLUSIVE PICKUP & DROP</span>
                 </label>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
-                  <input type="checkbox" value="true" {...register('isOneHourRepair')} style={{ accentColor: '#E53935', width: 16, height: 16 }} />
-                  <span style={{ color: '#444', fontSize: '0.85rem', fontWeight: 600 }}>1-Hour Repair</span>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer' }}>
+                  <input type="checkbox" value="true" {...register('isOneHourRepair')} style={{ accentColor: '#2563EB', width: 22, height: 22 }} />
+                  <span style={{ color: '#0F172A', fontSize: '0.9rem', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif' }}>PRIORITY EXPRESS SERVICE</span>
                 </label>
               </div>
  
@@ -253,37 +253,46 @@ export default function Services() {
  
         {/* Step 3: Confirmation */}
         {step === 3 && (
-          <div className="animate-fadeInUp" style={{ textAlign: 'center', padding: '1.5rem 1.2rem', background: '#FFF', borderRadius: '24px', border: '1px solid #EEE', boxShadow: '0 15px 50px rgba(0,0,0,0.04)' }}>
-            <div style={{ fontSize: '4.5rem', marginBottom: '0.8rem' }}>✓</div>
-            <h2 style={{ color: '#111', fontFamily: 'Rajdhani, sans-serif', fontSize: '2rem', fontWeight: 900, marginBottom: '0.4rem' }}>
-              BOOKING <span style={{ color: '#E53935' }}>SUCCESSFUL!</span>
+          <div className="animate-fadeInUp" style={{ 
+            textAlign: 'center', padding: '2.5rem 1.5rem', background: '#FFF', 
+            borderRadius: '24px', border: '1px solid rgba(156, 163, 175, 0.12)', 
+            boxShadow: '0 15px 45px rgba(0,0,0,0.04)', maxWidth: '600px', margin: '0 auto' 
+          }}>
+            <div style={{ fontSize: '4rem', marginBottom: '0.5rem', color: '#10B981', filter: 'drop-shadow(0 4px 10px rgba(16,185,129,0.2))' }}>✓</div>
+            <h2 style={{ color: '#0F172A', fontFamily: 'Rajdhani, sans-serif', fontSize: '2.2rem', fontWeight: 950, marginBottom: '0.6rem', letterSpacing: '-0.01em' }}>
+              SERVICE <span style={{ color: '#2563EB' }}>CONFIRMED</span>
             </h2>
-            <p style={{ color: '#666', marginBottom: '1.2rem', fontSize: '0.95rem', fontWeight: 500 }}>Our specialist mechanic will arrive at your location as per schedule.</p>
- 
-            {/* Advance Payment Option */}
+            <p style={{ color: '#64748B', marginBottom: '1.5rem', fontSize: '0.9rem', fontWeight: 700, lineHeight: 1.5 }}>Our specialist mechanic will arrive at your location as per schedule.</p>
+            
+            {/* Advance Payment Option - More compact & Blue themed */}
             {bookingId && !paid && (
-              <div style={{ margin: '0 auto 1.2rem', maxWidth: 420, background: '#F9F9F9', border: '1px solid #EEE', borderRadius: '16px', padding: '1.2rem' }}>
-                <h4 style={{ color: '#111', fontWeight: 800, marginBottom: '0.3rem', fontFamily: 'Rajdhani, sans-serif', fontSize: '1rem' }}>PRIORITIZE YOUR BOOKING</h4>
-                <p style={{ color: '#888', fontSize: '0.8rem', marginBottom: '1rem', fontWeight: 500 }}>
-                  Pay ₹200 advance to get your bike serviced on top priority.
+              <div style={{ margin: '0 auto 1.8rem', maxWidth: 440, background: 'rgba(37,99,235,0.03)', border: '1.5px dashed rgba(37,99,235,0.15)', borderRadius: '20px', padding: '1.2rem' }}>
+                <h4 style={{ color: '#2563EB', fontWeight: 950, marginBottom: '0.3rem', fontFamily: 'Rajdhani, sans-serif', fontSize: '1.05rem', letterSpacing: '0.05em', textTransform: 'uppercase' }}>PRIORITIZE YOUR BOOKING</h4>
+                <p style={{ color: '#64748B', fontSize: '0.8rem', marginBottom: '1.2rem', fontWeight: 700 }}>
+                  Pay ₹200 advance to get your car serviced on top priority.
                 </p>
                 <button onClick={handleAdvancePayment} disabled={paying}
-                  style={{ width: '100%', padding: '0.8rem', background: paying ? '#EEE' : 'linear-gradient(135deg, #E53935, #C62828)', color: paying ? '#AAA' : 'white', border: 'none', borderRadius: '10px', fontWeight: 800, cursor: paying ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.06em', fontSize: '0.9rem', boxShadow: paying ? 'none' : '0 8px 20px rgba(229,57,53,0.2)' }}>
-                  <CreditCard size={18} /> {paying ? 'PROCESSING...' : 'PAY ADVANCE NOW →'}
+                  style={{ width: '100%', padding: '0.85rem', background: paying ? '#E2E8F0' : '#2563EB', color: 'white', border: 'none', borderRadius: '12px', fontWeight: 950, cursor: paying ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.08em', fontSize: '0.95rem', boxShadow: paying ? 'none' : '0 8px 25px rgba(37, 99, 235, 0.25)', transition: 'all 0.3s' }}>
+                  <CreditCard size={18} /> {paying ? 'PROCESSING...' : 'PAY ₹200 & PRIORITIZE →'}
                 </button>
               </div>
             )}
             {paid && (
-              <div style={{ margin: '0 auto 1.2rem', maxWidth: 420, background: 'rgba(46,125,50,0.05)', border: '1px solid rgba(46,125,50,0.15)', borderRadius: '16px', padding: '1rem' }}>
-                <p style={{ color: '#2E7D32', fontSize: '0.9rem', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
-                  <span style={{ fontSize: '1.2rem' }}>🏆</span> PRIORITY ADVANCE RECEIVED
+              <div style={{ margin: '0 auto 1.8rem', maxWidth: 440, background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.15)', borderRadius: '16px', padding: '0.8rem' }}>
+                <p style={{ color: '#10B981', fontSize: '0.85rem', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
+                   PRIORITY ADVANCE RECEIVED ✓
                 </p>
               </div>
             )}
  
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '1.2rem', flexWrap: 'wrap' }}>
-              <button onClick={() => navigate('/my-bookings')} className="btn-primary" style={{ padding: '0.8rem 2.5rem', fontWeight: 700, background: '#111', border: 'none' }}>Track Booking Status</button>
-              <button onClick={() => { setStep(1); setSelectedService(null); setBookingId(null); setPaid(false); }} className="btn-outline-dark" style={{ padding: '0.8rem 2.5rem', fontWeight: 700 }}>Book Another Bike</button>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+              <button onClick={() => navigate('/my-bookings')} className="btn-primary" style={{ padding: '0.8rem 2.2rem', fontWeight: 950, background: '#0F172A', border: 'none', borderRadius: '12px', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.04em', fontSize: '0.9rem' }}>TRACK STATUS</button>
+              <button onClick={() => { setStep(1); setSelectedService(null); setBookingId(null); setPaid(false); }} 
+                style={{ padding: '0.8rem 2.2rem', fontWeight: 950, borderRadius: '12px', border: '2px solid rgba(37,99,235,0.2)', background: 'transparent', color: '#2563EB', cursor: 'pointer', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.04em', fontSize: '0.9rem', transition: 'all 0.3s' }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(37,99,235,0.02)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                BOOK ANOTHER
+              </button>
             </div>
           </div>
         )}

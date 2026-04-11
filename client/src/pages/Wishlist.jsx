@@ -10,23 +10,24 @@ import toast from 'react-hot-toast';
 function WishlistItemLoader({ partId, pincode, toggleWishlist, addToCart }) {
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [hovered, setHovered] = useState(false);
  
   useEffect(() => {
     const fetchItem = async () => {
       setLoading(true);
       try {
-        // Try parts first
+        // Try spares first
         const pRes = await getPart(partId);
         if (pRes.data.part) {
-          setItem({ ...pRes.data.part, itemType: 'part' });
+          setItem({ ...pRes.data.part, itemType: 'spare' });
           return;
         }
       } catch (e) {
-        // Part fetch failed, try bikes
+        // Spare fetch failed, try cars
         try {
           const bRes = await getBike(partId);
           if (bRes.data.bike) {
-            setItem({ ...bRes.data.bike, itemType: 'bike' });
+            setItem({ ...bRes.data.bike, itemType: 'car' });
             return;
           }
         } catch (err) {
@@ -40,24 +41,24 @@ function WishlistItemLoader({ partId, pincode, toggleWishlist, addToCart }) {
   }, [partId]);
  
   if (loading) return (
-    <div style={{ background: '#FFF', border: '1px solid #EEE', borderRadius: '24px', height: 350, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
-      <div style={{ width: 40, height: 40, border: '3px solid #F5F5F5', borderTopColor: '#E53935', borderRadius: '50%', animation: 'spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite' }} />
+    <div style={{ background: '#FFF', border: '1px solid rgba(156, 163, 175, 0.15)', borderRadius: '24px', height: 350, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 10px 40px rgba(0,0,0,0.03)' }}>
+      <div style={{ width: 44, height: 44, border: '4px solid rgba(156, 163, 175, 0.1)', borderTopColor: '#2563EB', borderRadius: '50%', animation: 'spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite' }} />
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   );
  
   if (!item) return (
-    <div style={{ background: '#FFF', border: '1px solid #EEE', borderRadius: '24px', height: 220, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
-      <p style={{ color: '#888', fontSize: '0.9rem', fontWeight: 600 }}>This item is no longer available</p>
-      <button onClick={() => toggleWishlist(partId)} style={{ background: '#F9F9F9', border: '1.5px solid #EEE', borderRadius: '12px', color: '#666', cursor: 'pointer', fontSize: '0.8rem', padding: '0.6rem 1.2rem', fontWeight: 800 }}>
-        Remove from List
+    <div style={{ background: '#FFF', border: '1px solid rgba(156, 163, 175, 0.15)', borderRadius: '24px', height: 220, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
+      <p style={{ color: '#64748B', fontSize: '0.9rem', fontWeight: 700 }}>This item is no longer available</p>
+      <button onClick={() => toggleWishlist(partId)} style={{ background: '#2563EB', border: 'none', borderRadius: '12px', color: '#FFF', cursor: 'pointer', fontSize: '0.8rem', padding: '0.6rem 1.2rem', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif' }}>
+        REMOVE FROM LIST
       </button>
     </div>
   );
 
-  const isBike = item.itemType === 'bike';
-  const detailUrl = isBike ? `/bikes/${item._id}` : `/parts/${item._id}`;
-  const title = isBike ? (item.title || `${item.brand} ${item.model}`) : item.name;
+  const isCar = item.itemType === 'car';
+  const detailUrl = isCar ? `/bikes/${item._id}` : `/parts/${item._id}`;
+  const title = isCar ? (item.title || `${item.brand} ${item.model}`) : item.name;
   const brand = item.brand;
   const images = item.images || [];
 
@@ -65,9 +66,9 @@ function WishlistItemLoader({ partId, pincode, toggleWishlist, addToCart }) {
   let price = item.price;
   let originalPrice = item.price;
   let discount = 0;
-  let effectiveStock = isBike ? 1 : item.stock;
+  let effectiveStock = isCar ? 1 : item.stock;
 
-  if (!isBike) {
+  if (!isCar) {
     const hasPincodePricing = Array.isArray(item.pincodePricing) && item.pincodePricing.length > 0;
     const pincodeEntry = pincode.length === 6 && hasPincodePricing
       ? item.pincodePricing.find(p => p.pincode === pincode) : null;
@@ -86,23 +87,26 @@ function WishlistItemLoader({ partId, pincode, toggleWishlist, addToCart }) {
         background: '#FFF',
         display: 'flex',
         flexDirection: 'column',
-        boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
-        transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        boxShadow: hovered ? '0 30px 60px rgba(0,0,0,0.4)' : '0 8px 25px rgba(0,0,0,0.1)',
+        transition: 'all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)',
         height: '100%',
+        border: '1px solid rgba(156, 163, 175, 0.1)'
       }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
       <Link to={detailUrl} style={{ textDecoration: 'none', height: '100%', display: 'flex', flexDirection: 'column' }}>
         {/* Top Image Section */}
         <div style={{ position: 'relative', height: '180px', background: '#F5F5F5', overflow: 'hidden' }}>
+          {/* ... images ... */}
           <img
-            src={images[0] || 'https://via.placeholder.com/400x300/F5F5F5/E53935?text=No+Image'}
+            src={images[0] || 'https://via.placeholder.com/400x300/F8FAFC/2563EB?text=No+Image'}
             alt={title}
             style={{
               width: '100%', height: '100%', objectFit: 'contain', padding: '1rem',
               transition: 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+              transform: hovered ? 'scale(1.08)' : 'scale(1)'
             }}
-            onMouseEnter={e => e.target.style.transform = 'scale(1.08)'}
-            onMouseLeave={e => e.target.style.transform = 'scale(1)'}
           />
           
           {/* Top-right: Trash (Remove) */}
@@ -111,7 +115,7 @@ function WishlistItemLoader({ partId, pincode, toggleWishlist, addToCart }) {
             style={{
               position: 'absolute', top: 12, right: 12,
               width: 34, height: 34, borderRadius: '50%',
-              background: 'rgba(17,17,17,0.85)',
+              background: 'rgba(15, 23, 42, 0.85)',
               border: 'none',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               cursor: 'pointer', backdropFilter: 'blur(10px)',
@@ -119,8 +123,8 @@ function WishlistItemLoader({ partId, pincode, toggleWishlist, addToCart }) {
               boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
               zIndex: 10
             }}
-            onMouseEnter={e => e.currentTarget.style.background = '#E53935'}
-            onMouseLeave={e => e.currentTarget.style.background = 'rgba(17,17,17,0.85)'}
+            onMouseEnter={e => e.currentTarget.style.background = '#EF4444'}
+            onMouseLeave={e => e.currentTarget.style.background = 'rgba(15, 23, 42, 0.85)'}
           >
             <Trash2 size={14} color="white" />
           </button>
@@ -128,15 +132,15 @@ function WishlistItemLoader({ partId, pincode, toggleWishlist, addToCart }) {
           {/* Top-left: Type Badge */}
           <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', gap: '0.5rem' }}>
             <span style={{
-              background: isBike ? '#111' : '#E53935', color: 'white',
+              background: isCar ? '#0F172A' : '#2563EB', color: 'white',
               fontSize: '0.65rem', fontWeight: 950,
               padding: '3px 12px', borderRadius: '30px',
               letterSpacing: '0.04em', textTransform: 'uppercase'
             }}>
-              {isBike ? 'BIKE' : 'PART'}
+              {isCar ? 'CAR' : 'SPARE'}
             </span>
             {discount > 0 && (
-              <span style={{ background: '#2E7D32', color: 'white', fontSize: '0.65rem', fontWeight: 950, padding: '3px 10px', borderRadius: '30px' }}>
+              <span style={{ background: '#0F172A', color: 'white', fontSize: '0.65rem', fontWeight: 950, padding: '3px 10px', borderRadius: '30px' }}>
                 {discount}% OFF
               </span>
             )}
@@ -148,12 +152,12 @@ function WishlistItemLoader({ partId, pincode, toggleWishlist, addToCart }) {
           {/* Metadata Row */}
           <div style={{ marginBottom: '0.3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', gap: '0.6rem' }}>
-              <span style={{ color: '#888', fontSize: '0.6rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '2px', fontFamily: 'Rajdhani, sans-serif' }}>
-                 {isBike ? <Calendar size={10} /> : <div style={{width: 4, height: 4, background: '#E53935', borderRadius: '50%'}} />} 
-                 {isBike ? item.year : brand?.toUpperCase()}
+              <span style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '3px', fontFamily: 'Rajdhani, sans-serif' }}>
+                 {isCar ? <Calendar size={11} /> : <div style={{width: 5, height: 5, background: '#2563EB', borderRadius: '50%'}} />} 
+                 {isCar ? item.year : brand?.toUpperCase()}
               </span>
             </div>
-            {!isBike && (
+            {!isCar && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
                 <Star size={9} fill="#FFB400" color="#FFB400" />
                 <span style={{ color: '#AAA', fontSize: '0.65rem', fontWeight: 600 }}>{item.ratings || '5.0'}</span>
@@ -175,7 +179,7 @@ function WishlistItemLoader({ partId, pincode, toggleWishlist, addToCart }) {
           {/* Price row + Action */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
             <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: '4px' }}>
-              <span style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.2rem', fontWeight: 950, color: '#E53935', lineHeight: 1 }}>
+              <span style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.25rem', fontWeight: 950, color: '#2563EB', lineHeight: 1 }}>
                 ₹{price?.toLocaleString('en-IN')}
               </span>
               {discount > 0 && (
@@ -184,20 +188,12 @@ function WishlistItemLoader({ partId, pincode, toggleWishlist, addToCart }) {
             </div>
             
             <div style={{ display: 'flex', gap: '4px' }}>
-              {!isBike && effectiveStock > 0 && (
-                <button 
-                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); addToCart({ ...item, effectivePrice: price }); }}
-                  style={{ width: '28px', height: '28px', background: '#F5F5F5', border: 'none', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#111' }}
-                >
-                  <ShoppingCart size={13} />
-                </button>
-              )}
               <div style={{
                 height: '28px', padding: '0 0.7rem',
-                background: '#111', borderRadius: '6px', color: 'white',
+                background: '#2563EB', borderRadius: '8px', color: 'white',
                 display: 'flex', alignItems: 'center', gap: '0.3rem',
-                fontSize: '0.65rem', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif',
-                letterSpacing: '0.04em', boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
+                fontSize: '0.65rem', fontWeight: 950, fontFamily: 'Rajdhani, sans-serif',
+                letterSpacing: '0.04em', boxShadow: '0 4px 10px rgba(37, 99, 235, 0.2)'
               }}>
                 VIEW <ArrowRight size={12} />
               </div>
@@ -224,15 +220,15 @@ export default function Wishlist() {
   if (!user) {
     return (
       <div style={{ minHeight: '80vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#FFFFFF', gap: '2rem', padding: '2rem' }}>
-        <div style={{ background: '#F9F9F9', width: 140, height: 140, borderRadius: '40px', border: '2px solid #EEE', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 10px 30px rgba(0,0,0,0.03)', transform: 'rotate(-5deg)' }}>
-          <Heart size={60} style={{ color: '#DDD' }} />
+        <div style={{ background: '#FFF', width: 140, height: 140, borderRadius: '40px', border: '1px solid rgba(156, 163, 175, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 10px 40px rgba(0,0,0,0.03)', transform: 'rotate(-5deg)' }}>
+          <Heart size={60} style={{ color: '#0F172A', opacity: 0.15 }} />
         </div>
         <div style={{ textAlign: 'center', maxWidth: '400px' }}>
-          <h2 style={{ color: '#111', fontFamily: 'Rajdhani, sans-serif', fontSize: '2.5rem', fontWeight: 900, margin: 0, lineHeight: 1.1 }}>READY TO SAVE <span style={{ color: '#E53935' }}>YOUR FAVORITES?</span></h2>
-          <p style={{ color: '#666', marginTop: '1rem', fontSize: '1.1rem', fontWeight: 500, lineHeight: 1.5 }}>Login to your MotoXpress account to view and manage your personalized wishlist.</p>
+          <h2 style={{ color: '#0F172A', fontFamily: 'Rajdhani, sans-serif', fontSize: '2.5rem', fontWeight: 950, margin: 0, lineHeight: 1.1 }}>READY TO SAVE <span style={{ color: '#2563EB' }}>YOUR FAVORITES?</span></h2>
+          <p style={{ color: '#64748B', marginTop: '1rem', fontSize: '1.1rem', fontWeight: 700, lineHeight: 1.5 }}>Login to your AutoXpress account to view and manage your personalized wishlist.</p>
         </div>
-        <Link to="/login" style={{ background: '#111', color: 'white', padding: '1.2rem 3rem', borderRadius: '16px', fontWeight: 900, textDecoration: 'none', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.15em', fontSize: '1.1rem', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', transition: 'all 0.3s' }}>
-          ACCOUNT LOGIN
+        <Link to="/login" style={{ background: '#2563EB', color: 'white', padding: '1.2rem 3.5rem', borderRadius: '20px', fontWeight: 950, textDecoration: 'none', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.15em', fontSize: '1.1rem', boxShadow: '0 15px 40px rgba(37, 99, 235, 0.3)', transition: 'all 0.4s' }}>
+          MEMBER LOGIN
         </Link>
       </div>
     );
@@ -242,17 +238,17 @@ export default function Wishlist() {
     return (
       <div style={{ minHeight: '80vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#FFFFFF', gap: '2rem', padding: '2rem' }}>
         <div style={{ position: 'relative' }}>
-          <div style={{ background: '#F9F9F9', width: 140, height: 140, borderRadius: '40px', border: '2px solid #EEE', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 10px 30px rgba(0,0,0,0.03)' }}>
-            <Heart size={60} style={{ color: '#DDD' }} />
+          <div style={{ background: '#FFF', width: 140, height: 140, borderRadius: '40px', border: '1px solid rgba(156, 163, 175, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 10px 40px rgba(0,0,0,0.03)' }}>
+            <Heart size={60} style={{ color: '#0F172A', opacity: 0.15 }} />
           </div>
-          <div style={{ position: 'absolute', top: -10, right: -10, width: 44, height: 44, background: '#E53935', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', color: 'white', fontWeight: 900, boxShadow: '0 5px 15px rgba(229,57,53,0.3)', border: '4px solid white' }}>0</div>
+          <div style={{ position: 'absolute', top: -10, right: -10, width: 44, height: 44, background: '#0F172A', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', color: 'white', fontWeight: 950, boxShadow: '0 8px 25px rgba(0,0,0,0.1)', border: '4px solid #FFFFFF', fontFamily: 'Rajdhani, sans-serif' }}>0</div>
         </div>
         <div style={{ textAlign: 'center', maxWidth: '450px' }}>
-          <h2 style={{ color: '#111', fontFamily: 'Rajdhani, sans-serif', fontSize: '2.5rem', fontWeight: 900, margin: 0, letterSpacing: '0.05em', lineHeight: 1.1 }}>YOUR WISHLIST <span style={{ color: '#E53935' }}>IS EMPTY</span></h2>
-          <p style={{ color: '#666', marginTop: '1rem', fontSize: '1.1rem', fontWeight: 500 }}>Start exploring our massive inventory of genuine spare parts and save what you love!</p>
+          <h2 style={{ color: '#0F172A', fontFamily: 'Rajdhani, sans-serif', fontSize: '2.8rem', fontWeight: 950, margin: 0, letterSpacing: '0.04em', lineHeight: 1.1 }}>YOUR WISHLIST <span style={{ color: '#2563EB' }}>IS EMPTY</span></h2>
+          <p style={{ color: '#64748B', marginTop: '1rem', fontSize: '1.1rem', fontWeight: 700 }}>Start exploring our elite showroom and premium spares to save what you love!</p>
         </div>
-        <Link to="/parts" style={{ background: '#E53935', color: 'white', padding: '1.2rem 3rem', borderRadius: '16px', fontWeight: 900, textDecoration: 'none', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.15em', fontSize: '1.1rem', boxShadow: '0 10px 30px rgba(229,57,53,0.2)', transition: 'all 0.3s' }}>
-          EXPLORE STORE
+        <Link to="/bikes" style={{ background: '#2563EB', color: 'white', padding: '1.2rem 3.5rem', borderRadius: '20px', fontWeight: 950, textDecoration: 'none', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.15em', fontSize: '1.1rem', boxShadow: '0 12px 35px rgba(37, 99, 235, 0.25)', transition: 'all 0.4s' }}>
+          EXPLORE SHOWROOM
         </Link>
       </div>
     );
@@ -279,37 +275,37 @@ export default function Wishlist() {
           .wishlist-grid { gap: 0.5rem !important; }
         }
       `}</style>
-      <div style={{ height: '4px', background: 'linear-gradient(90deg, #E53935, #FF7043, transparent)' }} />
+      <div style={{ height: '5px', background: 'linear-gradient(90deg, #2563EB, #60A5FA, transparent)' }} />
  
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style={{ paddingTop: '3rem', paddingBottom: '4rem' }}>
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', marginBottom: '3rem' }}>
           <button onClick={() => navigate('/')}
             style={{ 
-              background: '#111', border: 'none', borderRadius: '10px', 
+              background: '#2563EB', border: 'none', borderRadius: '10px', 
               padding: '0.6rem 1.2rem', color: 'white', cursor: 'pointer', 
               display: 'flex', alignItems: 'center', gap: '0.5rem', 
-              fontSize: '0.8rem', fontWeight: 800, transition: 'all 0.3s', 
-              boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontFamily: 'Rajdhani, sans-serif', 
-              letterSpacing: '0.05em' 
+              fontSize: '0.8rem', fontWeight: 900, transition: 'all 0.3s', 
+              boxShadow: '0 4px 12px rgba(37, 99, 235, 0.2)', fontFamily: 'Rajdhani, sans-serif', 
+              letterSpacing: '0.08em', textTransform: 'uppercase'
             }}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.2)'; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)'; }}>
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.background = '#3B82F6'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.background = '#2563EB'; }}>
             <ArrowLeft size={14} /> BACK
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-            <div style={{ width: 4, height: 32, background: '#E53935', borderRadius: '4px' }} />
-            <h1 style={{ color: '#111', fontFamily: 'Rajdhani, sans-serif', fontSize: '2.5rem', fontWeight: 900, margin: 0, letterSpacing: '0.04em' }}>
-              YOUR <span style={{ color: '#E53935' }}>WISHLIST</span>
+            <div style={{ width: 5, height: 36, background: '#2563EB', borderRadius: '4px' }} />
+            <h1 style={{ color: '#0F172A', fontFamily: 'Rajdhani, sans-serif', fontSize: '2.8rem', fontWeight: 950, margin: 0, letterSpacing: '0.04em' }}>
+              YOUR <span style={{ color: '#2563EB' }}>WISHLIST</span>
             </h1>
           </div>
         </div>
  
         {pincode.length === 6 && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', background: '#F9F9F9', borderRadius: '10px', border: '1px solid #EEE', width: 'fit-content', marginBottom: '2rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', background: '#FFF', borderRadius: '10px', border: '1px solid rgba(156, 163, 175, 0.1)', width: 'fit-content', marginBottom: '2rem', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
             <span style={{ fontSize: '1.1rem' }}>📍</span>
-            <span style={{ color: '#666', fontSize: '0.85rem', fontWeight: 700 }}>
-              Checking availability for <span style={{ color: '#E53935' }}>{pincode}</span>
+            <span style={{ color: '#475569', fontSize: '0.9rem', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.04em' }}>
+              CHECKING AVAILABILITY FOR <span style={{ color: '#2563EB' }}>{pincode}</span>
             </span>
           </div>
         )}

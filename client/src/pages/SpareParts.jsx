@@ -59,26 +59,26 @@ export default function SpareParts() {
         }
       `}</style>
        {/* ── HERO HEADER ── */}
-       <div style={{ position: 'relative', background: '#F9F9F9', overflow: 'hidden', paddingBottom: '0', borderBottom: '1px solid #EEE' }}>
-         {/* Decorative red line */}
-         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: '#E53935' }} />
+        <div style={{ background: '#FFFFFF', borderBottom: '1px solid #F1F5F9', padding: '3.5rem 0' }}>
+          {/* Decorative blue line */}
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: '#2563EB' }} />
  
          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style={{ paddingTop: '2.5rem', paddingBottom: '1.5rem' }}>
            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
  
              <div>
                {/* Eyebrow */}
-               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
-                 <div style={{ width: 24, height: 3, background: '#E53935', borderRadius: '2px' }} />
-                 <span style={{ color: '#E53935', fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase' }}>
-                   MotoXpress Store
-                 </span>
-               </div>
-               <h1 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: 'clamp(1.5rem, 4vw, 3.2rem)', fontWeight: 900, color: '#111', lineHeight: 1, margin: 0 }}>
-                 SPARE <span style={{ color: '#E53935' }}>PARTS</span>
-               </h1>
-               <p style={{ color: '#666', marginTop: '0.5rem', fontSize: '0.88rem' }}>
-                 {total > 0 ? <><span style={{ color: '#333', fontWeight: 700 }}>{total}</span> products available</> : 'Browse our collection'}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem' }}>
+                  <div style={{ width: 30, height: 4, background: '#2563EB', borderRadius: '4px' }} />
+                  <span style={{ color: '#2563EB', fontSize: '0.8rem', fontWeight: 900, letterSpacing: '0.25em', textTransform: 'uppercase', fontFamily: 'Rajdhani, sans-serif' }}>
+                    AutoXpress Spares
+                  </span>
+                </div>
+                <h1 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: 'clamp(1.8rem, 4.5vw, 3.5rem)', fontWeight: 950, color: '#0F172A', lineHeight: 1, margin: 0, letterSpacing: '0.05em' }}>
+                  GENUINE <span style={{ color: '#2563EB' }}>SPARES</span>
+                </h1>
+               <p style={{ color: '#94A3B8', marginTop: '0.5rem', fontSize: '0.88rem' }}>
+                 {total > 0 ? <><span style={{ color: '#0F172A', fontWeight: 700 }}>{total}</span> products available</> : 'Browse our collection'}
                  {pincode.length === 6 && (
                    <span style={{ color: '#2E7D32', marginLeft: '0.7rem', fontWeight: 700, fontSize: '0.82rem', background: 'rgba(46,125,50,0.05)', padding: '2px 8px', borderRadius: '4px' }}>
                      📍 {pincode}
@@ -88,55 +88,61 @@ export default function SpareParts() {
              </div>
  
              {/* Cart button */}
-             <Link to="/cart" style={{
-               display: 'flex', alignItems: 'center', gap: '0.7rem',
-               padding: '0.7rem 1.4rem',
-               background: itemCount > 0 ? '#E53935' : '#111',
-               borderRadius: '10px', color: 'white', textDecoration: 'none',
-               fontWeight: 700, fontSize: '0.9rem', position: 'relative',
-               transition: 'all 0.2s',
-               fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.04em',
-               boxShadow: itemCount > 0 ? '0 4px 15px rgba(229,57,53,0.3)' : 'none'
-             }}
-               onMouseEnter={e => { if (itemCount === 0) e.currentTarget.style.background = '#000'; }}
-               onMouseLeave={e => { if (itemCount === 0) e.currentTarget.style.background = '#111'; }}>
-               <ShoppingCart size={19} />
-               MY CART
-               {itemCount > 0 && (
-                 <span style={{
-                   background: 'white', color: '#E53935',
-                   borderRadius: '999px', padding: '0 8px',
-                   fontSize: '0.75rem', fontWeight: 900, marginLeft: '0.3rem'
-                 }}>{itemCount}</span>
-               )}
-             </Link>
+              <Link to="/cart" style={{
+                display: 'flex', alignItems: 'center', gap: '0.7rem',
+                 padding: '0.8rem 1.8rem',
+                 background: '#2563EB',
+                 borderRadius: '14px', color: 'white', textDecoration: 'none',
+                 fontWeight: 900, fontSize: '0.95rem', position: 'relative',
+                 transition: 'all 0.3s',
+                 fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.08em',
+                 boxShadow: '0 10px 25px rgba(37, 99, 235, 0.3)'
+              }}
+                onMouseEnter={e => { e.currentTarget.style.background = '#3B82F6'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = '#2563EB'; e.currentTarget.style.transform = 'translateY(0)'; }}>
+                <ShoppingCart size={19} />
+                MY CART
+                {itemCount > 0 && (
+                   <span style={{
+                     background: 'white', color: '#2563EB',
+                     borderRadius: '999px', padding: '0 8px',
+                     fontSize: '0.8rem', fontWeight: 950, marginLeft: '0.4rem'
+                   }}>{itemCount}</span>
+                )}
+              </Link>
            </div>
  
            {/* ── Search Bar ── */}
-           <div style={{ position: 'relative', marginTop: '2rem', maxWidth: 520 }}>
-             <Search size={16} style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: '#888', pointerEvents: 'none' }} />
-             <input
-               type="text"
-               placeholder={`Search ${activeCatLabel.toLowerCase()}...`}
-               value={search}
-               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-               className="input-light"
-               style={{
-                 paddingLeft: '3rem',
-                 height: '50px'
-               }}
-             />
-             {search && (
-               <button onClick={() => setSearch('')}
-                 style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: '1.2rem' }}>
-                 ×
-               </button>
-             )}
-           </div>
+            <div style={{ position: 'relative', marginTop: '2rem', maxWidth: 520 }}>
+              <Search size={16} style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: '#64748B', pointerEvents: 'none' }} />
+              <input
+                type="text"
+                placeholder={`Search ${activeCatLabel.toLowerCase()}...`}
+                value={search}
+                onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                className="input-light"
+                style={{
+                  paddingLeft: '3rem',
+                  height: '54px',
+                  background: '#FFF',
+                  border: '1px solid rgba(156, 163, 175, 0.2)',
+                  borderRadius: '12px',
+                  color: '#0F172A',
+                  fontWeight: 600,
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.02)'
+                }}
+              />
+              {search && (
+                <button onClick={() => setSearch('')}
+                  style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#94A3B8', cursor: 'pointer', fontSize: '1.2rem' }}>
+                  ×
+                </button>
+              )}
+            </div>
          </div>
  
          {/* ── Category Tab Strip ── */}
-         <div style={{ borderTop: '1px solid #EEE', background: '#FFF' }}>
+         <div style={{ borderTop: '1px solid rgba(156, 163, 175, 0.1)', background: '#F8FAFC' }}>
            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
              <div style={{ display: 'flex', gap: 0, overflowX: 'auto', scrollbarWidth: 'none' }}
                className="hide-scrollbar">
@@ -150,12 +156,13 @@ export default function SpareParts() {
                      onClick={() => { setCategory(cat.value); setPage(1); }}
                      style={{
                        flexShrink: 0,
-                       padding: '1rem 1.2rem',
-                       background: 'none', border: 'none',
-                       borderBottom: `3px solid ${isActive ? '#E53935' : 'transparent'}`,
-                       color: isActive ? '#E53935' : '#666',
-                       cursor: 'pointer', fontSize: '0.85rem', fontWeight: isActive ? 800 : 600,
-                       transition: 'all 0.2s', whiteSpace: 'nowrap',
+                        padding: '1.2rem 1.5rem',
+                        background: 'none', border: 'none',
+                        borderBottom: `4px solid ${isActive ? '#2563EB' : 'transparent'}`,
+                        color: isActive ? '#0F172A' : '#64748B',
+                        cursor: 'pointer', fontSize: '0.9rem', fontWeight: isActive ? 900 : 700,
+                        transition: 'all 0.3s', whiteSpace: 'nowrap',
+                        fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.05em',
                      }}
                    >
                      {cat.label}
@@ -175,11 +182,11 @@ export default function SpareParts() {
            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.5rem' }}>
              <SlidersHorizontal size={14} style={{ color: '#888' }} />
              <span style={{ color: '#888', fontSize: '0.82rem', fontWeight: 600 }}>Filtering by:</span>
-             {category && (
-               <span style={{ background: 'rgba(229,57,53,0.06)', color: '#E53935', border: '1px solid rgba(229,57,53,0.1)', fontSize: '0.75rem', fontWeight: 700, padding: '3px 12px', borderRadius: '999px' }}>
-                 {activeCatLabel}
-               </span>
-             )}
+              {category && (
+                <span style={{ background: 'rgba(37, 99, 235, 0.08)', color: '#2563EB', border: '1px solid rgba(37, 99, 235, 0.15)', fontSize: '0.8rem', fontWeight: 800, padding: '4px 14px', borderRadius: '999px', fontFamily: 'Rajdhani, sans-serif' }}>
+                  {activeCatLabel}
+                </span>
+              )}
              {search && (
                <span style={{ background: '#F5F5F5', color: '#666', border: '1px solid #EEE', fontSize: '0.75rem', fontWeight: 600, padding: '3px 12px', borderRadius: '999px' }}>
                  "{search}"
@@ -215,11 +222,11 @@ export default function SpareParts() {
                    <button key={i} onClick={() => setPage(i + 1)}
                      style={{
                        width: 40, height: 40, borderRadius: '10px', border: '1px solid',
-                       borderColor: page === i + 1 ? '#E53935' : '#EEE',
-                       background: page === i + 1 ? '#E53935' : '#FFF',
-                       color: page === i + 1 ? 'white' : '#666',
-                       cursor: 'pointer', fontWeight: 800, fontSize: '0.9rem',
-                       transition: 'all 0.2s',
+                        borderColor: page === i + 1 ? '#0F172A' : '#E2E8F0',
+                        background: page === i + 1 ? '#0F172A' : '#FFF',
+                        color: page === i + 1 ? 'white' : '#64748B',
+                        cursor: 'pointer', fontWeight: 900, fontSize: '0.95rem',
+                        transition: 'all 0.3s', fontFamily: 'Rajdhani, sans-serif',
                      }}>
                      {i + 1}
                    </button>
@@ -236,13 +243,13 @@ export default function SpareParts() {
          ) : (
            <div style={{ textAlign: 'center', padding: '6rem 2rem' }}>
              <div style={{ fontSize: '3.5rem', marginBottom: '1.5rem' }}>⚙️</div>
-             <h3 style={{ color: '#111', fontFamily: 'Rajdhani, sans-serif', fontSize: '1.6rem', fontWeight: 800, marginBottom: '0.5rem' }}>
-               NO PARTS FOUND
+             <h3 style={{ color: '#0F172A', fontFamily: 'Rajdhani, sans-serif', fontSize: '1.6rem', fontWeight: 900, marginBottom: '0.5rem' }}>
+               NO SPARES FOUND
              </h3>
-             <p style={{ color: '#666', fontSize: '0.95rem' }}>We couldn't find any parts matching your current filters.</p>
+             <p style={{ color: '#64748B', fontSize: '0.95rem', fontWeight: 600 }}>We couldn't find any parts matching your current filters.</p>
              {(category || search) && (
-               <button onClick={() => { setCategory(''); setSearch(''); }}
-                 style={{ marginTop: '1.5rem', background: '#E53935', color: 'white', border: 'none', borderRadius: '10px', padding: '0.75rem 2rem', cursor: 'pointer', fontWeight: 700, fontSize: '0.9rem', boxShadow: '0 4px 15px rgba(229,57,53,0.3)' }}>
+                <button onClick={() => { setCategory(''); setSearch(''); }}
+                  style={{ marginTop: '2rem', background: '#2563EB', color: 'white', border: 'none', borderRadius: '12px', padding: '1rem 2.5rem', cursor: 'pointer', fontWeight: 900, fontSize: '1rem', boxShadow: '0 8px 25px rgba(37, 99, 235, 0.3)', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.1em' }}>
                  Clear All Filters
                </button>
              )}

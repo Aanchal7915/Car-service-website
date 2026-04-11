@@ -26,13 +26,13 @@ export default function Register() {
       <div style={{ width: '100%', maxWidth: 460 }}>
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <Link to="/" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.6rem' }}>
-            <div style={{ background: 'linear-gradient(135deg, #E53935, #C62828)', borderRadius: '10px', padding: '10px 14px' }}>
-              <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 800, color: 'white', fontSize: '1.4rem' }}>MOTO</span>
+            <div style={{ background: 'linear-gradient(135deg, #2563EB, #1D4ED8)', borderRadius: '12px', padding: '12px 18px', boxShadow: '0 8px 25px rgba(37, 99, 235, 0.15)' }}>
+              <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 950, color: 'white', fontSize: '1.6rem', letterSpacing: '0.05em' }}>AUTO</span>
             </div>
-            <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 800, color: '#111', fontSize: '1.6rem' }}>XPRESS</span>
+            <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 950, color: '#0F172A', fontSize: '1.8rem', letterSpacing: '0.05em' }}>XPRESS</span>
           </Link>
           <h1 style={{ color: '#111', fontSize: '1.8rem', fontWeight: 900, marginTop: '2rem', fontFamily: 'Rajdhani, sans-serif' }}>Create Account</h1>
-          <p style={{ color: '#666', marginTop: '0.5rem', fontWeight: 500 }}>Join India's fastest bike platform</p>
+          <p style={{ color: '#64748B', marginTop: '0.6rem', fontWeight: 600 }}>Join India's most elite car marketplace</p>
         </div>
  
         <div style={{ background: '#FFF', border: '1px solid #EEE', borderRadius: '20px', padding: '2.5rem', boxShadow: '0 10px 40px rgba(0,0,0,0.03)' }}>
@@ -48,7 +48,7 @@ export default function Register() {
                   <Icon size={16} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#AAA' }} />
                   <input type={type} className="input-light" style={{ paddingLeft: '2.8rem', height: '52px' }} placeholder={placeholder} {...register(name, rules)} />
                 </div>
-                {errors[name] && <p style={{ color: '#E53935', fontSize: '0.82rem', marginTop: '0.4rem', fontWeight: 600 }}>{errors[name].message}</p>}
+                {errors[name] && <p style={{ color: '#2563EB', fontSize: '0.82rem', marginTop: '0.4rem', fontWeight: 700 }}>{errors[name].message}</p>}
               </div>
             ))}
  
@@ -64,24 +64,28 @@ export default function Register() {
                   {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
-              {errors.password && <p style={{ color: '#E53935', fontSize: '0.82rem', marginTop: '0.4rem', fontWeight: 600 }}>{errors.password.message}</p>}
+              {errors.password && <p style={{ color: '#2563EB', fontSize: '0.82rem', marginTop: '0.4rem', fontWeight: 700 }}>{errors.password.message}</p>}
             </div>
  
-            <p style={{ color: '#888', fontSize: '0.82rem', marginBottom: '1.8rem', lineHeight: 1.6 }}>
+            <p style={{ color: '#94A3B8', fontSize: '0.85rem', marginBottom: '1.8rem', lineHeight: 1.6, fontWeight: 500 }}>
               By creating an account, you agree to our{' '}
-              <Link to="/terms" style={{ color: '#E53935', textDecoration: 'none', fontWeight: 700 }}>Terms</Link> and{' '}
-              <Link to="/privacy" style={{ color: '#E53935', textDecoration: 'none', fontWeight: 700 }}>Privacy</Link>.
+              <Link to="/terms" style={{ color: '#2563EB', textDecoration: 'none', fontWeight: 800 }}>Terms</Link> and{' '}
+              <Link to="/privacy" style={{ color: '#2563EB', textDecoration: 'none', fontWeight: 800 }}>Privacy</Link>.
             </p>
  
-            <button type="submit" className="btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '1.1rem', fontSize: '1.05rem', fontWeight: 700, borderRadius: '12px' }} disabled={loading}>
-              {loading ? <Loader size={20} style={{ animation: 'spin 1s linear infinite' }} /> : <><ArrowRight size={20} /> CREATE ACCOUNT</>}
+            <button type="submit" className="btn-primary" 
+              style={{ width: '100%', justifyContent: 'center', padding: '1.25rem', fontSize: '1.1rem', fontWeight: 950, borderRadius: '16px', background: '#2563EB', border: 'none', color: 'white', cursor: 'pointer', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.1em', boxShadow: '0 12px 30px rgba(37, 99, 235, 0.25)', transition: 'all 0.3s' }} 
+              disabled={loading}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.background = '#1D4ED8'; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.background = '#2563EB'; }}>
+              {loading ? <Loader size={20} style={{ animation: 'spin 1s linear infinite' }} /> : <><ArrowRight size={20} /> AUTHORIZE ACCOUNT</>}
             </button>
           </form>
         </div>
  
-        <p style={{ textAlign: 'center', color: '#666', marginTop: '2rem', fontSize: '0.95rem', fontWeight: 500 }}>
+        <p style={{ textAlign: 'center', color: '#64748B', marginTop: '2rem', fontSize: '1rem', fontWeight: 600 }}>
           Already have an account?{' '}
-          <Link to="/login" style={{ color: '#E53935', textDecoration: 'none', fontWeight: 700 }}>Login here</Link>
+          <Link to="/login" style={{ color: '#2563EB', textDecoration: 'none', fontWeight: 800 }}>Sign in</Link>
         </p>
       </div>
     </div>

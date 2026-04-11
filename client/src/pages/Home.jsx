@@ -3,25 +3,26 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Shield, Clock, MapPin, Star, Zap, Wrench, ShoppingBag, TrendingUp } from 'lucide-react';
 import { getFeaturedParts, getBestsellerParts } from '../api/storeApi';
 import { getFeaturedBikes, getBestsellerBikes } from '../api/bikeApi';
-import BikeCard from '../components/bikes/BikeCard';
+import CarCard from '../components/bikes/BikeCard';
 import PartCard from '../components/parts/PartCard';
 import { getActiveServiceTypes } from '../api/serviceApi';
 import { PageLoader } from '../components/common/LoadingSpinner';
-import heroBike from '../assets/hero-bike.png';
-import heroBikeMobile from '../assets/hero-bike (2).png';
+import heroCar from '../assets/hero-car-premium.png';
+import heroCarGT3 from '../assets/hero-car-gt3.png';
+import heroCarGT3Reflection from '../assets/hero-car-gt3-reflection.jpg';
 import instantQuote from '../assets/instant-quote.png';
 
 const heroSlides = [
-  { title: 'Buy & Sell Bikes', sub: 'Trusted Marketplace', desc: 'Find your perfect ride from thousands of new & used bikes across India.', cta: 'Explore Bikes', href: '/bikes', accent: '#E53935' },
-  { title: 'Instant Service', sub: '1-Hour Repair Promise', desc: 'Professional mechanics at your doorstep. Pickup & drop available.', cta: 'Book Service', href: '/services', accent: '#FB8C00' },
-  { title: 'Sell in 1 Hour', sub: 'Best Price Guaranteed', desc: 'Get instant valuation and sell your bike the same day.', cta: 'Sell Now', href: '/sell', accent: '#2E7D32' },
+  { title: 'Buy & Sell Cars', sub: 'Premium Auto Marketplace', desc: 'Find your perfect luxury car from thousands of certified new & used vehicles across India.', cta: 'Explore Cars', href: '/bikes', accent: '#2563EB' },
+  { title: 'Premium Service', sub: 'Excellence Guaranteed', desc: 'Expert car technicians at your doorstep. World-class maintenance for your luxury vehicle.', cta: 'Book Service', href: '/services', accent: '#3B82F6' },
+  { title: 'Sell Instantly', sub: 'Maximum Value', desc: 'Get an instant valuation and sell your car at the best market price today.', cta: 'Sell Now', href: '/sell', accent: '#10B981' },
 ];
 
 const stats = [
-  { value: '50K+', label: 'Bikes Sold', icon: TrendingUp },
-  { value: '1 Hr', label: 'Service Promise', icon: Clock },
-  { value: '4.8★', label: 'Average Rating', icon: Star },
-  { value: '100+', label: 'Cities Covered', icon: MapPin },
+  { value: '25K+', label: 'Cars Sold', icon: TrendingUp },
+  { value: 'Elite', label: 'Service Quality', icon: Clock },
+  { value: '4.9★', label: 'Client Satisfaction', icon: Star },
+  { value: '150+', label: 'Hubs Nationwide', icon: MapPin },
 ];
 
 export default function Home() {
@@ -43,7 +44,7 @@ export default function Home() {
       getBestsellerBikes().then(({ data }) => setBestsellerBikes(data.bikes || [])),
       getActiveServiceTypes().then(({ data }) => setServiceTypes(data.serviceTypes || []))
     ])
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => {
         setLoading(false);
         setPartsLoading(false);
@@ -57,14 +58,21 @@ export default function Home() {
   const slide = heroSlides[currentSlide];
 
   return (
-    <div style={{ background: '#000' }}>
+    <div style={{ minHeight: '100vh', background: '#FFFFFF' }}>
       <style>{`
         @media (max-width: 768px) {
-          .hero-split { min-height: auto !important; }
-          .hero-split > div:first-child > div { padding: 1rem !important; padding-top: 0.5rem !important; }
+          .hero-split { background: #050505 !important; }
+          .hero-split > div:first-child > div { padding: 1rem !important; padding-top: 0.5rem !important; background: transparent !important; }
           .hero-split > div:first-child > div h1 { font-size: 1.5rem !important; }
           .hero-split > div:first-child > div p { font-size: 0.75rem !important; }
-          .hero-split .hero-right { min-height: 180px !important; max-height: 220px !important; }
+          .hero-split .hero-right { min-height: 180px !important; max-height: 220px !important; background: transparent !important; }
+        }
+        @media (min-width: 769px) {
+          .hero-right-bg {
+             background: url(${heroCarGT3});
+             background-size: cover;
+             background-position: right center;
+          }
         }
         @media (max-width: 640px) {
           section { padding: 2rem 0 !important; }
@@ -77,8 +85,8 @@ export default function Home() {
           .home-parts-grid, .home-bikes-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 0.6rem !important; }
         }
       `}</style>
-      {/* HERO — Split layout: left content / right bike image */}
-      <section className="hero-split" style={{ minHeight: '92vh', display: 'flex', position: 'relative', overflow: 'hidden' }}>
+      {/* HERO — Split layout: left content / right car image */}
+      <section className="hero-split" style={{ minHeight: '80vh', display: 'flex', position: 'relative', overflow: 'hidden', background: '#050505' }}>
         <style>{`
           @media (max-width: 768px) {
             .hero-split { flex-direction: column !important; min-height: auto !important; }
@@ -88,22 +96,28 @@ export default function Home() {
         `}</style>
 
         {/* ── LEFT: Black panel with content ── */}
-        <div style={{ flex: '1 1 50%', background: '#000', display: 'flex', alignItems: 'flex-start', position: 'relative' }}>
-          {/* Red glow accent */}
-          <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(ellipse at 80% 50%, rgba(229,57,53,0.07) 0%, transparent 55%)' }} />
+        <div style={{ 
+          flex: '1 1 50%', 
+          background: 'linear-gradient(135deg, #050505 0%, #101010 100%)',
+          display: 'flex', 
+          alignItems: 'flex-start', 
+          position: 'relative' 
+        }}>
+          {/* Blue glow accent */}
+          <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(ellipse at 100% 50%, rgba(255,255,255,0.06) 0%, transparent 80%)' }} />
 
           <div style={{ position: 'relative', zIndex: 1, padding: '0px clamp(2rem, 5vw, 5.5rem) clamp(2rem, 5vw, 5.5rem)', paddingRight: 'clamp(1rem, 2vw, 2rem)', maxWidth: 800, paddingTop: '1.5rem' }}>
 
             {/* Eyebrow */}
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(229,57,53,0.1)', border: '1px solid rgba(229,57,53,0.25)', borderRadius: '999px', padding: '0.3rem 1rem', marginBottom: '1.5rem' }}>
-              <Zap size={13} style={{ color: '#E53935' }} />
-              <span style={{ color: '#E53935', fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}>{slide.sub}</span>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(37,99,235,0.1)', border: '1px solid rgba(37,99,235,0.25)', borderRadius: '999px', padding: '0.3rem 1rem', marginBottom: '1.5rem' }}>
+              <Zap size={13} style={{ color: '#2563EB' }} />
+              <span style={{ color: '#2563EB', fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}>{slide.sub}</span>
             </div>
 
             {/* Brand + Title */}
-            <p style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1rem', fontWeight: 600, color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '0.3rem' }}>MOTOXPRESS</p>
+            <p style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1rem', fontWeight: 600, color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '0.3rem' }}>AUTOXPRESS</p>
             <h1 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: 'clamp(2.2rem, 5vw, 3.8rem)', fontWeight: 900, lineHeight: 1.05, marginBottom: '1rem' }}>
-              <span style={{ color: '#E53935' }}>{slide.title.split(' ')[0]}</span>{' '}
+              <span style={{ color: '#2563EB' }}>{slide.title.split(' ')[0]}</span>{' '}
               <span style={{ color: 'white' }}>{slide.title.split(' ').slice(1).join(' ')}</span>
             </h1>
 
@@ -114,19 +128,19 @@ export default function Home() {
 
             {/* Extra content paragraph */}
             <p className="hero-extra-desc" style={{ color: '#666', fontSize: '0.85rem', lineHeight: 1.7, maxWidth: 420, marginBottom: '2rem' }}>
-              Whether you're looking to upgrade your ride, sell your old bike at the best price, or need expert service — MotoXpress has you covered with doorstep pickup, certified mechanics, and same-day payment.
+              Whether you're looking to upgrade your ride, sell your old car at the best price, or need expert service — AutoXpress has you covered with doorstep pickup, certified mechanics, and same-day payment.
             </p>
 
             {/* CTA Buttons — both restored */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '2.2rem' }}>
               <Link to={slide.href} style={{
-                background: '#E53935', color: 'white', padding: '0.6rem 1.5rem', borderRadius: '6px',
+                background: '#2563EB', color: 'white', padding: '0.6rem 1.5rem', borderRadius: '6px',
                 textDecoration: 'none', fontWeight: 700, fontSize: '0.82rem',
                 display: 'inline-flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.2s',
-                boxShadow: '0 4px 20px rgba(229,57,53,0.35)',
+                boxShadow: '0 4px 20px rgba(37,99,235,0.35)',
               }}
-                onMouseEnter={e => { e.currentTarget.style.background = '#C62828'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = '#E53935'; e.currentTarget.style.transform = 'translateY(0)'; }}>
+                onMouseEnter={e => { e.currentTarget.style.background = '#1D4ED8'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = '#2563EB'; e.currentTarget.style.transform = 'translateY(0)'; }}>
                 {slide.cta} <ArrowRight size={16} />
               </Link>
               <Link to="/services" style={{
@@ -135,7 +149,7 @@ export default function Home() {
                 display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
                 border: '1.5px solid rgba(255,255,255,0.2)', transition: 'all 0.2s',
               }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = '#E53935'; e.currentTarget.style.color = '#E53935'; }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = '#2563EB'; e.currentTarget.style.color = '#2563EB'; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'; e.currentTarget.style.color = 'white'; }}>
                 Book Service
               </Link>
@@ -145,7 +159,7 @@ export default function Home() {
             <div className="home-hero-stats" style={{ display: 'flex', gap: '1.2rem', flexWrap: 'nowrap', paddingTop: '0.8rem', borderTop: '1px solid #1A1A1A' }}>
               {stats.map(({ value, label }) => (
                 <div key={label} style={{ flex: '1 1 0' }}>
-                  <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.1rem', fontWeight: 900, color: '#E53935', lineHeight: 1 }}>{value}</div>
+                  <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.1rem', fontWeight: 900, color: '#2563EB', lineHeight: 1 }}>{value}</div>
                   <div style={{ color: '#555', fontSize: '0.6rem', marginTop: '0.15rem', textTransform: 'uppercase', letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>{label}</div>
                 </div>
               ))}
@@ -155,26 +169,34 @@ export default function Home() {
             <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1.8rem' }}>
               {heroSlides.map((_, i) => (
                 <button key={i} onClick={() => setCurrentSlide(i)}
-                  style={{ width: i === currentSlide ? 28 : 8, height: 8, borderRadius: 4, background: i === currentSlide ? '#E53935' : '#333', border: 'none', cursor: 'pointer', transition: 'all 0.3s' }} />
+                  style={{ width: i === currentSlide ? 28 : 8, height: 8, borderRadius: 4, background: i === currentSlide ? '#2563EB' : '#333', border: 'none', cursor: 'pointer', transition: 'all 0.3s' }} />
               ))}
             </div>
           </div>
         </div>
 
-        {/* ── RIGHT: Dark gray panel with bike image ── */}
-        <div className="hero-right" style={{ flex: '1 1 50%', background: '#000', position: 'relative', display: 'flex', alignItems: 'flex-start', justifyContent: 'center', overflow: 'hidden', paddingTop: '0px' }}>
+        {/* ── RIGHT: Black panel with car image ── */}
+        <div className="hero-right hero-right-bg" style={{ 
+          flex: '1 1 50%', 
+          position: 'relative', 
+          display: 'flex', 
+          alignItems: 'flex-start', 
+          justifyContent: 'center', 
+          overflow: 'hidden', 
+          paddingTop: '0px' 
+        }}>
 
 
           {/* Decorative background circle */}
           <div style={{ position: 'absolute', width: '120%', height: '120%', borderRadius: '50%', background: 'radial-gradient(circle, rgba(229,57,53,0.05) 0%, transparent 70%)', zIndex: 0 }} />
 
-          {/* Bike image wrapper with floating animation */}
+          {/* Car image wrapper with floating animation */}
           <div style={{ position: 'relative', zIndex: 1, width: '100%', height: '100%', display: 'flex', alignItems: 'flex-start', justifyContent: 'center' }}>
             <picture>
-              <source media="(max-width: 768px)" srcSet={heroBikeMobile} />
+              <source media="(max-width: 768px)" srcSet={heroCar} />
               <img
-                src={heroBike}
-                alt="Hero Bike"
+                src={heroCarGT3Reflection}
+                alt="Hero Car"
                 style={{
                   background:"black",
                   maxWidth: '115%',
@@ -191,7 +213,7 @@ export default function Home() {
               />
             </picture>
             {/* Pulsing glow under image */}
-            <div style={{ position: 'absolute', bottom: '20%', width: '60%', height: '20px', background: 'rgba(229,57,53,0.15)', borderRadius: '50%', filter: 'blur(20px)', animation: 'pulse 4s infinite' }} />
+            <div style={{ position: 'absolute', bottom: '20%', width: '60%', height: '20px', background: 'rgba(37,99,235,0.15)', borderRadius: '50%', filter: 'blur(20px)', animation: 'pulse 4s infinite' }} />
           </div>
 
           <style>{`
@@ -206,24 +228,26 @@ export default function Home() {
           `}</style>
 
           {/* Bottom fade */}
-          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 100, background: 'linear-gradient(to top, #000, transparent)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 100, background: 'linear-gradient(to top, #0F172A, transparent)', pointerEvents: 'none' }} />
           {/* Top fade */}
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 60, background: 'linear-gradient(to bottom, #000, transparent)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 60, background: 'linear-gradient(to bottom, #020617, transparent)', pointerEvents: 'none' }} />
         </div>
       </section>
 
-      {/* BUY BIKES section — Hide if empty (after loading) */}
+      {/* BUY CARS section ── */}
       {(loading || featured.length > 0) && (
-        <section style={{ background: '#F5F5F5', padding: '5rem 0' }}>
+        <section style={{ background: '#FFFFFF', padding: '5rem 0', borderTop: '1px solid rgba(156, 163, 175, 0.1)' }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem' }}>
               <div>
-                <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.3rem', fontWeight: 800, color: '#111' }}>
-                  Buy <span className="gradient-text">Bikes</span>
+                <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.5rem', fontWeight: 900, color: '#0F172A' }}>
+                  Latest <span className="gradient-text">Showroom</span>
                 </h2>
-                <p style={{ color: '#555', marginTop: '0.3rem' }}>Handpicked deals you'll love</p>
+                <p style={{ color: '#64748B', marginTop: '0.3rem', fontWeight: 600 }}>Premium selection for elite drivers</p>
               </div>
-              <Link to="/bikes" className="btn-outline-dark" style={{ padding: '0.6rem 1.4rem', fontSize: '0.9rem' }}>
+              <Link to="/bikes" style={{ padding: '0.63rem 1.5rem', fontSize: '0.9rem', background: '#2563EB', color: 'white', border: 'none', borderRadius: '12px', textDecoration: 'none', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.55rem', transition: 'all 0.3s', boxShadow: '0 8px 20px rgba(37, 99, 235, 0.2)' }}
+                onMouseEnter={e => { e.currentTarget.style.background = '#1D4ED8'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = '#2563EB'; e.currentTarget.style.transform = 'translateY(0)'; }}>
                 View All <ArrowRight size={16} />
               </Link>
             </div>
@@ -242,7 +266,7 @@ export default function Home() {
               </div>
             ) : (
               <div className="home-bikes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.5rem' }}>
-                {featured.map((bike) => <BikeCard key={bike._id} bike={bike} />)}
+                {featured.map((car) => <CarCard key={car._id} car={car} />)}
               </div>
             )}
           </div>
@@ -250,73 +274,79 @@ export default function Home() {
       )}
 
       {/* SERVICE CATEGORIES */}
-      <section style={{ background: '#FFFFFF', padding: '6rem 0' }}>
+      <section style={{ background: '#F8FAFC', padding: '6rem 0', position: 'relative' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '3.5rem', flexWrap: 'wrap', gap: '1rem' }}>
             <div>
-              <p style={{ color: '#E53935', fontWeight: 800, fontSize: '0.85rem', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Professional Care</p>
-              <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.8rem', fontWeight: 900, color: '#111', lineHeight: 1.1 }}>
-                Our Expert <span style={{ color: '#E53935' }}>Services</span>
+              <p style={{ color: '#2563EB', fontWeight: 800, fontSize: '0.85rem', letterSpacing: '0.25em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Evolved Engineering</p>
+              <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.8rem', fontWeight: 900, color: '#0F172A', lineHeight: 1.1 }}>
+                Luxury Car <span style={{ color: '#2563EB' }}>Experience</span>
               </h2>
             </div>
-            <Link to="/services" style={{ 
-              background: '#000', 
-              color: 'white', 
-              padding: '0.75rem 2rem', 
-              fontSize: '0.9rem', 
-              fontWeight: 700, 
-              borderRadius: '8px', 
-              textDecoration: 'none', 
-              display: 'inline-flex', 
-              alignItems: 'center', 
-              gap: '0.6rem', 
-              transition: 'all 0.2s',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+            <Link to="/services" style={{
+              background: '#2563EB',
+              color: 'white',
+              padding: '0.75rem 2rem',
+              fontSize: '0.9rem',
+              fontWeight: 800,
+              borderRadius: '12px',
+              textDecoration: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.6rem',
+              transition: 'all 0.3s',
+              boxShadow: '0 8px 25px rgba(37,99,235,0.3)',
+              fontFamily: 'Rajdhani, sans-serif',
+              letterSpacing: '0.05em'
             }}
-              onMouseEnter={e => { e.currentTarget.style.background = '#222'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = '#000'; e.currentTarget.style.transform = 'translateY(0)'; }}>
+              onMouseEnter={e => { e.currentTarget.style.background = '#3B82F6'; e.currentTarget.style.transform = 'translateY(-3px)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = '#2563EB'; e.currentTarget.style.transform = 'translateY(0)'; }}>
               Explore All <ArrowRight size={17} />
             </Link>
           </div>
 
           {servicesLoading ? (
-            <div className="home-services-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '1rem' }}>
+            <div className="home-services-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
               {[...Array(4)].map((_, i) => <div key={i} className="skeleton" style={{ height: 160, borderRadius: '10px' }} />)}
             </div>
           ) : (
-          <div className="home-services-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '1rem' }}>
-            {serviceTypes.map((service) => (
-              <div key={service.value} style={{ 
-                background: 'white', 
-                border: '1px solid #F0F0F0',
-                borderLeft: '4px solid #E53935',
-                borderRadius: '10px', 
-                padding: '1.2rem', 
-                textAlign: 'left', 
-                boxShadow: '0 4px 15px rgba(0,0,0,0.02)', 
-                transition: 'all 0.3s ease',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between'
-              }}
-                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 12px 25px rgba(229,57,53,0.08)'; e.currentTarget.style.background = '#000'; e.currentTarget.querySelector('h3').style.color = '#fff'; e.currentTarget.querySelector('p').style.color = '#aaa'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.02)'; e.currentTarget.style.background = '#fff'; e.currentTarget.querySelector('h3').style.color = '#111'; e.currentTarget.querySelector('p').style.color = '#666'; }}>
-                <div>
-                  <h3 style={{ color: '#111', fontWeight: 800, fontSize: '0.95rem', marginBottom: '0.5rem', fontFamily: 'Rajdhani, sans-serif', textTransform: 'uppercase' }}>{service.label}</h3>
-                  <p style={{ color: '#666', fontSize: '0.75rem', lineHeight: 1.5, marginBottom: '1.2rem', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{service.desc}</p>
+            <div className="home-services-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.2rem' }}>
+              {serviceTypes.map((service) => (
+                <div key={service.value} style={{
+                  background: '#FFF',
+                  border: '1px solid rgba(156, 163, 175, 0.2)',
+                  borderLeft: '4px solid #2563EB',
+                  borderRadius: '16px',
+                  padding: '1rem 1.5rem',
+                  textAlign: 'left',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
+                  transition: 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between'
+                }}
+                  onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.borderColor = '#2563EB'; e.currentTarget.style.boxShadow = '0 12px 30px rgba(0,0,0,0.08)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(156, 163, 175, 0.2)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.03)'; }}>
+                  <div>
+                    <h3 style={{ color: '#0F172A', fontWeight: 900, fontSize: '0.95rem', marginBottom: '0.5rem', fontFamily: 'Rajdhani, sans-serif', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{service.label}</h3>
+                    <p style={{ color: '#64748B', fontSize: '0.75rem', lineHeight: 1.5, marginBottom: '0.8rem', fontWeight: 600 }}>
+                      {service.desc}. Expert car care for premium performance and durability.
+                    </p>
+                  </div>
+                  <Link to="/services" style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                    background: '#2563EB', color: 'white',
+                    padding: '0.6rem 1.2rem', borderRadius: '8px',
+                    fontSize: '0.72rem', fontWeight: 900, textDecoration: 'none',
+                    transition: 'all 0.3s', width: 'fit-content',
+                    fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.08em',
+                    textTransform: 'uppercase'
+                  }}>
+                    Book <ArrowRight size={13} />
+                  </Link>
                 </div>
-                <Link to="/services" style={{ 
-                  display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-                  background: '#E53935', color: 'white', 
-                  padding: '0.5rem 1rem', borderRadius: '4px', 
-                  fontSize: '0.72rem', fontWeight: 700, textDecoration: 'none',
-                  transition: 'all 0.2s', width: 'fit-content'
-                }}>
-                  Book Now <ArrowRight size={13} />
-                </Link>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
           )}
           <style>{`
             @media (min-width: 1024px) {
@@ -332,22 +362,24 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FEATURED PRODUCTS section — Hide if empty (after loading) */}
+      {/* FEATURED PRODUCTS section */}
       {(partsLoading || featuredParts.length > 0 || featured.length > 0) && (
-        <section style={{ background: '#FFFFFF', padding: '5rem 0' }}>
+        <section style={{ background: '#FFFFFF', padding: '5rem 0', borderTop: '1px solid rgba(156, 163, 175, 0.1)' }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem' }}>
               <div>
-                <p style={{ color: '#E53935', fontWeight: 800, fontSize: '0.85rem', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Premium Selection</p>
-                <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.3rem', fontWeight: 800, color: '#111' }}>
-                  Featured <span className="gradient-text">Products</span>
-                </h2>
-                <p style={{ color: '#555', marginTop: '0.3rem' }}>High-quality components for every ride</p>
-              </div>
+               <p style={{ color: '#2563EB', fontWeight: 800, fontSize: '0.85rem', letterSpacing: '0.25em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Premium Selection</p>
+              <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.5rem', fontWeight: 900, color: '#0F172A' }}>
+                Featured <span className="gradient-text">Showcase</span>
+              </h2>
+              <p style={{ color: '#64748B', marginTop: '0.3rem', fontWeight: 600 }}>Exquisite performance machines</p>
+            </div>
               <Link to="/featured" style={{
-                background: '#000', color: 'white', padding: '0.6rem 1.4rem',
-                fontSize: '0.9rem', borderRadius: '6px', textDecoration: 'none',
-                fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.5rem'
+                background: '#2563EB', color: 'white', padding: '0.6rem 1.4rem',
+                fontSize: '0.9rem', borderRadius: '10px', textDecoration: 'none',
+                fontWeight: 800, display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+                boxShadow: '0 8px 20px rgba(37,99,235,0.2)',
+                fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.04em'
               }}>
                 View All Featured <ArrowRight size={16} />
               </Link>
@@ -361,7 +393,7 @@ export default function Home() {
               </div>
             ) : (
               <div className="home-parts-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.5rem' }}>
-                {featured.map((bike) => <BikeCard key={bike._id} bike={bike} />)}
+                {featured.map((car) => <CarCard key={car._id} car={car} />)}
                 {featuredParts.map((part) => <PartCard key={part._id} part={part} />)}
               </div>
             )}
@@ -369,73 +401,76 @@ export default function Home() {
         </section>
       )}
 
-      {/* BESTSELLER PRODUCTS section — Hide if empty */}
+      {/* BESTSELLER PRODUCTS section */}
       {(loading || bestsellerBikes.length > 0 || bestsellerParts.length > 0) && (
-      <section style={{ background: '#FFFFFF', padding: '5rem 0' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-            <div>
-              <p style={{ color: '#E53935', fontWeight: 800, fontSize: '0.85rem', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Most Popular</p>
-              <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.3rem', fontWeight: 800, color: '#111' }}>
-                Bestseller <span className="gradient-text">Products</span>
+        <section style={{ background: '#F8FAFC', padding: '5rem 0', borderTop: '1px solid rgba(156, 163, 175, 0.1)' }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+              <div>
+               <p style={{ color: '#2563EB', fontWeight: 800, fontSize: '0.85rem', letterSpacing: '0.25em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Elite Choice</p>
+              <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.5rem', fontWeight: 900, color: '#0F172A' }}>
+                Bestseller <span className="gradient-text">Collection</span>
               </h2>
-              <p style={{ color: '#555', marginTop: '0.3rem' }}>Our most trusted items by riders</p>
+              <p style={{ color: '#64748B', marginTop: '0.3rem', fontWeight: 600 }}>Our most celebrated vehicles</p>
             </div>
-            <Link to="/bestseller" style={{
-              background: '#000', color: 'white', padding: '0.6rem 1.4rem',
-              fontSize: '0.9rem', borderRadius: '6px', textDecoration: 'none',
-              fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.5rem'
-            }}>
-              View All Bestsellers <ArrowRight size={16} />
-            </Link>
-          </div>
+              <Link to="/bestseller" style={{
+                background: '#2563EB', color: 'white', padding: '0.6rem 1.4rem',
+                fontSize: '0.9rem', borderRadius: '10px', textDecoration: 'none',
+                fontWeight: 800, display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+                boxShadow: '0 8px 20px rgba(37,99,235,0.2)',
+                fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.04em'
+              }}>
+                View All Bestsellers <ArrowRight size={16} />
+              </Link>
+            </div>
 
-          {partsLoading ? (
-            <div className="home-parts-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.5rem' }}>
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="skeleton" style={{ height: 300, background: '#eee' }} />
-              ))}
-            </div>
-          ) : (
-            <div className="home-parts-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.5rem' }}>
-              {bestsellerBikes.map((bike) => (
-                <BikeCard key={bike._id} bike={bike} />
-              ))}
-              {bestsellerParts.map((part) => (
-                <PartCard key={part._id} part={part} />
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
+            {partsLoading ? (
+              <div className="home-parts-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.5rem' }}>
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="skeleton" style={{ height: 300, background: '#eee' }} />
+                ))}
+              </div>
+            ) : (
+              <div className="home-parts-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.5rem' }}>
+                {bestsellerBikes.map((car) => (
+                  <CarCard key={car._id} car={car} />
+                ))}
+                {bestsellerParts.map((part) => (
+                  <PartCard key={part._id} part={part} />
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
       )}
 
       {/* WHY CHOOSE US */}
-      <section style={{ background: '#F5F5F5', padding: '5rem 0' }}>
+       <section style={{ background: '#FFFFFF', padding: '5rem 0' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.5rem', fontWeight: 800, color: '#111111' }}>Why <span className="gradient-text">MotoXpress?</span></h2>
-            <p style={{ color: '#555', marginTop: '0.5rem' }}>India's most trusted bike platform</p>
+            <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.8rem', fontWeight: 900, color: '#0F172A' }}>Why <span className="gradient-text">AutoXpress?</span></h2>
+            <p style={{ color: '#0F172A', marginTop: '0.5rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', opacity: 0.8 }}>India's premier luxury automotive platform</p>
           </div>
           <div className="home-why-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '1rem' }}>
+            {/* Why Choose Us Items */}
             {[
-              { title: 'Instant Quote', desc: 'Get a free, instant valuation for your bike in seconds with our AI engine.', image: instantQuote },
+              { title: 'Instant Quote', desc: 'Get a free, instant valuation for your car in seconds with our AI engine.', image: instantQuote },
               { title: 'Schedule Inspection', desc: 'Choose a time and our expert mechanics will visit your doorstep for a full inspection.', image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=400&auto=format&fit=crop' },
               { title: 'Money Transfer', desc: 'Receive secure, instant payment directly to your bank account within 60 minutes.', image: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?q=80&w=400&auto=format&fit=crop' },
               { title: '1-Hour Service', desc: 'Expert mechanics arrive at your location within 60 minutes for doorstep service.', image: 'https://images.unsplash.com/photo-1625047509168-a7026f36de04?q=80&w=400&auto=format&fit=crop' },
-              { title: 'Verified Sellers', desc: 'All bikes go through a rigorous 150-point check by experts before listing.', image: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=400&auto=format&fit=crop' },
-              { title: 'Doorstep Help', desc: 'Enjoy free pickup and drop for all your bike needs from the comfort of home.', image: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=400&auto=format&fit=crop' },
+              { title: 'Verified Sellers', desc: 'All cars go through a rigorous 150-point check by experts before listing.', image: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=400&auto=format&fit=crop' },
+              { title: 'Doorstep Help', desc: 'Enjoy free pickup and drop for all your vehicle needs from the comfort of home.', image: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=400&auto=format&fit=crop' },
             ].map(({ title, desc, image }) => (
-              <div key={title} style={{ background: 'white', overflow: 'hidden', borderRadius: '12px', border: '1px solid #EAEAEA', boxShadow: '0 4px 15px rgba(0,0,0,0.02)', transition: 'all 0.4s' }}
-                   onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.boxShadow = '0 15px 30px rgba(229,57,53,0.08)'; }}
-                   onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.02)'; }}>
+              <div key={title} style={{ background: '#F8FAFC', overflow: 'hidden', borderRadius: '16px', border: '1px solid rgba(156, 163, 175, 0.1)', boxShadow: '0 4px 15px rgba(0,0,0,0.05)', transition: 'all 0.4s' }}
+                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.borderColor = '#2563EB'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(156, 163, 175, 0.1)'; }}>
                 <div style={{ height: '110px', width: '100%', overflow: 'hidden' }}>
-                  <img src={image} alt={title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                       onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1449491073997-d0ce9a901507?q=65&w=400&auto=format&fit=crop'; }} />
+                  <img src={image} alt={title} style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'grayscale(0.4) brightness(0.8)' }}
+                    onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1449491073997-d0ce9a901507?q=65&w=400&auto=format&fit=crop'; }} />
                 </div>
                 <div style={{ padding: '0.8rem 0.7rem', textAlign: 'left' }}>
-                  <h3 style={{ color: '#111', fontWeight: 800, fontSize: '0.88rem', marginBottom: '0.3rem', fontFamily: 'Rajdhani, sans-serif' }}>{title}</h3>
-                  <p style={{ color: '#777', fontSize: '0.7rem', lineHeight: 1.4 }}>{desc}</p>
+                  <h3 style={{ color: '#0F172A', fontWeight: 800, fontSize: '0.88rem', marginBottom: '0.3rem', fontFamily: 'Rajdhani, sans-serif' }}>{title}</h3>
+                  <p style={{ color: '#64748B', fontSize: '0.7rem', lineHeight: 1.4 }}>{desc}</p>
                 </div>
               </div>
             ))}
@@ -445,23 +480,47 @@ export default function Home() {
 
       {/* CTA BANNER */}
       <section style={{
-        background: 'linear-gradient(135deg, #C62828 0%, #E53935 50%, #FF5252 100%)',
-        padding: '4rem 0', textAlign: 'center',
+        background: `linear-gradient(135deg, rgba(2, 6, 23, 0.92) 0%, rgba(8, 18, 41, 0.88) 100%), url('C:/Users/Karan/.gemini/antigravity/brain/93c9291d-3bb7-45d0-9810-1aca53ffb4b7/sell_car_bg_premium_1775807478469.png')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        padding: '6.5rem 0', textAlign: 'center',
+        position: 'relative', overflow: 'hidden',
+        borderTop: '1px solid rgba(37, 99, 235, 0.15)',
+        borderBottom: '1px solid rgba(37, 99, 235, 0.15)'
       }}>
-        <div className="max-w-4xl mx-auto px-4">
-          <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.8rem', fontWeight: 800, color: 'white', marginBottom: '1rem' }}>
-            Sell Your Bike in Just 1 Hour
+        {/* Subtle accent glow */}
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(circle at 50% 50%, rgba(37,99,235,0.12) 0%, transparent 75%)', pointerEvents: 'none' }} />
+        
+        <div className="max-w-4xl mx-auto px-4" style={{ position: 'relative', zIndex: 1 }}>
+          <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '3rem', fontWeight: 900, color: 'white', marginBottom: '1.2rem' }}>
+            Sell Your Car at the Best Value
           </h2>
-          <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '1.1rem', marginBottom: '2rem' }}>
-            Get instant valuation, schedule pickup, and receive payment — all within 60 minutes.
+          <p style={{ color: '#94A3B8', fontSize: '1rem', marginBottom: '1.8rem', fontWeight: 600, opacity: 0.9 }}>
+            Premium valuation, expert verification, and instant secure payment within the hour.
           </p>
+
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '2.5rem', marginBottom: '2.2rem', flexWrap: 'wrap' }}>
+            {[
+              { label: 'FREE REMOTE VALUATION' },
+              { label: 'HOME INSPECTION' },
+              { label: 'INSTANT BANK PAYMENT' }
+            ].map(b => (
+              <div key={b.label} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                <div style={{ width: 4, height: 4, background: '#2563EB', borderRadius: '50%' }} />
+                <span style={{ color: '#E2E8F0', fontSize: '0.75rem', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.12em' }}>{b.label}</span>
+              </div>
+            ))}
+          </div>
           <Link to="/sell" style={{
-            background: 'white', color: '#E53935', padding: '0.9rem 2.5rem',
-            borderRadius: '8px', textDecoration: 'none', fontWeight: 700, fontSize: '1rem',
-            display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
-            transition: 'all 0.2s',
-          }}>
-            Sell My Bike Now <ArrowRight size={18} />
+            background: '#2563EB', color: 'white', padding: '1rem 3rem',
+            borderRadius: '10px', textDecoration: 'none', fontWeight: 800, fontSize: '1.05rem',
+            display: 'inline-flex', alignItems: 'center', gap: '0.6rem',
+            transition: 'all 0.3s',
+            boxShadow: '0 10px 30px rgba(37,99,235,0.3)'
+          }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.background = '#3B82F6'; e.currentTarget.style.boxShadow = '0 15px 40px rgba(37,99,235,0.45)'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.background = '#2563EB'; e.currentTarget.style.boxShadow = '0 10px 30px rgba(37,99,235,0.3)'; }}>
+            Sell My Car Now <ArrowRight size={20} />
           </Link>
         </div>
       </section>

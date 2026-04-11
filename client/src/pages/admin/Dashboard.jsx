@@ -1169,14 +1169,19 @@ const SellsTab = () => {
                   <img src={s.images[0]} alt="" style={{ width: 120, height: 90, borderRadius: '12px', objectFit: 'cover', border: '1.5px solid #EEE' }} />
                 )}
                 <div>
-                  <h4 style={{ color: '#111', fontWeight: 900, fontSize: '1.2rem', margin: 0, fontFamily: 'Rajdhani, sans-serif', textTransform: 'uppercase' }}>{s.brand} {s.model} ({s.year})</h4>
-                  <p style={{ color: '#666', fontSize: '0.85rem', fontWeight: 700, margin: '0.4rem 0' }}>{s.condition.toUpperCase()} • {s.kmDriven?.toLocaleString()} KM • {s.engineCC}CC</p>
+                  <h4 style={{ color: '#111', fontWeight: 900, fontSize: '1.2rem', margin: 0, fontFamily: 'Rajdhani, sans-serif', textTransform: 'uppercase' }}>{s.brand} {s.model} {s.variant ? `(${s.variant})` : ''}</h4>
+                  <p style={{ color: '#666', fontSize: '0.85rem', fontWeight: 700, margin: '0.4rem 0' }}>
+                    {s.year} • {s.kmDriven?.toLocaleString()} KM 
+                    {s.fuelType ? ` • ${s.fuelType.toUpperCase()}` : ''} 
+                    {s.transmission ? ` • ${s.transmission.toUpperCase()}` : ''}
+                    {s.condition ? ` • ${s.condition.toUpperCase()}` : ''}
+                  </p>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginTop: '0.8rem' }}>
-                    <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#E5393510', color: '#E53935', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.8rem' }}>{s.user?.name?.charAt(0).toUpperCase()}</div>
+                    <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#2563EB10', color: '#2563EB', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.8rem' }}>{s.user?.name?.charAt(0).toUpperCase()}</div>
                     <p style={{ color: '#111', fontSize: '0.85rem', fontWeight: 800, margin: 0 }}>{s.user?.name || 'N/A'} <span style={{ color: '#888', fontWeight: 600 }}>• {s.user?.phone || ''}</span></p>
                   </div>
-                  {s.pickupAddress?.city && <p style={{ color: '#0052CC', fontSize: '0.8rem', fontWeight: 800, marginTop: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>📍 {[s.pickupAddress.street, s.pickupAddress.city].filter(Boolean).join(', ').toUpperCase()}</p>}
-                  {s.isOneHourSell && <span style={{ display: 'inline-block', marginTop: '0.8rem', background: '#FFF7E6', color: '#D46B08', border: '1.5px solid rgba(212,107,8,0.1)', padding: '0.3rem 0.8rem', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 900 }}>⚡ EXPRESS SALE</span>}
+                  {s.pickupAddress?.city && <p style={{ color: '#2563EB', fontSize: '0.8rem', fontWeight: 800, marginTop: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>📍 {[s.pickupAddress.street, s.pickupAddress.city].filter(Boolean).join(', ').toUpperCase()}</p>}
+                  {s.isOneHourSell && <span style={{ display: 'inline-block', marginTop: '0.8rem', background: '#F0F7FF', color: '#2563EB', border: '1.5px solid rgba(37,99,235,0.1)', padding: '0.3rem 0.8rem', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 900 }}>⚡ EXPRESS SALE</span>}
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>

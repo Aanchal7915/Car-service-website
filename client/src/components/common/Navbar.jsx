@@ -8,8 +8,8 @@ import API from '../../api/axios';
 
 
 const navLinks = [
-  { label: 'Buy Bikes', href: '/bikes' },
-  { label: 'Sell Bike', href: '/sell' },
+  { label: 'Buy Cars', href: '/bikes' },
+  { label: 'Sell Car', href: '/sell' },
   { label: 'Service', href: '/services' },
   { label: 'Parts', href: '/parts' },
   { label: 'Featured', href: '/featured' },
@@ -83,15 +83,15 @@ export default function Navbar() {
   };
 
   return (
-    <nav style={{ background: '#111111', borderBottom: '1px solid #1e1e1e' }} className="sticky top-0 z-50">
+    <nav style={{ background: 'rgba(255, 255, 255, 0.85)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(0, 0, 0, 0.05)' }} className="sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <div style={{ background: 'linear-gradient(135deg, #E53935, #C62828)', borderRadius: '8px', padding: '6px 10px' }}>
-              <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 700, color: 'white', fontSize: '1.2rem', letterSpacing: '0.05em' }}>MOTO</span>
+            <div style={{ background: '#2563EB', borderRadius: '8px', padding: '6px 12px' }}>
+              <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 800, color: 'white', fontSize: '1.2rem', letterSpacing: '0.05em' }}>AUTO</span>
             </div>
-            <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 700, color: 'white', fontSize: '1.35rem', letterSpacing: '0.03em' }}>
+            <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 900, color: '#0F172A', fontSize: '1.35rem', letterSpacing: '0.03em' }}>
               XPRESS
             </span>
           </Link>
@@ -103,16 +103,18 @@ export default function Navbar() {
                 key={link.href}
                 to={link.href}
                 style={{
-                  color: location.pathname.startsWith(link.href) ? '#E53935' : '#ccc',
+                  color: location.pathname.startsWith(link.href) ? '#2563EB' : '#475569',
                   padding: '0.5rem 1rem',
                   borderRadius: '6px',
                   fontSize: '0.9rem',
-                  fontWeight: 500,
+                  fontWeight: 700,
                   textDecoration: 'none',
-                  transition: 'color 0.2s',
+                  transition: 'all 0.2s',
+                  fontFamily: 'Rajdhani, sans-serif',
+                  letterSpacing: '0.04em'
                 }}
-                onMouseEnter={(e) => { if (!location.pathname.startsWith(link.href)) e.target.style.color = 'white'; }}
-                onMouseLeave={(e) => { if (!location.pathname.startsWith(link.href)) e.target.style.color = '#ccc'; }}
+                onMouseEnter={(e) => { if (!location.pathname.startsWith(link.href)) e.target.style.color = '#0F172A'; }}
+                onMouseLeave={(e) => { if (!location.pathname.startsWith(link.href)) e.target.style.color = '#475569'; }}
               >
                 {link.label}
               </Link>
@@ -125,20 +127,20 @@ export default function Navbar() {
             <div className="hidden md:block" style={{ position: 'relative' }}>
               {!searchOpen ? (
                 <button onClick={() => { setSearchOpen(true); setTimeout(() => document.getElementById('nav-search-input')?.focus(), 100); }}
-                  style={{ color: '#ccc', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                  style={{ color: '#0F172A', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
                   <Search size={20} />
                 </button>
               ) : (
-                <form onSubmit={handleSearchSubmit} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '8px', padding: '0.3rem 0.7rem' }}>
-                  <Search size={14} style={{ color: '#E53935', flexShrink: 0 }} />
+                <form onSubmit={handleSearchSubmit} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#F1F5F9', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '0.3rem 0.7rem' }}>
+                  <Search size={14} style={{ color: '#2563EB', flexShrink: 0 }} />
                   <input
                     id="nav-search-input"
                     type="text"
-                    placeholder="Search bikes, parts..."
+                    placeholder="Search cars, parts..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onBlur={() => { if (!searchQuery) setSearchOpen(false); }}
-                    style={{ background: 'none', border: 'none', outline: 'none', color: 'white', width: 160, fontSize: '0.82rem' }}
+                    style={{ background: 'none', border: 'none', outline: 'none', color: '#0F172A', width: 160, fontSize: '0.82rem', fontWeight: 600 }}
                   />
                   {searchQuery && (
                     <button type="button" onClick={() => { setSearchQuery(''); setSearchOpen(false); }} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: '1rem', lineHeight: 1 }}>×</button>
@@ -148,30 +150,30 @@ export default function Navbar() {
             </div>
 
             {/* Pincode Input */}
-            <div className="hidden md:flex items-center gap-1.5" style={{ background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '8px', padding: '0.3rem 0.7rem' }}>
-              <MapPin size={13} style={{ color: '#E53935', flexShrink: 0 }} />
+            <div className="hidden md:flex items-center gap-1.5" style={{ background: '#F1F5F9', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '0.3rem 0.7rem' }}>
+              <MapPin size={13} style={{ color: '#2563EB', flexShrink: 0 }} />
               <input
                 type="text"
                 placeholder="Pincode"
                 maxLength="6"
                 value={pincode}
                 onChange={e => setPincode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                style={{ background: 'none', border: 'none', outline: 'none', color: 'white', width: 62, fontSize: '0.82rem' }}
+                style={{ background: 'none', border: 'none', outline: 'none', color: '#0F172A', width: 62, fontSize: '0.82rem', fontWeight: 600 }}
               />
               {isDeliverable !== null && (
-                <span style={{ fontSize: '0.68rem', fontWeight: 700, color: isDeliverable ? '#4CAF50' : '#E53935', whiteSpace: 'nowrap' }}>
+                <span style={{ fontSize: '0.68rem', fontWeight: 700, color: isDeliverable ? '#10B981' : '#EF4444', whiteSpace: 'nowrap' }}>
                   {isDeliverable ? '✓' : '✗'}
                 </span>
               )}
             </div>
 
             {/* Cart */}
-            <Link to="/cart" style={{ position: 'relative', color: '#ccc', display: 'flex', alignItems: 'center' }}>
+            <Link to="/cart" style={{ position: 'relative', color: '#0F172A', display: 'flex', alignItems: 'center' }}>
               <ShoppingCart size={20} />
               {itemCount > 0 && (
                 <span style={{
                   position: 'absolute', top: '-8px', right: '-8px',
-                  background: '#E53935', color: 'white', borderRadius: '50%',
+                  background: '#2563EB', color: 'white', borderRadius: '50%',
                   width: '18px', height: '18px', fontSize: '0.7rem',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700,
                 }}>
@@ -187,19 +189,19 @@ export default function Navbar() {
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   style={{
                     display: 'flex', alignItems: 'center', gap: '0.3rem',
-                    background: '#1A1A1A', border: '1px solid #2A2A2A',
-                    borderRadius: '8px', padding: '0.35rem 0.6rem', color: 'white',
-                    cursor: 'pointer', fontSize: '0.8rem',
+                    background: '#FFF', border: '1px solid rgba(156, 163, 175, 0.3)',
+                    borderRadius: '8px', padding: '0.35rem 0.6rem', color: '#0F172A',
+                    cursor: 'pointer', fontSize: '0.8rem', fontWeight: 700
                   }}
                 >
                   {dropdownOpen ? (
-                    <X size={18} style={{ color: '#E53935' }} />
+                    <X size={18} style={{ color: '#2563EB' }} />
                   ) : (
                     <>
                       {user.avatar ? (
                         <img src={user.avatar} alt={user.name} style={{ width: 24, height: 24, borderRadius: '50%', objectFit: 'cover' }} />
                       ) : (
-                        <div style={{ width: 24, height: 24, borderRadius: '50%', background: '#E53935', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 700 }}>
+                        <div style={{ width: 24, height: 24, borderRadius: '50%', background: '#0F172A', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 700, color: 'white' }}>
                           {user.name?.charAt(0).toUpperCase()}
                         </div>
                       )}
@@ -212,9 +214,9 @@ export default function Navbar() {
                 {dropdownOpen && (
                   <div style={{
                     position: 'absolute', right: 0, top: '110%',
-                    background: '#1A1A1A', border: '1px solid #2A2A2A',
+                    background: '#0F172A', border: '1px solid rgba(156, 163, 175, 0.2)',
                     borderRadius: '10px', minWidth: '180px', zIndex: 100,
-                    boxShadow: '0 8px 30px rgba(0,0,0,0.5)',
+                    boxShadow: '0 8px 30px rgba(0,0,0,0.4)',
                     overflow: 'hidden',
                   }}>
                     <Link to="/profile" onClick={() => setDropdownOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.75rem 1rem', color: '#ccc', textDecoration: 'none', fontSize: '0.9rem' }}
@@ -233,7 +235,7 @@ export default function Navbar() {
                       <Heart size={15} /> Wishlist
                     </Link>
                     {user.role === 'admin' && (
-                      <Link to="/admin" onClick={() => setDropdownOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.75rem 1rem', color: '#E53935', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600 }}
+                      <Link to="/admin" onClick={() => setDropdownOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.75rem 1rem', color: '#60A5FA', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600 }}
                         onMouseEnter={(e) => { e.currentTarget.style.background = '#222'; }}
                         onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}>
                         <Settings size={15} /> Admin Panel
@@ -251,13 +253,14 @@ export default function Navbar() {
               </div>
             ) : (
               <div className="flex items-center gap-1.5">
-                <Link to="/login" className="btn-outline hidden sm:inline-flex" style={{ padding: '0.4rem 0.9rem', fontSize: '0.78rem' }}>Login</Link>
+                <Link to="/login" className="btn-outline-dark hidden sm:inline-flex" style={{ padding: '0.4rem 0.9rem', fontSize: '0.78rem' }}>Login</Link>
                 <Link to="/register" className="btn-primary" style={{ padding: '0.4rem 0.9rem', fontSize: '0.78rem' }}>Sign Up</Link>
               </div>
             )}
 
+
             {/* Mobile hamburger */}
-            <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden" style={{ color: 'white', background: 'none', border: 'none', cursor: 'pointer' }}>
+            <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden" style={{ color: '#0F172A', background: 'none', border: 'none', cursor: 'pointer' }}>
               {mobileOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
@@ -267,29 +270,29 @@ export default function Navbar() {
         {mobileOpen && (
           <div style={{ borderTop: '1px solid #1e1e1e', padding: '1rem 0' }}>
             {/* Search in mobile */}
-            <form onSubmit={handleSearchSubmit} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '8px', padding: '0.5rem 0.8rem', marginBottom: '0.75rem' }}>
-              <Search size={14} style={{ color: '#E53935', flexShrink: 0 }} />
+            <form onSubmit={handleSearchSubmit} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#F1F5F9', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '0.5rem 0.8rem', marginBottom: '0.75rem' }}>
+              <Search size={14} style={{ color: '#2563EB', flexShrink: 0 }} />
               <input
                 type="text"
-                placeholder="Search bikes, parts..."
+                placeholder="Search cars, parts..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                style={{ background: 'none', border: 'none', outline: 'none', color: 'white', flex: 1, fontSize: '0.9rem', minWidth: 0 }}
+                style={{ background: 'none', border: 'none', outline: 'none', color: '#0F172A', flex: 1, fontSize: '0.9rem', minWidth: 0 }}
               />
               {searchQuery && (
                 <button type="button" onClick={() => setSearchQuery('')} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer' }}>×</button>
               )}
             </form>
             {/* Pincode in mobile */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '8px', padding: '0.5rem 0.8rem', marginBottom: '0.75rem' }}>
-              <MapPin size={14} style={{ color: '#E53935', flexShrink: 0 }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#F1F5F9', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '0.5rem 0.8rem', marginBottom: '0.75rem' }}>
+              <MapPin size={14} style={{ color: '#2563EB', flexShrink: 0 }} />
               <input
                 type="text"
                 placeholder="Enter Pincode"
                 maxLength="6"
                 value={pincode}
                 onChange={e => setPincode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                style={{ background: 'none', border: 'none', outline: 'none', color: 'white', flex: 1, fontSize: '0.9rem' }}
+                style={{ background: 'none', border: 'none', outline: 'none', color: '#0F172A', flex: 1, fontSize: '0.9rem' }}
               />
               {isDeliverable !== null && (
                 <span style={{ fontSize: '0.75rem', fontWeight: 700, color: isDeliverable ? '#4CAF50' : '#E53935' }}>
@@ -316,11 +319,11 @@ export default function Navbar() {
                   <Heart size={14} /> Wishlist
                 </Link>
                 {user.role === 'admin' && (
-                  <Link to="/admin" onClick={() => setMobileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#E53935', textDecoration: 'none', padding: '0.5rem 0', fontSize: '0.88rem', fontWeight: 700 }}>
+                  <Link to="/admin" onClick={() => setMobileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#60A5FA', textDecoration: 'none', padding: '0.5rem 0', fontSize: '0.88rem', fontWeight: 700 }}>
                     <Settings size={14} /> Admin Panel
                   </Link>
                 )}
-                <button onClick={() => { handleLogout(); setMobileOpen(false); }} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#E53935', background: 'none', border: 'none', cursor: 'pointer', padding: '0.5rem 0', fontSize: '0.88rem', fontWeight: 600, width: '100%' }}>
+                <button onClick={() => { handleLogout(); setMobileOpen(false); }} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer', padding: '0.5rem 0', fontSize: '0.88rem', fontWeight: 600, width: '100%' }}>
                   <LogOut size={14} /> Logout
                 </button>
               </div>

@@ -54,23 +54,24 @@ export default function MyBookings() {
     <div style={{ minHeight: '100vh', background: '#FFFFFF' }}>
       <div style={{ background: '#F9F9F9', borderBottom: '1px solid #EEE', padding: '2.5rem 0' }}>
         <div className="max-w-4xl mx-auto px-4">
-          <h1 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.5rem', fontWeight: 900, color: '#111' }}>
-            My <span style={{ color: '#E53935' }}>Bookings</span>
+          <h1 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.8rem', fontWeight: 950, color: '#0F172A', letterSpacing: '0.02em' }}>
+            MY <span style={{ color: '#2563EB' }}>DASHBOARD</span>
           </h1>
-          <p style={{ color: '#666', marginTop: '0.4rem', fontWeight: 500, fontSize: '1rem' }}>Track all your bookings, buy requests, sell requests, and orders</p>
+          <p style={{ color: '#64748B', marginTop: '0.6rem', fontWeight: 600, fontSize: '1.1rem' }}>Track your premium services, showroom requests, and orders</p>
  
           <div style={{ display: 'flex', gap: '0.6rem', marginTop: '1.8rem', overflowX: 'auto', paddingBottom: '5px' }} className="hide-scrollbar">
             {tabs.map(({ id, label, icon: Icon }) => (
               <button key={id} onClick={() => setActiveTab(id)}
                 style={{
                   display: 'flex', alignItems: 'center', gap: '0.6rem',
-                  padding: '0.8rem 1.4rem', borderRadius: '12px', border: '1.5px solid',
-                  borderColor: activeTab === id ? '#E53935' : '#EEE',
-                  background: activeTab === id ? '#FFF' : '#F9F9F9',
-                  color: activeTab === id ? '#E53935' : '#666',
-                  cursor: 'pointer', fontSize: '0.9rem', fontWeight: 800, transition: 'all 0.25s',
+                  padding: '0.8rem 1.6rem', borderRadius: '14px', border: '2px solid',
+                  borderColor: activeTab === id ? '#2563EB' : '#E2E8F0',
+                  background: activeTab === id ? '#EFF6FF' : '#F8FAFC',
+                  color: activeTab === id ? '#2563EB' : '#64748B',
+                  cursor: 'pointer', fontSize: '0.95rem', fontWeight: 900, transition: 'all 0.3s',
                   whiteSpace: 'nowrap',
-                  boxShadow: activeTab === id ? '0 8px 20px rgba(229,57,53,0.1)' : 'none'
+                  boxShadow: activeTab === id ? '0 10px 25px rgba(37, 99, 235, 0.15)' : 'none',
+                  fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.05em'
                 }}>
                 <Icon size={16} /> {label}
               </button>
@@ -98,8 +99,8 @@ export default function MyBookings() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
                   <div style={{ flex: 1, minWidth: '250px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.8rem' }}>
-                      <div style={{ background: '#FFF', width: 44, height: 44, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(229,57,53,0.15)', border: '1px solid rgba(229,57,53,0.1)' }}>
-                        <Wrench size={20} style={{ color: '#E53935' }} />
+                      <div style={{ background: '#F8FAFC', width: 44, height: 44, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 20px rgba(37, 99, 235, 0.15)', border: '1.5px solid rgba(37, 99, 235, 0.2)' }}>
+                        <Wrench size={20} style={{ color: '#2563EB' }} />
                       </div>
                       <div>
                         <h3 style={{ color: '#111', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.25rem', lineHeight: 1 }}>{booking.serviceLabel}</h3>
@@ -117,9 +118,9 @@ export default function MyBookings() {
                   </div>
                   <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
                     {booking.estimatedCost && (
-                      <div style={{ background: 'rgba(229,57,53,0.03)', padding: '0.6rem 1rem', borderRadius: '12px', border: '1px solid rgba(229,57,53,0.05)' }}>
-                        <div style={{ color: '#E53935', fontSize: '0.7rem', fontWeight: 900, letterSpacing: '0.04em', textTransform: 'uppercase' }}>ESTIMATED COST</div>
-                        <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.5rem', fontWeight: 900, color: '#111' }}>₹{booking.estimatedCost?.toLocaleString('en-IN')}</div>
+                      <div style={{ background: '#EFF6FF', padding: '0.8rem 1.2rem', borderRadius: '14px', border: '1px solid rgba(37, 99, 235, 0.1)' }}>
+                        <div style={{ color: '#2563EB', fontSize: '0.75rem', fontWeight: 950, letterSpacing: '0.06em', textTransform: 'uppercase', fontFamily: 'Rajdhani, sans-serif' }}>ESTIMATED COST</div>
+                        <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.6rem', fontWeight: 950, color: '#0F172A' }}>₹{booking.estimatedCost?.toLocaleString('en-IN')}</div>
                       </div>
                     )}
                     {booking.payment && (
@@ -141,11 +142,11 @@ export default function MyBookings() {
                       return (
                         <div key={s} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                           <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                            {i > 0 && <div style={{ flex: 1, height: 3, background: isComplete ? '#2E7D32' : '#F0F0F0' }} />}
-                            <div style={{ width: 24, height: 24, borderRadius: '50%', background: isComplete ? '#2E7D32' : '#F0F0F0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: isComplete ? '0 4px 10px rgba(46,125,50,0.2)' : 'none' }}>
+                            {i > 0 && <div style={{ flex: 1, height: 3, background: isComplete ? '#2563EB' : '#F1F5F9' }} />}
+                            <div style={{ width: 24, height: 24, borderRadius: '50%', background: isComplete ? '#2563EB' : '#F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: isComplete ? '0 6px 15px rgba(37, 99, 235, 0.25)' : 'none' }}>
                               {isComplete ? <CheckCircle size={14} color="white" /> : <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#CCC' }} />}
                             </div>
-                            {i < 3 && <div style={{ flex: 1, height: 3, background: stepIdx < currentIdx ? '#2E7D32' : '#F0F0F0' }} />}
+                            {i < 3 && <div style={{ flex: 1, height: 3, background: stepIdx < currentIdx ? '#2563EB' : '#F1F5F9' }} />}
                           </div>
                           <span style={{ color: isComplete ? '#111' : '#AAA', fontSize: '0.75rem', marginTop: '0.5rem', fontWeight: 800, textTransform: 'capitalize', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.02em' }}>{s.replace('_', ' ')}</span>
                         </div>
@@ -166,8 +167,8 @@ export default function MyBookings() {
                 <div style={{ background: '#FFF', width: 80, height: 80, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', boxShadow: '0 10px 30px rgba(0,0,0,0.04)' }}>
                   <TrendingUp size={40} style={{ color: '#CCC' }} />
                 </div>
-                <p style={{ color: '#888', fontSize: '1.1rem', fontWeight: 500, marginBottom: '2rem' }}>No sell requests yet</p>
-                <button onClick={() => navigate('/sell')} className="btn-primary" style={{ padding: '0.8rem 2.5rem', fontWeight: 700 }}>Sell a Bike</button>
+                <p style={{ color: '#888', fontSize: '1.1rem', fontWeight: 500, marginBottom: '2rem' }}>No valuation requests yet</p>
+                <button onClick={() => navigate('/sell')} className="btn-primary" style={{ background: '#0F172A', padding: '0.8rem 2.5rem', fontWeight: 900, borderRadius: '14px' }}>Sell a Car</button>
               </div>
             ) : sells.map((req) => (
               <div key={req._id} style={{ background: '#FFF', border: '1px solid #EEE', borderRadius: '20px', padding: '1.8rem', marginBottom: '1.5rem', boxShadow: '0 4px 20px rgba(0,0,0,0.02)', transition: 'all 0.3s' }}
@@ -200,23 +201,23 @@ export default function MyBookings() {
                   </div>
                   <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
                     {req.offeredPrice ? (
-                      <div style={{ background: 'rgba(46,125,50,0.03)', padding: '0.6rem 1rem', borderRadius: '12px', border: '1px solid rgba(46,125,50,0.05)' }}>
-                        <div style={{ color: '#2E7D32', fontSize: '0.7rem', fontWeight: 900, letterSpacing: '0.04em', textTransform: 'uppercase' }}>FINAL OFFER</div>
-                        <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.6rem', fontWeight: 900, color: '#111' }}>₹{req.offeredPrice?.toLocaleString('en-IN')}</div>
+                      <div style={{ background: '#EFF6FF', padding: '0.8rem 1.2rem', borderRadius: '14px', border: '1px solid rgba(37, 99, 235, 0.1)' }}>
+                        <div style={{ color: '#2563EB', fontSize: '0.75rem', fontWeight: 950, letterSpacing: '0.06em', textTransform: 'uppercase', fontFamily: 'Rajdhani, sans-serif' }}>FINAL OFFER</div>
+                        <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.8rem', fontWeight: 950, color: '#0F172A' }}>₹{req.offeredPrice?.toLocaleString('en-IN')}</div>
                       </div>
                     ) : req.estimatedPrice && (
-                      <div style={{ color: '#E53935', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.3rem' }}>Est: ₹{req.estimatedPrice?.toLocaleString('en-IN')}</div>
+                      <div style={{ color: '#2563EB', fontWeight: 950, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.4rem', letterSpacing: '0.02em' }}>EST: ₹{req.estimatedPrice?.toLocaleString('en-IN')}</div>
                     )}
                   </div>
                 </div>
                 {/* Pickup info */}
                 {req.pickupAddress && (
                   <div style={{ marginTop: '1.2rem', paddingTop: '1.2rem', borderTop: '1px solid #F5F5F5', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                    <div style={{ background: 'rgba(229,57,53,0.05)', padding: '0.4rem', borderRadius: '8px' }}>
-                      <CheckCircle size={14} style={{ color: '#E53935' }} />
+                    <div style={{ background: 'rgba(37, 99, 235, 0.08)', padding: '0.5rem', borderRadius: '10px' }}>
+                      <CheckCircle size={16} style={{ color: '#2563EB' }} />
                     </div>
-                    <span style={{ color: '#666', fontSize: '0.85rem', fontWeight: 600 }}>
-                      Pickup Scheduled: {[req.pickupAddress.street, req.pickupAddress.city].filter(Boolean).join(', ')}
+                    <span style={{ color: '#64748B', fontSize: '0.9rem', fontWeight: 700 }}>
+                      Inspection Scheduled: {[req.pickupAddress.street, req.pickupAddress.city].filter(Boolean).join(', ')}
                     </span>
                   </div>
                 )}
@@ -234,7 +235,7 @@ export default function MyBookings() {
                   <ShoppingBag size={40} style={{ color: '#CCC' }} />
                 </div>
                 <p style={{ color: '#888', fontSize: '1.1rem', fontWeight: 500, marginBottom: '2rem' }}>No orders yet</p>
-                <button onClick={() => navigate('/parts')} className="btn-primary" style={{ padding: '0.8rem 2.5rem', fontWeight: 700 }}>Browse Parts</button>
+                <button onClick={() => navigate('/parts')} className="btn-primary" style={{ background: '#0F172A', padding: '0.8rem 2.5rem', fontWeight: 900, borderRadius: '14px' }}>Browse Genuine Spares</button>
               </div>
             ) : orders.map((order) => (
               <div key={order._id} style={{ background: '#FFF', border: '1px solid #EEE', borderRadius: '20px', padding: '1.8rem', marginBottom: '1.5rem', boxShadow: '0 4px 20px rgba(0,0,0,0.02)', transition: 'all 0.3s' }}
@@ -254,8 +255,8 @@ export default function MyBookings() {
                 </div>
                 <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
                   {order.items?.map((item) => (
-                    <div key={item._id} style={{ fontSize: '0.8rem', color: '#111', background: '#F9F9F9', padding: '0.4rem 0.8rem', borderRadius: '10px', border: '1px solid #EEE', fontWeight: 700 }}>
-                      {item.name} <span style={{ color: '#E53935' }}>×{item.quantity}</span>
+                    <div key={item._id} style={{ fontSize: '0.8rem', color: '#0F172A', background: '#F8FAFC', padding: '0.4rem 0.8rem', borderRadius: '10px', border: '1px solid #E2E8F0', fontWeight: 800 }}>
+                      {item.name} <span style={{ color: '#2563EB' }}>×{item.quantity}</span>
                     </div>
                   ))}
                 </div>
@@ -270,11 +271,11 @@ export default function MyBookings() {
                       return (
                         <div key={s} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                           <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                            {i > 0 && <div style={{ flex: 1, height: 3, background: isComplete ? '#E53935' : '#F0F0F0' }} />}
-                            <div style={{ width: 20, height: 20, borderRadius: '50%', background: isComplete ? '#E53935' : '#F0F0F0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                              {isComplete ? <CheckCircle size={12} color="white" /> : <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#CCC' }} />}
+                            {i > 0 && <div style={{ flex: 1, height: 3, background: isComplete ? '#2563EB' : '#F1F5F9' }} />}
+                            <div style={{ width: 22, height: 22, borderRadius: '50%', background: isComplete ? '#2563EB' : '#F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                              {isComplete ? <CheckCircle size={14} color="white" /> : <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#CBD5E1' }} />}
                             </div>
-                            {i < 3 && <div style={{ flex: 1, height: 3, background: stepIdx < currentIdx ? '#E53935' : '#F0F0F0' }} />}
+                            {i < 3 && <div style={{ flex: 1, height: 3, background: stepIdx < currentIdx ? '#2563EB' : '#F1F5F9' }} />}
                           </div>
                           <span style={{ color: isComplete ? '#111' : '#AAA', fontSize: '0.72rem', marginTop: '0.4rem', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'Rajdhani, sans-serif' }}>{s}</span>
                         </div>
@@ -286,7 +287,7 @@ export default function MyBookings() {
             ))}
           </div>
         )}
-        {/* BIKE ENQUIRIES */}
+        {/* CAR ENQUIRIES */}
         {activeTab === 'enquiries' && (
           <div className="animate-fadeInUp">
             {enquiries.length === 0 ? (
@@ -294,8 +295,8 @@ export default function MyBookings() {
                 <div style={{ background: '#FFF', width: 80, height: 80, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', boxShadow: '0 10px 30px rgba(0,0,0,0.04)' }}>
                   <MessageSquare size={40} style={{ color: '#CCC' }} />
                 </div>
-                <p style={{ color: '#888', fontSize: '1.1rem', fontWeight: 500, marginBottom: '2rem' }}>No bike enquiries yet</p>
-                <button onClick={() => navigate('/bikes')} className="btn-primary" style={{ padding: '0.8rem 2.5rem', fontWeight: 700 }}>Browse Bikes</button>
+                <p style={{ color: '#888', fontSize: '1.1rem', fontWeight: 500, marginBottom: '2rem' }}>No showroom requests yet</p>
+                <button onClick={() => navigate('/bikes')} className="btn-primary" style={{ background: '#0F172A', padding: '0.8rem 2.5rem', fontWeight: 900, borderRadius: '14px' }}>Browse Cars</button>
               </div>
             ) : enquiries.map((enq) => (
               <div key={enq._id} style={{ background: '#FFF', border: '1px solid #EEE', borderRadius: '20px', padding: '1.8rem', marginBottom: '1.5rem', boxShadow: '0 4px 20px rgba(0,0,0,0.02)', transition: 'all 0.3s' }}
@@ -308,8 +309,8 @@ export default function MyBookings() {
                         {enq.bike?.images?.[0] ? (
                           <img src={enq.bike.images[0]} alt={enq.bike.model} style={{ width: 80, height: 60, borderRadius: '12px', objectFit: 'cover', border: '1px solid #EEE' }} />
                         ) : (
-                          <div style={{ background: 'rgba(229,57,53,0.05)', width: 80, height: 60, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(229,57,53,0.1)' }}>
-                            <MessageSquare size={20} style={{ color: '#E53935' }} />
+                          <div style={{ background: '#EFF6FF', width: 80, height: 60, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid rgba(37, 99, 235, 0.15)' }}>
+                            <MessageSquare size={20} style={{ color: '#2563EB' }} />
                           </div>
                         )}
                       </div>
@@ -322,13 +323,13 @@ export default function MyBookings() {
                       </div>
                     </div>
                     {enq.message && (
-                      <div style={{ background: '#F5F5F5', padding: '0.8rem 1rem', borderRadius: '10px', fontSize: '0.9rem', color: '#444', fontWeight: 600, borderLeft: '3px solid #E53935' }}>
+                      <div style={{ background: '#F8FAFC', padding: '1rem', borderRadius: '12px', fontSize: '0.95rem', color: '#334155', fontWeight: 700, borderLeft: '4px solid #2563EB' }}>
                         "{enq.message}"
                       </div>
                     )}
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.4rem', fontWeight: 900, color: '#111' }}>
+                    <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.6rem', fontWeight: 950, color: '#2563EB' }}>
                       ₹{enq.bike?.discountedPrice || enq.bike?.price?.toLocaleString('en-IN')}
                     </div>
                     <div style={{ color: '#888', fontSize: '0.75rem', fontWeight: 700, marginTop: '0.3rem' }}>Registered Ph: {enq.phone || 'N/A'}</div>

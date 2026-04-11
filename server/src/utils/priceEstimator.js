@@ -1,33 +1,40 @@
 /**
- * Basic bike price estimator based on year, km driven, condition
+ * Basic car price estimator based on luxury and utility factors
  */
-const estimateBikePrice = ({ brand, model, year, kmDriven, condition, engineCC }) => {
+const estimateCarPrice = ({ brand, model, year, kmDriven, fuelType, transmission, variant, ownerNumber }) => {
   const currentYear = new Date().getFullYear();
-  const ageYears = currentYear - year;
+  const ageYears = Math.max(0, currentYear - year);
 
-  // Base prices by engine CC range
-  let basePrice = 60000;
-  if (engineCC >= 150 && engineCC < 200) basePrice = 90000;
-  else if (engineCC >= 200 && engineCC < 400) basePrice = 130000;
-  else if (engineCC >= 400) basePrice = 250000;
+  // Base luxury/premium starting prices
+  let basePrice = 500000; // Minimal default
+  const brandCaps = brand.toLowerCase();
+  if (['mercedes-benz', 'bmw', 'audi', 'porsche'].includes(brandCaps)) {
+    basePrice = 3500000;
+  } else if (['toyota', 'volkswagen', 'skoda'].includes(brandCaps)) {
+    basePrice = 1200000;
+  } else if (['honda', 'hyundai', 'kia'].includes(brandCaps)) {
+    basePrice = 800000;
+  }
 
-  // Depreciation: ~15% per year
-  const depreciationFactor = Math.pow(0.85, ageYears);
+  // Depreciation: ~12% per year for luxury cars
+  const depreciationFactor = Math.pow(0.88, ageYears);
 
-  // Km-driven deduction
-  const kmDeduction = Math.min(kmDriven * 0.5, basePrice * 0.4);
+  // Km-driven deduction: Rs 3 per km for cars
+  const kmDeduction = Math.min(kmDriven * 3, basePrice * 0.4);
 
-  // Condition multiplier
-  const conditionMultipliers = {
-    excellent: 1.0,
-    good: 0.9,
-    fair: 0.75,
-    poor: 0.55,
-  };
-  const conditionFactor = conditionMultipliers[condition] || 0.8;
+  // Transmission multiplier
+  const transFactor = transmission === 'Automatic' ? 1.15 : 1.0;
 
-  const estimated = Math.round((basePrice * depreciationFactor - kmDeduction) * conditionFactor);
-  return Math.max(estimated, 5000); // min Rs. 5000
+  // Fuel Type multiplier
+  const fuelMultipliers = { 'Electric': 1.25, 'Hybrid': 1.2, 'Diesel': 1.1, 'Petrol': 1.0, 'CNG': 0.95 };
+  const fuelFactor = fuelMultipliers[fuelType] || 1.0;
+
+  // Owner count deduction
+  const ownerFactors = { '1st': 1.0, '2nd': 0.9, '3rd': 0.8, '4th': 0.7, '4th+': 0.6 };
+  const ownerFactor = ownerFactors[ownerNumber] || 0.9;
+
+  const estimated = Math.round((basePrice * depreciationFactor - kmDeduction) * transFactor * fuelFactor * ownerFactor);
+  return Math.max(estimated, 100000); // min Rs. 1 Lakh
 };
 
-module.exports = { estimateBikePrice };
+module.exports = { estimateCarPrice };

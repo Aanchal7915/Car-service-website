@@ -156,18 +156,18 @@ export default function PartDetail() {
   if (loading) return (
     <div className="min-h-[80vh] flex items-center justify-center bg-white">
       <div className="flex flex-col items-center gap-4">
-        <div className="w-12 h-12 border-4 border-gray-100 border-t-red-600 rounded-full animate-spin" />
-        <p className="font-bold text-gray-400 tracking-widest uppercase text-sm">Loading Excellence...</p>
+        <div className="w-12 h-12 border-4 border-gray-100 border-t-blue-600 rounded-full animate-spin" />
+        <p className="font-black text-gray-500 tracking-widest uppercase text-sm font-rajdhani">Assembling Quality...</p>
       </div>
     </div>
   );
 
   if (!part) return (
     <div className="min-h-[80vh] flex flex-col items-center justify-center bg-white p-4">
-      <AlertCircle size={64} className="text-red-500 mb-4" />
-      <h2 className="text-2xl font-black text-gray-900 mb-2">PART NOT FOUND</h2>
-      <p className="text-gray-500 mb-8 max-w-md text-center">We couldn't locate the specific spare part you're looking for. It might have been moved or discontinued.</p>
-      <Link to="/parts" className="btn-primary">BACK TO STORE</Link>
+      <AlertCircle size={64} className="text-blue-500 mb-4" />
+      <h2 className="text-3xl font-black text-gray-900 mb-2 font-rajdhani">SPARE NOT FOUND</h2>
+      <p className="text-gray-500 mb-8 max-w-md text-center">The specific component you're looking for is currently unavailable in our showroom.</p>
+      <Link to="/parts" className="btn-primary" style={{ background: '#0F172A', borderRadius: '12px', padding: '1rem 2.5rem' }}>BACK TO SHOWROOM</Link>
     </div>
   );
 
@@ -203,10 +203,10 @@ export default function PartDetail() {
           <button onClick={() => navigate('/parts')} style={{ background: 'none', border: 'none', color: '#666', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 700, transition: 'color 0.2s' }}
             onMouseEnter={e => e.currentTarget.style.color = '#111'}
             onMouseLeave={e => e.currentTarget.style.color = '#666'}>
-            <ArrowRight size={16} style={{ transform: 'rotate(180deg)' }} /> Back to Store
+            <ArrowRight size={16} style={{ transform: 'rotate(180deg)' }} /> Back to Spares
           </button>
           <span>/</span>
-          <span style={{ color: '#E53935', fontWeight: 800 }}>{part.name}</span>
+          <span style={{ color: '#2563EB', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{part.name}</span>
         </div>
       </div>
 
@@ -226,13 +226,13 @@ export default function PartDetail() {
                 style={{ position: 'absolute', top: '15px', right: '15px', width: '42px', height: '42px', borderRadius: '50%', background: 'white', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 10, boxShadow: '0 4px 15px rgba(0,0,0,0.1)', transition: 'transform 0.2s' }}
                 onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
                 onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}>
-                <Heart size={20} fill={isWishlisted ? '#E53935' : 'none'} color={isWishlisted ? '#E53935' : '#111'} strokeWidth={2.5} />
+                <Heart size={20} fill={isWishlisted ? '#EF4444' : 'none'} color={isWishlisted ? '#EF4444' : '#0F172A'} strokeWidth={2.5} />
               </button>
 
               {/* Discount badge */}
               {discount > 0 && (
                 <div style={{ position: 'absolute', top: 15, left: 15, zIndex: 10 }}>
-                  <span style={{ background: '#111', color: 'white', fontSize: '0.65rem', fontWeight: 900, padding: '4px 10px', borderRadius: '8px', letterSpacing: '0.04em' }}>{discount}% OFF</span>
+                  <span style={{ background: '#0F172A', color: 'white', fontSize: '0.65rem', fontWeight: 900, padding: '5px 12px', borderRadius: '10px', letterSpacing: '0.06em' }}>{discount}% OFF</span>
                 </div>
               )}
 
@@ -290,7 +290,7 @@ export default function PartDetail() {
               {/* Sold Out Overlay */}
               {effectiveStock === 0 && !isCheckingPincode && (
                 <div style={{ position: 'absolute', inset: 0, background: 'rgba(255,255,255,0.6)', backdropFilter: 'blur(2px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
-                  <span style={{ background: '#E53935', color: 'white', fontWeight: 900, padding: '0.6rem 2rem', borderRadius: '12px', fontSize: '0.9rem', transform: 'rotate(-12deg)', border: '3px solid white', boxShadow: '0 8px 25px rgba(0,0,0,0.2)' }}>
+                  <span style={{ background: '#2563EB', color: 'white', fontWeight: 950, padding: '0.7rem 2.5rem', borderRadius: '14px', fontSize: '0.95rem', transform: 'rotate(-8deg)', border: '4px solid white', boxShadow: '0 12px 35px rgba(37, 99, 235, 0.25)', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.1em' }}>
                     {selectedPincode.length === 6 && isUnavailable ? 'NOT AVAILABLE' : 'OUT OF STOCK'}
                   </span>
                 </div>
@@ -302,7 +302,7 @@ export default function PartDetail() {
               <div className="hide-scrollbar part-thumb-row" style={{ display: 'flex', gap: '0.8rem', overflowX: 'auto', paddingBottom: '0.8rem', marginBottom: '2rem' }}>
                 {images.map((src, i) => (
                   <button key={i} onClick={() => { setActiveImg(i); setZoomed(false); }}
-                    style={{ flexShrink: 0, width: 80, height: 80, borderRadius: '16px', overflow: 'hidden', border: '2.5px solid', borderColor: activeImg === i ? '#E53935' : 'transparent', cursor: 'pointer', padding: 0, position: 'relative', transition: 'all 0.2s', background: '#F5F5F5', opacity: activeImg === i ? 1 : 0.6, boxShadow: activeImg === i ? '0 4px 12px rgba(229,57,53,0.2)' : 'none' }}
+                    style={{ flexShrink: 0, width: 85, height: 85, borderRadius: '18px', overflow: 'hidden', border: '3.5px solid', borderColor: activeImg === i ? '#2563EB' : 'transparent', cursor: 'pointer', padding: 0, position: 'relative', transition: 'all 0.3s', background: '#F5F5F5', opacity: activeImg === i ? 1 : 0.7, boxShadow: activeImg === i ? '0 8px 20px rgba(37, 99, 235, 0.2)' : 'none' }}
                     onMouseEnter={e => { if (activeImg !== i) e.currentTarget.style.opacity = '1'; }}
                     onMouseLeave={e => { if (activeImg !== i) e.currentTarget.style.opacity = '0.6'; }}>
                     {isVideoUrl(src) ? (
@@ -320,9 +320,9 @@ export default function PartDetail() {
             {/* Description */}
             {part.description && (
               <div style={{ marginTop: '0.8rem', background: '#FFF', border: '1px solid #EEE', borderRadius: '20px', padding: '1.2rem', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
-                <h3 style={{ color: '#111', fontFamily: 'Rajdhani, sans-serif', fontSize: '1.2rem', fontWeight: 900, marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <div style={{ width: 6, height: 20, background: '#E53935', borderRadius: '4px' }} />
-                  Product Details
+                <h3 style={{ color: '#0F172A', fontFamily: 'Rajdhani, sans-serif', fontSize: '1.4rem', fontWeight: 950, marginBottom: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <div style={{ width: 6, height: 24, background: '#2563EB', borderRadius: '4px' }} />
+                  Component Overview
                 </h3>
                 <p style={{ color: '#555', lineHeight: 1.6, fontSize: '0.95rem', fontWeight: 500 }}>{part.description}</p>
               </div>
@@ -335,11 +335,11 @@ export default function PartDetail() {
             
             {/* Header */}
             <div style={{ marginBottom: '0.3rem' }}>
-              <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
+              <h1 className="text-2xl lg:text-3xl font-extrabold font-rajdhani tracking-tight leading-tight" style={{ color: '#2563EB', fontWeight: 800 }}>
                 {part.name}
               </h1>
             </div>
-            <div className="text-gray-500 font-medium mb-3">{part.brand || 'Original Equipment'}</div>
+            <div className="text-blue-600 font-extrabold mb-3 tracking-widest text-xs uppercase">{part.brand || 'AutoXpress Genuine'}</div>
 
             {/* Ratings Section */}
             <div className="flex items-center gap-2 mb-4">
@@ -362,9 +362,9 @@ export default function PartDetail() {
                 )}
               </div>
               {effectiveOriginal > effectivePrice && (
-                 <div className="mt-1">
-                   <span className="text-emerald-600 text-xs font-bold bg-emerald-50 px-2 py-1 rounded">
-                     SAVE ₹{(effectiveOriginal - effectivePrice).toLocaleString('en-IN')} ({discount}% OFF)
+                 <div className="mt-2 text-right">
+                   <span className="text-blue-600 text-xs font-black bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100 uppercase tracking-tight">
+                     OFFER: SAVE ₹{(effectiveOriginal - effectivePrice).toLocaleString('en-IN')} ({discount}% OFF)
                    </span>
                  </div>
               )}
@@ -382,11 +382,11 @@ export default function PartDetail() {
                   onChange={(e) => handlePincodeChange(e.target.value)}
                   placeholder="Enter Pincode"
                   maxLength={6}
-                  className="w-full h-12 bg-white border border-gray-300 rounded-lg px-4 font-medium transition-all focus:outline-none focus:border-emerald-500"
+                  className="w-full h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 font-bold transition-all focus:outline-none focus:border-blue-600 focus:bg-white"
                 />
                 <div className="absolute right-4 top-1/2 -translate-y-1/2">
                    {selectedPincode.length === 6 && (
-                     !isUnavailable ? <div className="p-1 bg-emerald-500 rounded-full text-white"><Check size={14} /></div> : <AlertCircle size={20} className="text-red-500" />
+                     !isUnavailable ? <div className="p-1 bg-blue-600 rounded-full text-white"><Check size={14} /></div> : <AlertCircle size={20} className="text-red-500" />
                    )}
                 </div>
               </div>
@@ -433,20 +433,20 @@ export default function PartDetail() {
             {/* CTA Action Bar */}
             <div style={{ marginBottom: '1.5rem' }}>
               {cartItem ? (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: '#F9F9F9', padding: '0.8rem', borderRadius: '12px', border: '1px solid #EEE' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: '#F8FAFC', padding: '1rem', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
                   <button onClick={() => updateQty(id, cartItem.quantity - 1)}
-                    style={{ width: 44, height: 44, borderRadius: '10px', border: 'none', background: '#111', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '1.2rem', fontWeight: 900 }}>-</button>
+                    style={{ width: 44, height: 44, borderRadius: '12px', border: 'none', background: '#2563EB', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '1.4rem', fontWeight: 950 }}>-</button>
                   <div style={{ flex: 1, textAlign: 'center' }}>
-                    <span style={{ fontSize: '0.7rem', fontWeight: 900, color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '0.2rem' }}>Qty in Cart</span>
-                    <span style={{ fontSize: '1.5rem', fontWeight: 950, color: '#111', fontFamily: 'Rajdhani, sans-serif' }}>{cartItem.quantity}</span>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 900, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.12em', display: 'block', marginBottom: '0.2rem', fontFamily: 'Rajdhani, sans-serif' }}>Qty in Cart</span>
+                    <span style={{ fontSize: '1.8rem', fontWeight: 950, color: '#0F172A', fontFamily: 'Rajdhani, sans-serif', lineHeight: 1 }}>{cartItem.quantity}</span>
                   </div>
                   <button onClick={() => updateQty(id, cartItem.quantity + 1)}
-                    style={{ width: 44, height: 44, borderRadius: '10px', border: 'none', background: '#111', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '1.2rem', fontWeight: 900 }}>+</button>
+                    style={{ width: 44, height: 44, borderRadius: '12px', border: 'none', background: '#2563EB', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '1.4rem', fontWeight: 950 }}>+</button>
                 </div>
               ) : (
-                <button disabled={isUnavailable || effectiveStock === 0} onClick={handleAddToCart}
-                  className="btn-primary" style={{ width: '100%', height: '52px', borderRadius: '12px', fontSize: '1rem', fontWeight: 900, background: isUnavailable || effectiveStock === 0 ? '#EEE' : '#111', color: isUnavailable || effectiveStock === 0 ? '#AAA' : 'white', cursor: isUnavailable || effectiveStock === 0 ? 'not-allowed' : 'pointer', justifyContent: 'center' }}>
-                  <ShoppingCart size={20} /> {effectiveStock === 0 ? 'OUT OF STOCK' : 'ADD TO CART'}
+                 <button disabled={isUnavailable || effectiveStock === 0} onClick={handleAddToCart}
+                  className="btn-primary" style={{ width: '100%', height: '60px', borderRadius: '14px', fontSize: '1.1rem', fontWeight: 950, background: isUnavailable || effectiveStock === 0 ? '#E2E8F0' : '#2563EB', color: isUnavailable || effectiveStock === 0 ? '#94A3B8' : 'white', cursor: isUnavailable || effectiveStock === 0 ? 'not-allowed' : 'pointer', justifyContent: 'center', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.1em', boxShadow: isUnavailable || effectiveStock === 0 ? 'none' : '0 12px 30px rgba(37, 99, 235, 0.2)' }}>
+                  <ShoppingCart size={22} /> {effectiveStock === 0 ? 'OUT OF STOCK' : 'ADD TO CART'}
                 </button>
               )}
             </div>
@@ -458,8 +458,8 @@ export default function PartDetail() {
         {similar.length > 0 && (
           <div style={{ marginTop: '4rem', marginBottom: '4rem', borderTop: '1px solid #EEE', paddingTop: '3rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-              <h3 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.8rem', fontWeight: 900, color: '#111' }}>Recommended <span style={{ color: '#E53935' }}>Items</span></h3>
-              <Link to="/parts" style={{ color: '#E53935', fontWeight: 800, fontSize: '0.9rem', textDecoration: 'none' }}>View All</Link>
+              <h3 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2rem', fontWeight: 950, color: '#0F172A', letterSpacing: '0.02em' }}>RECOMMENDED <span style={{ color: '#2563EB' }}>SPARES</span></h3>
+              <Link to="/parts" style={{ color: '#2563EB', fontWeight: 900, fontSize: '0.95rem', textDecoration: 'none', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.05em' }}>EXPLORE ALL</Link>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1.5rem' }}>
               {similar.map(p => <PartCard key={p._id || p.id} part={p} />)}

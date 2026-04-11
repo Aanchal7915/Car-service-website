@@ -5,9 +5,10 @@ import { useAuth } from '../../context/AuthContext';
 import { toggleWishlist as toggleWishlistApi } from '../../api/authApi';
 import toast from 'react-hot-toast';
 
-export default function BikeCard({ bike, hideBadges = false }) {
+export default function CarCard({ car, bike, hideBadges = false }) {
+  const target = car || bike;
   const { wishlist = [], toggleWishlist } = useAuth();
-  const isWishlisted = Array.isArray(wishlist) && wishlist.includes(bike._id);
+  const isWishlisted = Array.isArray(wishlist) && wishlist.includes(target?._id);
   const [hovered, setHovered] = useState(false);
 
   const [selectedPincode, setSelectedPincode] = useState(
@@ -23,13 +24,13 @@ export default function BikeCard({ bike, hideBadges = false }) {
   }, []);
 
   const pincodeData = useMemo(() => {
-    if (!selectedPincode || !Array.isArray(bike.pincodePricing) || bike.pincodePricing.length === 0) return null;
-    return bike.pincodePricing.find(p => p.pincode === selectedPincode.trim()) || null;
-  }, [bike.pincodePricing, selectedPincode]);
+    if (!selectedPincode || !Array.isArray(target?.pincodePricing) || target?.pincodePricing.length === 0) return null;
+    return target?.pincodePricing.find(p => p.pincode === selectedPincode.trim()) || null;
+  }, [target?.pincodePricing, selectedPincode]);
 
-  const effectivePrice = pincodeData ? Number(pincodeData.price) : (bike.discountedPrice || bike.price);
-  const effectiveOriginalPrice = pincodeData?.originalPrice ? Number(pincodeData.originalPrice) : bike.price;
-  const effectiveLocation = pincodeData?.location || bike.location?.city;
+  const effectivePrice = pincodeData ? Number(pincodeData.price) : (target?.discountedPrice || target?.price);
+  const effectiveOriginalPrice = pincodeData?.originalPrice ? Number(pincodeData.originalPrice) : target?.price;
+  const effectiveLocation = pincodeData?.location || target?.location?.city;
 
   const discount = effectiveOriginalPrice && effectiveOriginalPrice > effectivePrice
     ? Math.round(((effectiveOriginalPrice - effectivePrice) / effectiveOriginalPrice) * 100)
@@ -38,8 +39,8 @@ export default function BikeCard({ bike, hideBadges = false }) {
   const handleWishlist = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    toggleWishlist(bike._id);
-    toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist');
+    toggleWishlist(target?._id);
+    toast.success(isWishlisted ? 'Removed from favorites' : 'Added to favorites');
   };
 
   return (
@@ -54,32 +55,32 @@ export default function BikeCard({ bike, hideBadges = false }) {
         display: 'flex',
         flexDirection: 'column',
         cursor: 'pointer',
-        boxShadow: hovered ? '0 20px 50px rgba(0,0,0,0.1), 0 0 0 1px #EEE' : '0 4px 15px rgba(0,0,0,0.05)',
-        transform: hovered ? 'translateY(-8px)' : 'translateY(0)',
-        transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        boxShadow: hovered ? '0 30px 60px rgba(15, 23, 42, 0.15), 0 0 0 1px rgba(37, 99, 235, 0.1)' : '0 10px 30px rgba(0,0,0,0.04)',
+        transform: hovered ? 'translateY(-12px)' : 'translateY(0)',
+        transition: 'all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)',
         height: '100%',
       }}
     >
-      <Link to={`/bikes/${bike._id}`} style={{ textDecoration: 'none', height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <Link to={`/bikes/${target?._id}`} style={{ textDecoration: 'none', height: '100%', display: 'flex', flexDirection: 'column' }}>
         {/* Top Image Section (Light background) */}
         <div style={{ position: 'relative', height: '180px', background: '#F5F5F5', overflow: 'hidden' }}>
           <img
-            src={bike.images?.[0] || 'https://via.placeholder.com/400x300/F5F5F5/E53935?text=No+Image'}
-            alt={bike.title}
+            src={target?.images?.[0] || 'https://via.placeholder.com/400x300/F8FAFC/2563EB?text=No+Image'}
+            alt={target?.title}
             style={{
-              width: '100%', height: '100%', objectFit: 'contain', padding: '1rem',
-              transform: hovered ? 'scale(1.08)' : 'scale(1)',
-              transition: 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+              width: '100%', height: '100%', objectFit: 'contain', padding: '1.2rem',
+              transform: hovered ? 'scale(1.1) translateY(-8px)' : 'scale(1)',
+              transition: 'transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)',
             }}
           />
-          
+
           {/* Top-right: Heart (Wishlist) */}
           <button
             onClick={handleWishlist}
             style={{
               position: 'absolute', top: 12, right: 12,
               width: 34, height: 34, borderRadius: '50%',
-              background: isWishlisted ? '#E53935' : 'rgba(17,17,17,0.85)',
+              background: isWishlisted ? '#EF4444' : 'rgba(15, 23, 42, 0.8)',
               border: 'none',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               cursor: 'pointer', backdropFilter: 'blur(10px)',
@@ -95,12 +96,12 @@ export default function BikeCard({ bike, hideBadges = false }) {
           {/* Top-left: Type Badge */}
           <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', gap: '0.5rem' }}>
             <span style={{
-              background: bike.type === 'new' ? '#2E7D32' : '#111', color: 'white',
-              fontSize: '0.65rem', fontWeight: 950,
-              padding: '3px 12px', borderRadius: '30px',
-              letterSpacing: '0.04em', textTransform: 'uppercase'
+              background: target?.type === 'new' ? '#10B981' : '#0F172A', color: 'white',
+              fontSize: '0.65rem', fontWeight: 900,
+              padding: '4px 14px', borderRadius: '30px',
+              letterSpacing: '0.06em', textTransform: 'uppercase'
             }}>
-              {bike.type === 'new' ? 'NEW' : 'USED'}
+              {target?.type === 'new' ? 'CERTIFIED NEW' : 'PRE-OWNED'}
             </span>
           </div>
 
@@ -111,11 +112,11 @@ export default function BikeCard({ bike, hideBadges = false }) {
           {/* Metadata Row 1 */}
           <div style={{ marginBottom: '0.3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', gap: '0.6rem' }}>
-              <span style={{ color: '#E53935', fontSize: '0.6rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '2px', fontFamily: 'Rajdhani, sans-serif' }}>
-                 <Calendar size={10} /> {bike.year}
+              <span style={{ color: '#2563EB', fontSize: '0.6rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '2px', fontFamily: 'Rajdhani, sans-serif' }}>
+                <Calendar size={11} /> {target?.year}
               </span>
-              <span style={{ color: '#888', fontSize: '0.6rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '2px', fontFamily: 'Rajdhani, sans-serif' }}>
-                 <Gauge size={10} /> {bike.kmDriven?.toLocaleString()} KM
+              <span style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '2px', fontFamily: 'Rajdhani, sans-serif' }}>
+                <Gauge size={11} /> {target?.kmDriven?.toLocaleString()} KM
               </span>
             </div>
           </div>
@@ -128,12 +129,12 @@ export default function BikeCard({ bike, hideBadges = false }) {
             textTransform: 'uppercase',
             overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
           }}>
-            {bike.title || `${bike.brand} ${bike.model}`}
+            {target?.title || `${target?.brand} ${target?.model}`}
           </h3>
 
           {/* Subtitle/Brand */}
-          <p style={{ color: '#888', fontSize: '0.7rem', fontWeight: 600, marginBottom: '0.3rem' }}>
-            {bike.brand?.toUpperCase()} {bike.engineCC ? `• ${bike.engineCC}CC` : ''}
+          <p style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: 700, marginBottom: '0.3rem' }}>
+            {target?.brand?.toUpperCase()} {target?.engineCC ? `• ${target?.engineCC}CC` : ''}
           </p>
 
           {/* Ratings Section */}
@@ -144,23 +145,24 @@ export default function BikeCard({ bike, hideBadges = false }) {
               ))}
             </div>
             <span style={{ color: '#AAA', fontSize: '0.65rem', fontWeight: 600, marginLeft: '2px' }}>
-               ({bike.numReviews || 15})
+              ({target?.numReviews || 24} reviews)
             </span>
           </div>
 
           {/* Price row + Action */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
-            <span className="product-card-price" style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.2rem', fontWeight: 950, color: '#E53935', lineHeight: 1 }}>
+            <span className="product-card-price" style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.25rem', fontWeight: 950, color: '#2563EB', lineHeight: 1 }}>
               ₹{effectivePrice?.toLocaleString('en-IN')}
             </span>
             <div className="product-card-btn" style={{
-              height: '28px', padding: '0 0.7rem',
-              background: '#111', borderRadius: '6px', color: 'white',
-              display: 'flex', alignItems: 'center', gap: '0.3rem',
-              fontSize: '0.65rem', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif',
-              letterSpacing: '0.04em', boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
+              height: '32px', padding: '0 1rem',
+              background: '#2563EB', borderRadius: '8px', color: 'white',
+              display: 'flex', alignItems: 'center', gap: '0.4rem',
+              fontSize: '0.7rem', fontWeight: 800, fontFamily: 'Rajdhani, sans-serif',
+              letterSpacing: '0.05em', boxShadow: '0 6px 15px rgba(37, 99, 235, 0.2)',
+              transition: 'all 0.3s'
             }}>
-              DETAILS <ArrowRight size={12} />
+              DETAILS <ArrowRight size={14} />
             </div>
           </div>
         </div>

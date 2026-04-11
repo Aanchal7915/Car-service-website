@@ -106,10 +106,10 @@ export default function BikeDetail() {
           <button onClick={() => navigate('/bikes')} style={{ background: 'none', border: 'none', color: '#666', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 700, transition: 'color 0.2s' }}
             onMouseEnter={e => e.currentTarget.style.color = '#111'}
             onMouseLeave={e => e.currentTarget.style.color = '#666'}>
-            <ArrowLeft size={16} /> Back to Inventory
+            <ArrowLeft size={16} /> Back to Showroom
           </button>
           <span>/</span>
-          <span style={{ color: '#E53935', fontWeight: 800 }}>{bike.brand} {bike.model}</span>
+          <span style={{ color: '#2563EB', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{bike.brand} {bike.model}</span>
         </div>
       </div>
  
@@ -139,13 +139,13 @@ export default function BikeDetail() {
                 style={{ position: 'absolute', top: '15px', right: '15px', width: '42px', height: '42px', borderRadius: '50%', background: 'white', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 10, boxShadow: '0 4px 15px rgba(0,0,0,0.1)', transition: 'transform 0.2s' }}
                 onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
                 onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}>
-                <Heart size={20} fill={wishlisted ? '#E53935' : 'none'} color={wishlisted ? '#E53935' : '#111'} strokeWidth={2.5} />
+                <Heart size={20} fill={wishlisted ? '#EF4444' : 'none'} color={wishlisted ? '#EF4444' : '#0F172A'} strokeWidth={2.5} />
               </button>
 
               {/* Discount badge */}
               {discount > 0 && (
                 <div style={{ position: 'absolute', top: 15, left: 15, zIndex: 10 }}>
-                  <span style={{ background: '#111', color: 'white', fontSize: '0.65rem', fontWeight: 900, padding: '4px 10px', borderRadius: '8px', letterSpacing: '0.04em' }}>{discount}% OFF</span>
+                  <span style={{ background: '#0F172A', color: 'white', fontSize: '0.65rem', fontWeight: 900, padding: '5px 12px', borderRadius: '10px', letterSpacing: '0.06em' }}>{discount}% OFF</span>
                 </div>
               )}
 
@@ -206,7 +206,7 @@ export default function BikeDetail() {
               <div className="hide-scrollbar bike-thumb-row" style={{ display: 'flex', gap: '0.8rem', overflowX: 'auto', paddingBottom: '0.8rem', marginBottom: '2rem' }}>
                 {media.map((src, i) => (
                   <button key={i} onClick={() => { setSelectedImage(i); setZoomed(false); }}
-                    style={{ flexShrink: 0, width: 80, height: 80, borderRadius: '16px', overflow: 'hidden', border: '2.5px solid', borderColor: selectedImage === i ? '#E53935' : 'transparent', cursor: 'pointer', padding: 0, position: 'relative', transition: 'all 0.2s', background: '#F5F5F5', opacity: selectedImage === i ? 1 : 0.6, boxShadow: selectedImage === i ? '0 4px 12px rgba(229,57,53,0.2)' : 'none' }}
+                    style={{ flexShrink: 0, width: 85, height: 85, borderRadius: '16px', overflow: 'hidden', border: '3px solid', borderColor: selectedImage === i ? '#2563EB' : 'transparent', cursor: 'pointer', padding: 0, position: 'relative', transition: 'all 0.3s', background: '#F5F5F5', opacity: selectedImage === i ? 1 : 0.7, boxShadow: selectedImage === i ? '0 6px 15px rgba(37, 99, 235, 0.2)' : 'none' }}
                     onMouseEnter={e => { if (selectedImage !== i) e.currentTarget.style.opacity = '1'; }}
                     onMouseLeave={e => { if (selectedImage !== i) e.currentTarget.style.opacity = '0.6'; }}>
                     {isVideo(src) ? (
@@ -224,9 +224,9 @@ export default function BikeDetail() {
             {/* Specifications */}
             {bike.specifications && Object.keys(bike.specifications).some(k => bike.specifications[k]) && (
               <div style={{ marginTop: '0.8rem', background: '#FFF', border: '1px solid #EEE', borderRadius: '20px', padding: '1.2rem', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
-                <h3 style={{ color: '#111', fontFamily: 'Rajdhani, sans-serif', fontSize: '1.2rem', fontWeight: 900, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <div style={{ width: 6, height: 20, background: '#E53935', borderRadius: '4px' }} />
-                  Full Specifications
+                <h3 style={{ color: '#0F172A', fontFamily: 'Rajdhani, sans-serif', fontSize: '1.4rem', fontWeight: 950, marginBottom: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <div style={{ width: 6, height: 24, background: '#2563EB', borderRadius: '4px' }} />
+                  Technical Specifications
                 </h3>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
                   {Object.entries(bike.specifications || {}).map(([key, value]) => value && (
@@ -242,8 +242,8 @@ export default function BikeDetail() {
             {/* Description */}
             {bike.description && (
               <div style={{ marginTop: '1.2rem', background: '#FFF', border: '1px solid #EEE', borderRadius: '20px', padding: '1.2rem', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
-                <h3 style={{ color: '#111', fontFamily: 'Rajdhani, sans-serif', fontSize: '1.2rem', fontWeight: 900, marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <div style={{ width: 6, height: 20, background: '#E53935', borderRadius: '4px' }} />
+                <h3 style={{ color: '#0F172A', fontFamily: 'Rajdhani, sans-serif', fontSize: '1.4rem', fontWeight: 950, marginBottom: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <div style={{ width: 6, height: 24, background: '#2563EB', borderRadius: '4px' }} />
                   Vehicle Overview
                 </h3>
                 <p style={{ color: '#555', lineHeight: 1.6, fontSize: '0.95rem', fontWeight: 500 }}>{bike.description}</p>
@@ -259,18 +259,18 @@ export default function BikeDetail() {
                 <span className={`badge ${bike.type === 'new' ? 'badge-green' : 'badge-blue'}`} style={{ fontWeight: 800, fontSize: '0.6rem' }}>{bike.type === 'new' ? 'NEW' : 'CERTIFIED'}</span>
               </div>
  
-              <h1 style={{ color: '#111', fontFamily: 'Rajdhani, sans-serif', fontSize: '1.8rem', fontWeight: 900, marginBottom: '0.4rem', lineHeight: 1.1 }}>
+              <h1 style={{ color: '#0F172A', fontFamily: 'Rajdhani, sans-serif', fontSize: '2.4rem', fontWeight: 950, marginBottom: '0.6rem', lineHeight: 1, letterSpacing: '0.01em' }}>
                 {bike.brand} {bike.model}
               </h1>
  
-              <div style={{ marginBottom: '1.2rem', borderBottom: '1px solid #EEE', paddingBottom: '1rem' }}>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.8rem' }}>
-                  <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.5rem', fontWeight: 950, color: '#E53935', lineHeight: 1 }}>
+              <div style={{ marginBottom: '1.5rem', borderBottom: '1px solid #E2E8F0', paddingBottom: '1.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '1rem' }}>
+                  <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.8rem', fontWeight: 950, color: '#2563EB', lineHeight: 1 }}>
                     ₹{effectivePrice?.toLocaleString('en-IN')}
                   </div>
                   {discount > 0 && (
                     <div style={{
-                      background: 'rgba(229,57,53,0.1)', color: '#E53935',
+                      background: 'rgba(37, 99, 235, 0.1)', color: '#2563EB',
                       fontSize: '0.8rem', fontWeight: 900,
                       padding: '2px 8px', borderRadius: '6px',
                       fontFamily: 'Rajdhani, sans-serif'
@@ -296,8 +296,8 @@ export default function BikeDetail() {
                 ].map(({ icon: Icon, label, value }) => (
                   <div key={label} style={{ padding: '0.6rem 0.8rem', background: '#F9F9F9', borderRadius: '12px', border: '1px solid #EEE' }}>
                     <div style={{ color: '#888', fontSize: '0.65rem', marginBottom: '0.2rem', fontWeight: 800, textTransform: 'uppercase' }}>{label}</div>
-                    <div style={{ color: '#111', fontWeight: 800, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                      <Icon size={14} style={{ color: '#E53935' }} /> {value}
+                    <div style={{ color: '#0F172A', fontWeight: 900, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.4rem', fontFamily: 'Rajdhani, sans-serif' }}>
+                      <Icon size={16} style={{ color: '#2563EB' }} /> {value}
                     </div>
                   </div>
                 ))}
@@ -333,10 +333,10 @@ export default function BikeDetail() {
 
               {/* Status if already enquired */}
               {bike.userEnquiry && (
-                <div style={{ marginBottom: '1.2rem', padding: '0.8rem', background: 'rgba(229,57,53,0.05)', border: '1px solid rgba(229,57,53,0.1)', borderRadius: '12px' }}>
-                  <div style={{ color: '#E53935', fontSize: '0.65rem', fontWeight: 900, textTransform: 'uppercase', marginBottom: '0.2rem' }}>ENQUIRY STATUS</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#111', fontWeight: 800, fontSize: '0.9rem' }}>
-                    <CheckCircle size={14} style={{ color: '#2E7D32' }} /> 
+                <div style={{ marginBottom: '1.2rem', padding: '1rem', background: 'rgba(37, 99, 235, 0.05)', border: '1px solid rgba(37, 99, 235, 0.1)', borderRadius: '14px' }}>
+                  <div style={{ color: '#2563EB', fontSize: '0.7rem', fontWeight: 900, textTransform: 'uppercase', marginBottom: '0.3rem', letterSpacing: '0.1em' }}>ENQUIRY STATUS</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#0F172A', fontWeight: 900, fontSize: '1rem', fontFamily: 'Rajdhani, sans-serif' }}>
+                    <CheckCircle size={16} style={{ color: '#10B981' }} /> 
                     {bike.userEnquiry.status?.toUpperCase() || 'REQUESTED'}
                   </div>
                 </div>
@@ -344,12 +344,12 @@ export default function BikeDetail() {
  
               {/* Action Buttons */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
-                <button onClick={handleEnquire} disabled={enquirySending} className="btn-primary" style={{ height: '52px', borderRadius: '12px', fontSize: '1rem', fontWeight: 900, background: '#111' }}>
-                  <MessageCircle size={20} /> {enquirySending ? 'SENDING...' : 'ENQUIRE NOW'}
+                <button onClick={handleEnquire} disabled={enquirySending} className="btn-primary" style={{ height: '56px', borderRadius: '14px', fontSize: '1.1rem', fontWeight: 950, background: '#2563EB', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.1em' }}>
+                  <MessageCircle size={22} /> {enquirySending ? 'SENDING...' : 'ENQUIRE NOW'}
                 </button>
                 {bike.seller?.phone && (
-                  <a href={`tel:${bike.seller.phone}`} className="btn-outline" style={{ height: '52px', borderRadius: '12px', fontSize: '1rem', fontWeight: 800, background: '#FFF', color: '#111', border: '2px solid #111', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Phone size={18} /> CALL SELLER
+                  <a href={`tel:${bike.seller.phone}`} className="btn-outline" style={{ height: '56px', borderRadius: '14px', fontSize: '1.1rem', fontWeight: 900, background: '#FFF', color: '#0F172A', border: '2px solid #E2E8F0', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Rajdhani, sans-serif' }}>
+                    <Phone size={20} /> CALL SELLER
                   </a>
                 )}
               </div>
@@ -359,8 +359,8 @@ export default function BikeDetail() {
             {bike.seller && (
               <div className="animate-fadeIn" style={{ background: '#F9F9F9', border: '1px solid #EEE', borderRadius: '20px', padding: '1.5rem', animationDelay: '0.3s' }}>
                 <p style={{ color: '#888', fontSize: '0.7rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1.2rem' }}>LISTED BY</p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <div style={{ width: 50, height: 50, borderRadius: '16px', background: '#E53935', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, color: 'white', fontSize: '1.3rem', boxShadow: '0 5px 15px rgba(229,57,53,0.3)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem' }}>
+                  <div style={{ width: 56, height: 56, borderRadius: '16px', background: '#2563EB', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 950, color: 'white', fontSize: '1.5rem', boxShadow: '0 8px 20px rgba(37, 99, 235, 0.2)', fontFamily: 'Rajdhani, sans-serif' }}>
                     {bike.seller.name?.charAt(0).toUpperCase()}
                   </div>
                   <div>

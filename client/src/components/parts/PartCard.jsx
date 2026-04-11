@@ -49,9 +49,9 @@ export default function PartCard({ part }) {
         display: 'flex',
         flexDirection: 'column',
         cursor: 'pointer',
-        boxShadow: hovered ? '0 20px 50px rgba(0,0,0,0.1), 0 0 0 1px #EEE' : '0 4px 15px rgba(0,0,0,0.05)',
-        transform: hovered ? 'translateY(-8px)' : 'translateY(0)',
-        transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        boxShadow: hovered ? '0 30px 60px rgba(15, 23, 42, 0.15), 0 0 0 1px rgba(37, 99, 235, 0.1)' : '0 10px 30px rgba(0,0,0,0.04)',
+        transform: hovered ? 'translateY(-12px)' : 'translateY(0)',
+        transition: 'all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)',
         height: '100%',
       }}
     >
@@ -59,12 +59,12 @@ export default function PartCard({ part }) {
         {/* Top Image Section (Light background, rounded corners) */}
         <div style={{ position: 'relative', height: '180px', background: '#F5F5F5', overflow: 'hidden' }}>
           <img
-            src={part.images?.[0] || 'https://via.placeholder.com/400x300/F5F5F5/E53935?text=No+Image'}
+            src={part.images?.[0] || 'https://via.placeholder.com/400x300/F8FAFC/2563EB?text=No+Image'}
             alt={part.name}
             style={{
-              width: '100%', height: '100%', objectFit: 'contain', padding: '1rem',
-              transform: hovered ? 'scale(1.08)' : 'scale(1)',
-              transition: 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+              width: '100%', height: '100%', objectFit: 'contain', padding: '1.2rem',
+              transform: hovered ? 'scale(1.1)' : 'scale(1)',
+              transition: 'transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)',
             }}
           />
           
@@ -74,7 +74,7 @@ export default function PartCard({ part }) {
             style={{
               position: 'absolute', top: 12, right: 12,
               width: 34, height: 34, borderRadius: '50%',
-              background: isWishlisted ? '#E53935' : 'rgba(17,17,17,0.85)',
+              background: isWishlisted ? '#EF4444' : 'rgba(15, 23, 42, 0.8)',
               border: 'none',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               cursor: 'pointer', backdropFilter: 'blur(10px)',
@@ -123,8 +123,8 @@ export default function PartCard({ part }) {
           {/* Category & Status */}
           <div style={{ marginBottom: '0.4rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{
-              fontSize: '0.65rem', color: '#E53935',
-              textTransform: 'uppercase', fontWeight: 900,
+              fontSize: '0.65rem', color: '#2563EB',
+              textTransform: 'uppercase', fontWeight: 950,
               letterSpacing: '0.08em', fontFamily: 'Rajdhani, sans-serif'
             }}>
               {part.category?.replace('_', ' ')}
@@ -162,7 +162,7 @@ export default function PartCard({ part }) {
           {/* Price row + CTA */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.6rem' }}>
-              <span className="product-card-price" style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.2rem', fontWeight: 950, color: '#E53935', lineHeight: 1 }}>
+              <span className="product-card-price" style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.25rem', fontWeight: 950, color: '#2563EB', lineHeight: 1 }}>
                 ₹{effectivePrice?.toLocaleString('en-IN')}
               </span>
             </div>
@@ -182,7 +182,7 @@ export default function PartCard({ part }) {
                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); updateQty(part._id, cartItem.quantity - 1); }}
                     style={{ 
                       width: 24, height: 24, borderRadius: '4px', border: 'none', 
-                      background: '#111', color: 'white', display: 'flex', 
+                      background: '#2563EB', color: 'white', display: 'flex', 
                       alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
                       fontSize: '1rem', fontWeight: 900
                     }}
@@ -194,7 +194,7 @@ export default function PartCard({ part }) {
                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); updateQty(part._id, cartItem.quantity + 1); }}
                     style={{ 
                       width: 24, height: 24, borderRadius: '4px', border: 'none', 
-                      background: '#111', color: 'white', display: 'flex', 
+                      background: '#2563EB', color: 'white', display: 'flex', 
                       alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
                       fontSize: '1rem', fontWeight: 900
                     }}
@@ -208,13 +208,13 @@ export default function PartCard({ part }) {
                   style={{
                     height: '28px',
                     padding: '0 0.7rem',
-                    background: effectiveStock === 0 ? '#EEE' : '#111',
-                    border: 'none', borderRadius: '6px', color: 'white',
+                    background: effectiveStock === 0 ? '#E2E8F0' : '#2563EB',
+                    border: 'none', borderRadius: '8px', color: 'white',
                     cursor: effectiveStock === 0 ? 'not-allowed' : 'pointer',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    boxShadow: effectiveStock === 0 ? 'none' : '0 4px 10px rgba(0,0,0,0.1)',
+                    boxShadow: effectiveStock === 0 ? 'none' : '0 4px 12px rgba(37, 99, 235, 0.25)',
                     transition: 'all 0.2s',
-                    gap: '0.3rem', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif', fontSize: '0.65rem', letterSpacing: '0.04em'
+                    gap: '0.3rem', fontWeight: 950, fontFamily: 'Rajdhani, sans-serif', fontSize: '0.65rem', letterSpacing: '0.04em'
                   }}
                 >
                   <ShoppingCart size={13} /> ADD

@@ -1,17 +1,18 @@
 const asyncHandler = require('express-async-handler');
 const SellRequest = require('../models/SellRequest');
-const { estimateBikePrice } = require('../utils/priceEstimator');
+const { estimateCarPrice } = require('../utils/priceEstimator');
 
 // @desc  Create sell request
 // @route POST /api/sell
 const createSellRequest = asyncHandler(async (req, res) => {
-  const { brand, model, year, kmDriven, condition, engineCC } = req.body;
-  const estimatedPrice = estimateBikePrice({ brand, model, year, kmDriven, condition, engineCC });
+  const { brand, model, year, kmDriven, fuelType, transmission, variant, ownerNumber } = req.body;
+  const estimatedPrice = estimateCarPrice({ brand, model, year, kmDriven, fuelType, transmission, variant, ownerNumber });
 
   const images = req.files ? req.files.map((f) => f.path) : [];
 
   const body = { ...req.body };
   if (typeof body.pickupAddress === 'string') body.pickupAddress = JSON.parse(body.pickupAddress);
+  if (typeof body.features === 'string') body.features = JSON.parse(body.features);
 
   const sellRequest = await SellRequest.create({
     ...body,
@@ -22,6 +23,16 @@ const createSellRequest = asyncHandler(async (req, res) => {
   });
 
   res.status(201).json({ success: true, sellRequest, estimatedPrice });
+});
+
+// ... (existing code handles other routes)
+
+// @desc  Get price estimate
+// @route POST /api/sell/estimate
+const getPriceEstimate = asyncHandler(async (req, res) => {
+  const { brand, model, year, kmDriven, fuelType, transmission, variant, ownerNumber } = req.body;
+  const estimatedPrice = estimateCarPrice({ brand, model, year, kmDriven, fuelType, transmission, variant, ownerNumber });
+  res.json({ success: true, estimatedPrice });
 });
 
 // @desc  Get user's sell requests
@@ -67,14 +78,6 @@ const updateSellStatus = asyncHandler(async (req, res) => {
 
   await sellRequest.save();
   res.json({ success: true, sellRequest });
-});
-
-// @desc  Get price estimate
-// @route POST /api/sell/estimate
-const getPriceEstimate = asyncHandler(async (req, res) => {
-  const { brand, model, year, kmDriven, condition, engineCC } = req.body;
-  const estimatedPrice = estimateBikePrice({ brand, model, year, kmDriven, condition, engineCC });
-  res.json({ success: true, estimatedPrice });
 });
 
 module.exports = { createSellRequest, getMySellRequests, getSellRequest, getAllSellRequests, updateSellStatus, getPriceEstimate };

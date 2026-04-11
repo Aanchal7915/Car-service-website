@@ -45,8 +45,8 @@ function App() {
             position="top-right"
             toastOptions={{
               style: { background: '#FFFFFF', color: '#111', border: '1px solid #EEE', boxShadow: '0 10px 30px rgba(0,0,0,0.08)', borderRadius: '14px', fontWeight: 600 },
-              success: { iconTheme: { primary: '#2E7D32', secondary: 'white' } },
-              error: { iconTheme: { primary: '#E53935', secondary: 'white' } },
+              success: { iconTheme: { primary: '#10B981', secondary: 'white' } },
+              error: { iconTheme: { primary: '#EF4444', secondary: 'white' } },
             }}
           />
           <Routes>
@@ -81,13 +81,13 @@ function App() {
               <Layout>
                 <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1.5rem', background: '#FFFFFF', textAlign: 'center' }}>
                   <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: 'clamp(5rem, 15vw, 10rem)', fontWeight: 950, color: '#111', lineHeight: 1, letterSpacing: '-0.05em' }}>404</div>
-                  <div style={{ height: '6px', width: '60px', background: '#E53935', borderRadius: '3px' }} />
-                  <h2 style={{ color: '#111', fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', fontFamily: 'Rajdhani, sans-serif', fontWeight: 900, textTransform: 'uppercase' }}>PAGE NOT FOUND</h2>
-                  <p style={{ color: '#666', fontSize: '1.1rem', maxWidth: '400px', fontWeight: 600 }}>The page you are looking for might have been removed or does not exist.</p>
-                  <a href="/" style={{ marginTop: '1rem', background: '#111', color: 'white', padding: '1rem 2.5rem', borderRadius: '16px', textDecoration: 'none', fontWeight: 800, letterSpacing: '0.05em', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', transition: 'all 0.3s' }}
-                    onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-3px)'}
+                  <div style={{ height: '6px', width: '80px', background: '#2563EB', borderRadius: '4px' }} />
+                  <h2 style={{ color: '#0F172A', fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', fontFamily: 'Rajdhani, sans-serif', fontWeight: 950, textTransform: 'uppercase', letterSpacing: '0.05em' }}>PAGE NOT FOUND</h2>
+                  <p style={{ color: '#64748B', fontSize: '1.2rem', maxWidth: '450px', fontWeight: 600 }}>The luxury destination you're seeking was not found.</p>
+                  <a href="/" style={{ marginTop: '1.5rem', background: '#0F172A', color: 'white', padding: '1.2rem 3rem', borderRadius: '18px', textDecoration: 'none', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.1em', boxShadow: '0 15px 40px rgba(15, 23, 42, 0.2)', transition: 'all 0.3s' }}
+                    onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-5px)'}
                     onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
-                    BACK TO HOME
+                    BACK TO AUTOXPRESS
                   </a>
                 </div>
               </Layout>

@@ -177,9 +177,9 @@ export default function Profile() {
         <div className="profile-header" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', background: '#F9F9F9', padding: '2rem', borderRadius: '24px', border: '1px solid #EEE', marginBottom: '2.5rem', boxShadow: '0 10px 40px rgba(0,0,0,0.02)' }}>
           <div style={{ position: 'relative', width: 100, height: 100 }}>
             {avatarPreview || user.avatar ? (
-              <img src={avatarPreview || user.avatar} alt={user.name} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover', border: '3px solid #E53935' }} />
+              <img src={avatarPreview || user.avatar} alt={user.name} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover', border: '3px solid #2563EB' }} />
             ) : (
-              <div style={{ width: '100%', height: '100%', borderRadius: '50%', background: 'linear-gradient(135deg, #E53935, #C62828)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.8rem', fontWeight: 900, color: 'white' }}>
+              <div style={{ width: '100%', height: '100%', borderRadius: '50%', background: 'linear-gradient(135deg, #2563EB, #1D4ED8)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.8rem', fontWeight: 900, color: 'white' }}>
                 {user.name?.charAt(0).toUpperCase()}
               </div>
             )}
@@ -219,12 +219,12 @@ export default function Profile() {
               }}
               style={{
                 display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.8rem 1.4rem', borderRadius: '12px', border: '1.5px solid',
-                borderColor: activeTab === id ? '#E53935' : '#EEE',
+                borderColor: activeTab === id ? '#2563EB' : '#EEE',
                 background: activeTab === id ? '#FFF' : '#F9F9F9',
-                color: activeTab === id ? '#E53935' : '#666',
+                color: activeTab === id ? '#2563EB' : '#666',
                 cursor: 'pointer', fontWeight: 800, fontSize: '0.9rem', transition: 'all 0.25s',
                 whiteSpace: 'nowrap',
-                boxShadow: activeTab === id ? '0 8px 20px rgba(229,57,53,0.1)' : 'none'
+                boxShadow: activeTab === id ? '0 8px 20px rgba(37, 99, 235, 0.1)' : 'none'
               }}>
               <Icon size={16} /> {label}
             </button>
@@ -295,16 +295,16 @@ export default function Profile() {
                       onMouseEnter={e => e.currentTarget.style.borderColor = '#111'}
                       onMouseLeave={e => e.currentTarget.style.borderColor = '#EEE'}>
                       <div style={{ position: 'absolute', top: 18, right: 18, display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
-                        <span style={{ background: 'rgba(229,57,53,0.06)', color: '#E53935', fontSize: '0.7rem', fontWeight: 800, padding: '0.4rem 0.8rem', borderRadius: '999px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                        <span style={{ background: 'rgba(37,99,235,0.06)', color: '#2563EB', fontSize: '0.7rem', fontWeight: 800, padding: '0.4rem 0.8rem', borderRadius: '999px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                           {addr.label || 'Home'}
                         </span>
                         <div style={{ display: 'flex', gap: '0.4rem' }}>
                           <button onClick={() => handleEditAddress(addr)} style={{ background: '#F5F5F5', border: 'none', color: '#666', cursor: 'pointer', padding: '7px', borderRadius: '8px', display: 'flex' }} title="Edit"><Edit2 size={15} /></button>
-                          <button onClick={() => handleDeleteAddress(addr._id || addr.id)} style={{ background: 'rgba(229,57,53,0.08)', border: 'none', color: '#E53935', cursor: 'pointer', padding: '7px', borderRadius: '8px', display: 'flex' }} title="Delete"><Trash2 size={15} /></button>
+                          <button onClick={() => handleDeleteAddress(addr._id || addr.id)} style={{ background: 'rgba(37,99,235,0.08)', border: 'none', color: '#2563EB', cursor: 'pointer', padding: '7px', borderRadius: '8px', display: 'flex' }} title="Delete"><Trash2 size={15} /></button>
                         </div>
                       </div>
-                      <div style={{ background: '#FFF', width: 44, height: 44, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.2rem', boxShadow: '0 4px 12px rgba(229,57,53,0.15)', border: '1px solid rgba(229,57,53,0.1)' }}>
-                        <MapPin size={22} style={{ color: '#E53935' }} />
+                      <div style={{ background: '#FFF', width: 44, height: 44, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.2rem', boxShadow: '0 4px 12px rgba(37,99,235,0.15)', border: '1px solid rgba(37,99,235,0.1)' }}>
+                        <MapPin size={22} style={{ color: '#2563EB' }} />
                       </div>
                       <p style={{ color: '#111', fontWeight: 800, fontSize: '1.05rem', marginBottom: '0.4rem' }}>{addr.street}</p>
                       <p style={{ color: '#666', fontSize: '0.92rem', lineHeight: 1.5 }}>{addr.city}, {addr.state} - {addr.pincode}</p>
@@ -350,7 +350,7 @@ export default function Profile() {
  
               <div style={{ marginTop: '2rem', gridColumn: '1 / -1' }}>
                 <label style={{ color: '#111', fontSize: '0.9rem', display: 'block', marginBottom: '0.8rem', textTransform: 'uppercase', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif' }}>
-                  <MapPin size={16} style={{ display: 'inline', marginRight: 6, color: '#E53935' }}/> Set Location on Map
+                  <img src="https://cdn-icons-png.flaticon.com/512/2776/2776067.png" alt="pin" style={{ width: 18, height: 18, display: 'inline', marginRight: 6, verticalAlign: 'middle' }}/> Set Location on Map
                 </label>
                 
                 <div 
@@ -376,14 +376,14 @@ export default function Profile() {
                 >
                   <div style={{ flex: 1 }}>
                     <h4 style={{ color: locationSet ? '#2E7D32' : '#333', fontSize: '1rem', fontWeight: 800, margin: 0, fontFamily: 'Rajdhani, sans-serif', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                      {locationSet ? <><Check size={18} /> LOCATION CONFIGURED</> : <><MapPin size={18} style={{ color: '#E53935' }}/> PINPOINT ON MAP</>}
+                      {locationSet ? <><Check size={18} /> LOCATION CONFIGURED</> : <><img src="https://cdn-icons-png.flaticon.com/512/2776/2776067.png" alt="pin" style={{ width: 22, height: 22 }}/> PINPOINT ON MAP</>}
                     </h4>
                     <p style={{ color: '#666', fontSize: '0.88rem', margin: 0, marginTop: 4, display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden', fontWeight: 500 }}>
                       {locationSet ? (humanAddress || `Lat: ${mapLocation.lat.toFixed(4)}, Lng: ${mapLocation.lng.toFixed(4)}`) : 'Help us find your doorstep exactly'}
                     </p>
                   </div>
-                  <div style={{ background: locationSet ? '#2E7D32' : '#111', borderRadius: '12px', padding: '12px', color: 'white', display: 'flex', flexShrink: 0, marginLeft: '1.5rem', boxShadow: '0 5px 15px rgba(0,0,0,0.1)' }}>
-                    <MapPin size={22} />
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginLeft: '1.5rem' }}>
+                    <img src="https://cdn-icons-png.flaticon.com/512/2776/2776067.png" alt="pin" style={{ width: 32, height: 32 }} />
                   </div>
                 </div>
               </div>
@@ -457,13 +457,13 @@ export default function Profile() {
                   }}
                   style={{ position: 'absolute', bottom: '1.5rem', right: '1rem', background: '#111', color: '#FFF', border: 'none', borderRadius: '12px', padding: '0.7rem 1.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', boxShadow: '0 8px 20px rgba(0,0,0,0.2)', zIndex: 1000 }}
                 >
-                  <Crosshair size={16} style={{ color: '#E53935' }}/> LOCATE ME
+                  <Crosshair size={16} style={{ color: '#2563EB' }}/> LOCATE ME
                 </button>
               </div>
  
               {/* Final Address Details Label */}
               <div className="map-modal-content" style={{ background: '#F9F9F9', borderRadius: '12px', padding: '0.8rem 1rem', border: '1px solid #EEE', marginTop: '1rem' }}>
-                <p style={{ color: '#E53935', fontSize: '0.7rem', fontWeight: 900, margin: 0, marginBottom: '0.3rem', letterSpacing: '0.04em' }}>SELECTED ADDRESS:</p>
+                <p style={{ color: '#2563EB', fontSize: '0.7rem', fontWeight: 900, margin: 0, marginBottom: '0.3rem', letterSpacing: '0.04em' }}>SELECTED ADDRESS:</p>
                 
                 {isGeocoding ? (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#666', fontSize: '0.85rem', marginTop: '0.2rem', fontWeight: 600 }}>
