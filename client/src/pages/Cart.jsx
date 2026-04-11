@@ -561,7 +561,7 @@ export default function Cart() {
                           BACK
                         </button>
                         <button type="submit" disabled={placing}
-                          style={{ flex: 2, height: '54px', background: placing ? '#E2E8F0' : '#0F172A', color: 'white', border: 'none', borderRadius: '14px', fontWeight: 950, cursor: placing ? 'not-allowed' : 'pointer', fontSize: '1.1rem', transition: 'all 0.3s', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.1em' }}>
+                          style={{ flex: 2, height: '54px', background: placing ? '#E2E8F0' : '#2563EB', color: 'white', border: 'none', borderRadius: '14px', fontWeight: 950, cursor: placing ? 'not-allowed' : 'pointer', fontSize: '1.1rem', transition: 'all 0.3s', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.1em', boxShadow: placing ? 'none' : '0 12px 30px rgba(37, 99, 235, 0.25)' }}>
                           {placing ? 'PROVISING...' : 'FINALIZE BOOKING'}
                         </button>
                       </div>
