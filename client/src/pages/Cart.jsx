@@ -56,10 +56,10 @@ const StepIndicator = ({ step }) => (
             boxShadow: step === n ? '0 0 25px rgba(37, 99, 235, 0.4)' : 'none',
             transition: 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)',
           }}>{n}</div>
-          <span style={{ fontSize: '0.75rem', fontWeight: 900, color: step >= n ? '#2563EB' : '#64748B', letterSpacing: '0.1em', textTransform: 'uppercase', fontFamily: 'Rajdhani, sans-serif' }}>{label}</span>
+          <span style={{ fontSize: '0.7rem', fontWeight: 700, color: step >= n ? '#2563EB' : '#64748B', letterSpacing: '0.08em', textTransform: 'uppercase', fontFamily: 'Rajdhani, sans-serif' }}>{label}</span>
         </div>
         {idx === 0 && (
-          <div style={{ width: 100, height: 3, background: step >= 2 ? '#2563EB' : '#F1F5F9', margin: '0 0.8rem', marginBottom: '1.6rem', transition: 'background 0.4s' }} />
+          <div style={{ width: 80, height: 2, background: step >= 2 ? '#2563EB' : '#F1F5F9', margin: '0 0.5rem', marginBottom: '1.4rem', transition: 'background 0.4s' }} />
         )}
       </div>
     ))}
@@ -153,7 +153,7 @@ export default function Cart() {
           <h2 style={{ color: '#111', fontSize: '2.5rem', fontWeight: 950, fontFamily: 'Rajdhani, sans-serif', letterSpacing: '-0.02em', margin: 0, textTransform: 'uppercase' }}>YOUR CART IS EMPTY</h2>
           <p style={{ color: '#666', marginTop: '0.6rem', fontSize: '1.1rem', fontWeight: 600, maxWidth: '300px', margin: '0.6rem auto' }}>Looks like you haven't added anything to your cart yet.</p>
         </div>
-        <Link to="/" style={{ marginTop: '1rem', background: '#0F172A', color: 'white', padding: '1.2rem 3.5rem', borderRadius: '20px', fontWeight: 950, textDecoration: 'none', fontSize: '1rem', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.15em', boxShadow: '0 15px 40px rgba(15, 23, 42, 0.25)', transition: 'all 0.4s' }}
+        <Link to="/" style={{ marginTop: '1rem', background: '#0F172A', color: 'white', padding: '1.2rem 3rem', borderRadius: '18px', fontWeight: 950, textDecoration: 'none', fontSize: '1rem', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.15em', boxShadow: '0 15px 40px rgba(15, 23, 42, 0.25)', transition: 'all 0.4s' }}
           onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-5px)'}
           onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
           EXPLORE SHOWROOM →
@@ -190,7 +190,7 @@ export default function Cart() {
             <ArrowLeft size={16} /> Back to Store
           </button>
           <div>
-            <h1 style={{ color: '#0F172A', fontFamily: 'Rajdhani, sans-serif', fontSize: '2.5rem', fontWeight: 950, margin: 0, letterSpacing: '0.04em' }}>
+            <h1 style={{ color: '#0F172A', fontFamily: 'Rajdhani, sans-serif', fontSize: '2.2rem', fontWeight: 900, margin: 0, letterSpacing: '0.04em' }}>
               YOUR <span style={{ color: '#2563EB' }}>CART</span>
             </h1>
             <p style={{ color: '#888', margin: 0, fontSize: '0.95rem', fontWeight: 500 }}>{itemCount} items ready for checkout</p>

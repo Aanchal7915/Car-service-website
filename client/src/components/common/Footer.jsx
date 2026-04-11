@@ -5,7 +5,7 @@ import { FaFacebook, FaInstagram, FaYoutube, FaTwitter } from 'react-icons/fa';
 export default function Footer() {
   return (
     <footer style={{ background: '#0F172A', borderTop: '1px solid #1E293B', color: '#94A3B8' }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '2.5rem' }}>
           {/* Brand */}
           <div>
@@ -29,9 +29,9 @@ export default function Footer() {
 
           {/* Services */}
           <div>
-            <h4 style={{ color: 'white', fontWeight: 900, marginBottom: '1.5rem', fontSize: '1rem', fontFamily: 'Rajdhani, sans-serif', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Services</h4>
+            <h4 style={{ color: 'white', fontWeight: 600, marginBottom: '1rem', fontSize: '1rem', fontFamily: 'Rajdhani, sans-serif', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Services</h4>
             {['Concierge Service', 'Luxury Detailing', 'Engine Optimization', 'Battery Solutions', 'Precision Braking', 'Elite Washing'].map(s => (
-              <Link key={s} to="/services" style={{ display: 'block', color: '#94A3B8', textDecoration: 'none', fontSize: '0.9rem', marginBottom: '0.75rem', transition: 'all 0.3s', fontWeight: 500 }}
+              <Link key={s} to="/services" style={{ display: 'block', color: '#94A3B8', textDecoration: 'none', fontSize: '0.9rem', marginBottom: '0.5rem', transition: 'all 0.3s', fontWeight: 500 }}
                 onMouseEnter={(e) => (e.target.style.color = '#2563EB')}
                 onMouseLeave={(e) => (e.target.style.color = '#94A3B8')}>
                 {s}
@@ -41,9 +41,9 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 style={{ color: 'white', fontWeight: 900, marginBottom: '1.5rem', fontSize: '1rem', fontFamily: 'Rajdhani, sans-serif', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Quick Links</h4>
+            <h4 style={{ color: 'white', fontWeight: 600, marginBottom: '1rem', fontSize: '1rem', fontFamily: 'Rajdhani, sans-serif', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Quick Links</h4>
             {[['Buy Cars', '/bikes'], ['Sell My Car', '/sell'], ['Genuine Spares', '/parts'], ['Track Order', '/my-orders'], ['Member Dashboard', '/my-bookings'], ['User Profile', '/profile']].map(([label, href]) => (
-              <Link key={href} to={href} style={{ display: 'block', color: '#94A3B8', textDecoration: 'none', fontSize: '0.9rem', marginBottom: '0.75rem', transition: 'all 0.3s', fontWeight: 500 }}
+              <Link key={href} to={href} style={{ display: 'block', color: '#94A3B8', textDecoration: 'none', fontSize: '0.9rem', marginBottom: '0.5rem', transition: 'all 0.3s', fontWeight: 500 }}
                 onMouseEnter={(e) => (e.target.style.color = '#2563EB')}
                 onMouseLeave={(e) => (e.target.style.color = '#94A3B8')}>
                 {label}
@@ -53,13 +53,13 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 style={{ color: 'white', fontWeight: 900, marginBottom: '1.5rem', fontSize: '1rem', fontFamily: 'Rajdhani, sans-serif', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Contact Us</h4>
+            <h4 style={{ color: 'white', fontWeight: 600, marginBottom: '1rem', fontSize: '1rem', fontFamily: 'Rajdhani, sans-serif', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Contact Us</h4>
             {[
               { Icon: Phone, text: '+91 800-AUTO-XPRESS' },
               { Icon: Mail, text: 'concierge@autoxpress.in' },
               { Icon: MapPin, text: 'Innovation District, Mumbai, India' },
             ].map(({ Icon, text }) => (
-              <div key={text} className="flex items-center gap-3" style={{ marginBottom: '1rem', fontSize: '0.9rem', fontWeight: 500 }}>
+              <div key={text} className="flex items-center gap-2" style={{ marginBottom: '0.75rem', fontSize: '0.9rem', fontWeight: 500 }}>
                 <Icon size={16} style={{ color: '#2563EB', flexShrink: 0 }} />
                 <span>{text}</span>
               </div>
@@ -73,7 +73,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div style={{ borderTop: '1px solid #1E293B', marginTop: '4rem', paddingTop: '2rem', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
+        <div style={{ borderTop: '1px solid #1E293B', marginTop: '2.5rem', paddingTop: '1.5rem', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
           <p style={{ fontSize: '0.85rem', fontWeight: 600 }}>© {new Date().getFullYear()} AutoXpress. All rights reserved.</p>
           <div className="flex items-center gap-4" style={{ fontSize: '0.83rem' }}>
             <Link to="/privacy" style={{ color: '#64748B', textDecoration: 'none', fontWeight: 600 }}>Privacy Policy</Link>

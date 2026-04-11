@@ -98,18 +98,18 @@ export default function Home() {
         {/* ── LEFT: Black panel with content ── */}
         <div style={{ 
           flex: '1 1 50%', 
-          background: 'linear-gradient(135deg, #050505 0%, #101010 100%)',
+          background: '#000',
           display: 'flex', 
           alignItems: 'flex-start', 
           position: 'relative' 
         }}>
           {/* Blue glow accent */}
-          <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(ellipse at 100% 50%, rgba(255,255,255,0.06) 0%, transparent 80%)' }} />
+          <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(ellipse at 80% 50%, rgba(37, 99, 235, 0.07) 0%, transparent 55%)' }} />
 
           <div style={{ position: 'relative', zIndex: 1, padding: '0px clamp(2rem, 5vw, 5.5rem) clamp(2rem, 5vw, 5.5rem)', paddingRight: 'clamp(1rem, 2vw, 2rem)', maxWidth: 800, paddingTop: '1.5rem' }}>
 
             {/* Eyebrow */}
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(37,99,235,0.1)', border: '1px solid rgba(37,99,235,0.25)', borderRadius: '999px', padding: '0.3rem 1rem', marginBottom: '1.5rem' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(37, 99, 235, 0.1)', border: '1px solid rgba(37, 99, 235, 0.25)', borderRadius: '999px', padding: '0.3rem 1rem', marginBottom: '1.5rem' }}>
               <Zap size={13} style={{ color: '#2563EB' }} />
               <span style={{ color: '#2563EB', fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}>{slide.sub}</span>
             </div>
@@ -128,7 +128,7 @@ export default function Home() {
 
             {/* Extra content paragraph */}
             <p className="hero-extra-desc" style={{ color: '#666', fontSize: '0.85rem', lineHeight: 1.7, maxWidth: 420, marginBottom: '2rem' }}>
-              Whether you're looking to upgrade your ride, sell your old car at the best price, or need expert service — AutoXpress has you covered with doorstep pickup, certified mechanics, and same-day payment.
+              Whether you're looking to upgrade to a premium car, sell your elite vehicle at the best market price, or need expert maintenance — AutoXpress delivers excellence with doorstep pickup, certified specialists, and transparent valuations.
             </p>
 
             {/* CTA Buttons — both restored */}
@@ -274,43 +274,41 @@ export default function Home() {
       )}
 
       {/* SERVICE CATEGORIES */}
-      <section style={{ background: '#F8FAFC', padding: '6rem 0', position: 'relative' }}>
+      <section style={{ background: '#FFFFFF', padding: '6rem 0' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '3.5rem', flexWrap: 'wrap', gap: '1rem' }}>
             <div>
-              <p style={{ color: '#2563EB', fontWeight: 800, fontSize: '0.85rem', letterSpacing: '0.25em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Evolved Engineering</p>
-              <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.8rem', fontWeight: 900, color: '#0F172A', lineHeight: 1.1 }}>
-                Luxury Car <span style={{ color: '#2563EB' }}>Experience</span>
+              <p style={{ color: '#2563EB', fontWeight: 800, fontSize: '0.85rem', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Professional Care</p>
+              <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.8rem', fontWeight: 900, color: '#111', lineHeight: 1.1 }}>
+                Our Expert <span style={{ color: '#2563EB' }}>Services</span>
               </h2>
             </div>
-            <Link to="/services" style={{
-              background: '#2563EB',
-              color: 'white',
-              padding: '0.75rem 2rem',
-              fontSize: '0.9rem',
-              fontWeight: 800,
-              borderRadius: '12px',
-              textDecoration: 'none',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.6rem',
-              transition: 'all 0.3s',
-              boxShadow: '0 8px 25px rgba(37,99,235,0.3)',
-              fontFamily: 'Rajdhani, sans-serif',
-              letterSpacing: '0.05em'
+            <Link to="/services" style={{ 
+              background: '#0F172A', 
+              color: 'white', 
+              padding: '0.75rem 2rem', 
+              fontSize: '0.9rem', 
+              fontWeight: 700, 
+              borderRadius: '8px', 
+              textDecoration: 'none', 
+              display: 'inline-flex', 
+              alignItems: 'center', 
+              gap: '0.6rem', 
+              transition: 'all 0.2s',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
             }}
-              onMouseEnter={e => { e.currentTarget.style.background = '#3B82F6'; e.currentTarget.style.transform = 'translateY(-3px)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = '#2563EB'; e.currentTarget.style.transform = 'translateY(0)'; }}>
+              onMouseEnter={e => { e.currentTarget.style.background = '#1E293B'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = '#0F172A'; e.currentTarget.style.transform = 'translateY(0)'; }}>
               Explore All <ArrowRight size={17} />
             </Link>
           </div>
 
           {servicesLoading ? (
-            <div className="home-services-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
+            <div className="home-services-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '1rem' }}>
               {[...Array(4)].map((_, i) => <div key={i} className="skeleton" style={{ height: 160, borderRadius: '10px' }} />)}
             </div>
           ) : (
-            <div className="home-services-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.2rem' }}>
+            <div className="home-services-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '1.2rem' }}>
               {serviceTypes.map((service) => (
                 <div key={service.value} style={{
                   background: '#FFF',

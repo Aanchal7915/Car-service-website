@@ -113,12 +113,12 @@ export default function Services() {
         }
       `}</style>
       {/* Header */}
-      <div style={{ background: '#FFFFFF', borderBottom: '1px solid #F1F5F9', padding: '2.5rem 0' }}>
+      <div style={{ background: '#F9F9F9', borderBottom: '1px solid #EEE', padding: '1rem 0' }}>
         <div className="max-w-4xl mx-auto px-4">
-          <h1 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.4rem', fontWeight: 950, color: '#0F172A', margin: 0 }}>
+          <h1 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.8rem', fontWeight: 800, color: '#111', margin: 0 }}>
             Premium Car <span style={{ color: '#2563EB' }}>Services</span>
           </h1>
-          <p style={{ color: '#64748B', marginTop: '0.4rem', fontWeight: 600 }}>Elite maintenance for your luxury vehicle at your doorstep</p>
+          <p style={{ color: '#666', marginTop: '0.3rem', fontWeight: 500 }}>Elite maintenance for your luxury vehicle at your doorstep</p>
  
           {/* Steps */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0', marginTop: '0.8rem' }}>
@@ -127,14 +127,13 @@ export default function Services() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                   <div style={{
                     width: 32, height: 32, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    background: step > i + 1 ? '#10B981' : step === i + 1 ? '#0F172A' : '#FFF',
-                    color: i + 1 <= step ? 'white' : '#64748B', fontSize: '0.9rem', fontWeight: 800,
-                    boxShadow: step === i + 1 ? '0 6px 15px rgba(15, 23, 42, 0.15)' : 'none',
-                    border: step === i + 1 ? 'none' : '1px solid rgba(156, 163, 175, 0.2)'
+                    background: step > i + 1 ? '#10B981' : step === i + 1 ? '#0F172A' : '#EEE',
+                    color: i + 1 <= step ? 'white' : '#999', fontSize: '0.9rem', fontWeight: 800,
+                    boxShadow: step === i + 1 ? '0 4px 10px rgba(15, 23, 42, 0.2)' : 'none'
                   }}>
                     {step > i + 1 ? '✓' : i + 1}
                   </div>
-                  <span className="svc-step-label" style={{ color: step === i + 1 ? '#0F172A' : '#64748B', fontSize: '0.9rem', fontWeight: step === i + 1 ? 800 : 600 }}>{s}</span>
+                  <span className="svc-step-label" style={{ color: step === i + 1 ? '#111' : '#888', fontSize: '0.9rem', fontWeight: step === i + 1 ? 700 : 500 }}>{s}</span>
                 </div>
                 {i < 2 && <div style={{ width: 40, height: 2, background: '#EEE', margin: '0 0.8rem' }} />}
               </div>
@@ -253,16 +252,12 @@ export default function Services() {
  
         {/* Step 3: Confirmation */}
         {step === 3 && (
-          <div className="animate-fadeInUp" style={{ 
-            textAlign: 'center', padding: '2.5rem 1.5rem', background: '#FFF', 
-            borderRadius: '24px', border: '1px solid rgba(156, 163, 175, 0.12)', 
-            boxShadow: '0 15px 45px rgba(0,0,0,0.04)', maxWidth: '600px', margin: '0 auto' 
-          }}>
-            <div style={{ fontSize: '4rem', marginBottom: '0.5rem', color: '#10B981', filter: 'drop-shadow(0 4px 10px rgba(16,185,129,0.2))' }}>✓</div>
-            <h2 style={{ color: '#0F172A', fontFamily: 'Rajdhani, sans-serif', fontSize: '2.2rem', fontWeight: 950, marginBottom: '0.6rem', letterSpacing: '-0.01em' }}>
-              SERVICE <span style={{ color: '#2563EB' }}>CONFIRMED</span>
+          <div className="animate-fadeInUp" style={{ textAlign: 'center', padding: '1.5rem 1.2rem', background: '#FFF', borderRadius: '24px', border: '1px solid #EEE', boxShadow: '0 15px 50px rgba(0,0,0,0.04)' }}>
+            <div style={{ fontSize: '4.5rem', marginBottom: '0.8rem', color: '#10B981' }}>✓</div>
+            <h2 style={{ color: '#111', fontFamily: 'Rajdhani, sans-serif', fontSize: '2rem', fontWeight: 900, marginBottom: '0.4rem' }}>
+              SERVICE <span style={{ color: '#2563EB' }}>CONFIRMED!</span>
             </h2>
-            <p style={{ color: '#64748B', marginBottom: '1.5rem', fontSize: '0.9rem', fontWeight: 700, lineHeight: 1.5 }}>Our specialist mechanic will arrive at your location as per schedule.</p>
+            <p style={{ color: '#666', marginBottom: '1.2rem', fontSize: '0.95rem', fontWeight: 500 }}>Our specialist mechanic will arrive at your location as per schedule.</p>
             
             {/* Advance Payment Option - More compact & Blue themed */}
             {bookingId && !paid && (

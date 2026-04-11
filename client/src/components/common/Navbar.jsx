@@ -107,7 +107,7 @@ export default function Navbar() {
                   padding: '0.5rem 1rem',
                   borderRadius: '6px',
                   fontSize: '0.9rem',
-                  fontWeight: 700,
+                  fontWeight: 500,
                   textDecoration: 'none',
                   transition: 'all 0.2s',
                   fontFamily: 'Rajdhani, sans-serif',
