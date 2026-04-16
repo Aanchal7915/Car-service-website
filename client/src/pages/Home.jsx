@@ -11,7 +11,7 @@ import heroCar from '../assets/hero-car-premium.png';
 import heroCarGT3 from '../assets/hero-car-gt3.png';
 import heroCarGT3Reflection from '../assets/hero-car-gt3-reflection.jpg';
 import instantQuote from '../assets/instant-quote.png';
-import carMainImage from '../assets/car-main.png';
+import carMainImage from '../assets/hero_car_porsche.jpg';
 
 const heroSlides = [
   { title: 'Buy & Sell Cars', sub: 'Premium Auto Marketplace', desc: 'Find your perfect luxury car from thousands of certified new & used vehicles across India.', cta: 'Explore Cars', href: '/bikes' },
@@ -89,7 +89,6 @@ export default function Home() {
             .hero-left { padding: 1.25rem 1rem !important; max-width: 100% !important; }
             .hero-left h1 { font-size: 1.6rem !important; }
             .hero-left .hero-desc { font-size: 0.78rem !important; }
-            .hero-left .hero-extra { display: none !important; }
             .hero-car-wrap { min-height: 140px !important; margin-top: 0.5rem !important; flex: 0 0 auto !important; width: 100% !important; }
             .hero-car-image { width: 320px !important; }
             .hero-section { min-height: auto !important; padding-bottom: 1.5rem !important; }
@@ -195,12 +194,7 @@ export default function Home() {
 
           {/* RIGHT — Animated Moving Car */}
           <div className="hero-car-wrap" style={{ flex: '1 1 50%', position: 'relative', minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-            {/* Road surface */}
-            <div className="hero-road" style={{
-              position: 'absolute', bottom: '60px', left: 0, right: 0, height: '3px',
-              background: 'linear-gradient(90deg, transparent, rgba(148,163,184,0.2) 20%, rgba(148,163,184,0.2) 80%, transparent)',
-            }} />
-
+            
             {/* Car Image — rotates with scroll */}
             <img
               ref={carRef}
@@ -213,17 +207,11 @@ export default function Home() {
                 height: 'auto',
                 position: 'relative',
                 zIndex: 2,
-                filter: 'drop-shadow(0 25px 45px rgba(0,0,0,0.5))',
+                mixBlendMode: 'lighten',
                 transition: 'transform 0.1s linear',
                 willChange: 'transform',
               }}
             />
-
-            {/* Ground reflection */}
-            <div style={{
-              position: 'absolute', bottom: '40px', left: '20%', right: '20%', height: '30px',
-              background: 'rgba(30,58,138,0.1)', borderRadius: '50%', filter: 'blur(15px)',
-            }} />
           </div>
         </div>
       </section>
