@@ -28,7 +28,7 @@ export default function Contact() {
       }}>
         <div className="max-w-7xl mx-auto px-4">
           <h1 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: 'clamp(2.5rem, 8vw, 3.5rem)', fontWeight: 900, marginBottom: '1rem', color: '#111' }}>
-            GET IN <span style={{ color: '#2563EB' }}>TOUCH</span>
+            GET IN <span style={{ color: '#1E3A8A' }}>TOUCH</span>
           </h1>
           <p style={{ color: '#666', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>
             India's most trusted auto platform. Have questions? Our experts are here to help you 24/7.
@@ -44,7 +44,7 @@ export default function Contact() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             <div style={{ background: '#FFF', padding: '2.5rem', borderRadius: '16px', border: '1px solid #EEE', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
               <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.8rem', fontWeight: 800, marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-                <div style={{ width: 4, height: 24, background: '#2563EB' }} />
+                <div style={{ width: 4, height: 24, background: '#1E3A8A' }} />
                 Contact Information
               </h2>
               
@@ -60,8 +60,8 @@ export default function Contact() {
                 </div>
 
                 <div style={{ display: 'flex', gap: '1.2rem', alignItems: 'flex-start' }}>
-                  <div style={{ background: 'rgba(37,99,235,0.05)', padding: '0.75rem', borderRadius: '12px' }}>
-                    <Phone size={22} style={{ color: '#2563EB' }} />
+                  <div style={{ background: 'rgba(30,58,138,0.05)', padding: '0.75rem', borderRadius: '12px' }}>
+                    <Phone size={22} style={{ color: '#1E3A8A' }} />
                   </div>
                   <div>
                     <p style={{ color: '#111', fontWeight: 700, marginBottom: '0.3rem', fontSize: '1.05rem' }}>Call Us</p>
@@ -104,7 +104,7 @@ export default function Contact() {
           {/* Right Side: Booking Form */}
           <div style={{ background: '#FFF', padding: '2.5rem', borderRadius: '16px', border: '1px solid #EEE', boxShadow: '0 10px 40px rgba(0,0,0,0.04)' }}>
             <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.8rem', fontWeight: 800, marginBottom: '2.2rem', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-              <div style={{ width: 4, height: 24, background: '#2563EB' }} />
+              <div style={{ width: 4, height: 24, background: '#1E3A8A' }} />
               Quick Inquiry / Booking
             </h2>
 
@@ -185,3 +185,4 @@ export default function Contact() {
     </div>
   );
 }
+

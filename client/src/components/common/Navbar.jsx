@@ -14,6 +14,7 @@ const navLinks = [
   { label: 'Parts', href: '/parts' },
   { label: 'Featured', href: '/featured' },
   { label: 'Bestseller', href: '/bestseller' },
+  { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ];
 
@@ -88,7 +89,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <div style={{ background: '#2563EB', borderRadius: '8px', padding: '6px 12px' }}>
+            <div style={{ background: '#1E3A8A', borderRadius: '8px', padding: '6px 12px' }}>
               <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 800, color: 'white', fontSize: '1.2rem', letterSpacing: '0.05em' }}>AUTO</span>
             </div>
             <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 900, color: '#0F172A', fontSize: '1.35rem', letterSpacing: '0.03em' }}>
@@ -103,7 +104,7 @@ export default function Navbar() {
                 key={link.href}
                 to={link.href}
                 style={{
-                  color: location.pathname.startsWith(link.href) ? '#2563EB' : '#475569',
+                  color: location.pathname.startsWith(link.href) ? '#1E3A8A' : '#475569',
                   padding: '0.5rem 1rem',
                   borderRadius: '6px',
                   fontSize: '0.9rem',
@@ -123,35 +124,37 @@ export default function Navbar() {
 
           {/* Right side */}
           <div className="flex items-center gap-3">
-            {/* Search */}
-            <div className="hidden md:block" style={{ position: 'relative' }}>
+            {/* Search Toggle */}
+            <div style={{ position: 'relative' }}>
               {!searchOpen ? (
-                <button onClick={() => { setSearchOpen(true); setTimeout(() => document.getElementById('nav-search-input')?.focus(), 100); }}
+                <button onClick={() => { setSearchOpen(true); setTimeout(() => document.getElementById(window.innerWidth < 768 ? 'nav-search-input-mobile' : 'nav-search-input')?.focus(), 100); }}
                   style={{ color: '#0F172A', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
                   <Search size={20} />
                 </button>
               ) : (
-                <form onSubmit={handleSearchSubmit} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#F1F5F9', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '0.3rem 0.7rem' }}>
-                  <Search size={14} style={{ color: '#2563EB', flexShrink: 0 }} />
-                  <input
-                    id="nav-search-input"
-                    type="text"
-                    placeholder="Search cars, parts..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onBlur={() => { if (!searchQuery) setSearchOpen(false); }}
-                    style={{ background: 'none', border: 'none', outline: 'none', color: '#0F172A', width: 160, fontSize: '0.82rem', fontWeight: 600 }}
-                  />
-                  {searchQuery && (
-                    <button type="button" onClick={() => { setSearchQuery(''); setSearchOpen(false); }} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: '1rem', lineHeight: 1 }}>×</button>
-                  )}
-                </form>
+                <>
+                  <form onSubmit={handleSearchSubmit} className="hidden md:flex items-center" style={{ gap: '0.5rem', background: '#F1F5F9', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '0.3rem 0.7rem', position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)', zIndex: 50, width: '220px' }}>
+                    <Search size={14} style={{ color: '#1E3A8A', flexShrink: 0 }} />
+                    <input
+                      id="nav-search-input"
+                      type="text"
+                      placeholder="Search cars, parts..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onBlur={() => { if (!searchQuery) setSearchOpen(false); }}
+                      style={{ background: 'none', border: 'none', outline: 'none', color: '#0F172A', flex: 1, fontSize: '0.82rem', fontWeight: 600 }}
+                    />
+                    {searchQuery && (
+                      <button type="button" onClick={() => { setSearchQuery(''); setSearchOpen(false); }} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: '1.2rem', lineHeight: 1 }}>×</button>
+                    )}
+                  </form>
+                </>
               )}
             </div>
 
             {/* Pincode Input */}
             <div className="hidden md:flex items-center gap-1.5" style={{ background: '#F1F5F9', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '0.3rem 0.7rem' }}>
-              <MapPin size={13} style={{ color: '#2563EB', flexShrink: 0 }} />
+              <MapPin size={13} style={{ color: '#1E3A8A', flexShrink: 0 }} />
               <input
                 type="text"
                 placeholder="Pincode"
@@ -173,7 +176,7 @@ export default function Navbar() {
               {itemCount > 0 && (
                 <span style={{
                   position: 'absolute', top: '-8px', right: '-8px',
-                  background: '#2563EB', color: 'white', borderRadius: '50%',
+                  background: '#1E3A8A', color: 'white', borderRadius: '50%',
                   width: '18px', height: '18px', fontSize: '0.7rem',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700,
                 }}>
@@ -195,7 +198,7 @@ export default function Navbar() {
                   }}
                 >
                   {dropdownOpen ? (
-                    <X size={18} style={{ color: '#2563EB' }} />
+                    <X size={18} style={{ color: '#1E3A8A' }} />
                   ) : (
                     <>
                       {user.avatar ? (
@@ -235,7 +238,7 @@ export default function Navbar() {
                       <Heart size={15} /> Wishlist
                     </Link>
                     {user.role === 'admin' && (
-                      <Link to="/admin" onClick={() => setDropdownOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.75rem 1rem', color: '#60A5FA', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600 }}
+                      <Link to="/admin" onClick={() => setDropdownOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.75rem 1rem', color: '#93C5FD', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600 }}
                         onMouseEnter={(e) => { e.currentTarget.style.background = '#222'; }}
                         onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}>
                         <Settings size={15} /> Admin Panel
@@ -260,79 +263,86 @@ export default function Navbar() {
 
 
             {/* Mobile hamburger */}
-            {user && (
-              <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden" style={{ color: '#0F172A', background: 'none', border: 'none', cursor: 'pointer' }}>
-                {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-              </button>
-            )}
+            <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden" style={{ color: '#0F172A', background: 'none', border: 'none', cursor: 'pointer', padding: '0.2rem' }}>
+              {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
           </div>
         </div>
 
-        {/* Mobile Nav */}
-        {mobileOpen && (
-          <div style={{ borderTop: '1px solid #1e1e1e', padding: '1rem 0' }}>
-            {/* Search in mobile */}
-            <form onSubmit={handleSearchSubmit} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#F1F5F9', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '0.5rem 0.8rem', marginBottom: '0.75rem' }}>
-              <Search size={14} style={{ color: '#2563EB', flexShrink: 0 }} />
+        {/* Mobile Search Bar - Directly Below Navbar Row */}
+        {searchOpen && (
+          <div className="md:hidden" style={{ background: 'transparent', padding: '0.75rem 0', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
+            <form onSubmit={handleSearchSubmit} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#F1F5F9', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '0.5rem 0.8rem' }}>
+              <Search size={14} style={{ color: '#1E3A8A', flexShrink: 0 }} />
               <input
+                id="nav-search-input-mobile"
                 type="text"
                 placeholder="Search cars, parts..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                style={{ background: 'none', border: 'none', outline: 'none', color: '#0F172A', flex: 1, fontSize: '0.9rem', minWidth: 0 }}
+                style={{ background: 'none', border: 'none', outline: 'none', color: '#0F172A', flex: 1, fontSize: '0.9rem', fontWeight: 600 }}
               />
-              {searchQuery && (
-                <button type="button" onClick={() => setSearchQuery('')} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer' }}>×</button>
-              )}
+              <button type="button" onClick={() => { setSearchQuery(''); setSearchOpen(false); }} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer' }}>
+                <X size={16} />
+              </button>
             </form>
-            {/* Pincode in mobile */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#F1F5F9', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '0.5rem 0.8rem', marginBottom: '0.75rem' }}>
-              <MapPin size={14} style={{ color: '#2563EB', flexShrink: 0 }} />
-              <input
-                type="text"
-                placeholder="Enter Pincode"
-                maxLength="6"
-                value={pincode}
-                onChange={e => setPincode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                style={{ background: 'none', border: 'none', outline: 'none', color: '#0F172A', flex: 1, fontSize: '0.9rem' }}
-              />
-              {isDeliverable !== null && (
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: isDeliverable ? '#4CAF50' : '#E53935' }}>
-                  {isDeliverable ? '✓ Available' : '✗ Not Available'}
-                </span>
+          </div>
+        )}
+
+        {/* Mobile Nav */}
+        {mobileOpen && (
+          <div style={{ background: '#0F172A', margin: '0 -1rem' }}>
+            <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', padding: '1.5rem 1rem 1rem' }}>
+              {/* Pincode in mobile */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#1E293B', border: '1px solid #334155', borderRadius: '8px', padding: '0.6rem 0.8rem', marginBottom: '1rem' }}>
+                <MapPin size={14} style={{ color: '#93C5FD', flexShrink: 0 }} />
+                <input
+                  type="text"
+                  placeholder="Enter Pincode"
+                  maxLength="6"
+                  value={pincode}
+                  onChange={e => setPincode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  style={{ background: 'none', border: 'none', outline: 'none', color: '#FFF', flex: 1, fontSize: '0.9rem' }}
+                />
+                {isDeliverable !== null && (
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: isDeliverable ? '#4CAF50' : '#F87171' }}>
+                    {isDeliverable ? '✓ Available' : '✗ Not Available'}
+                  </span>
+                )}
+              </div>
+              {navLinks.map((link) => (
+                <Link key={link.href} to={link.href} onClick={() => setMobileOpen(false)}
+                  style={{ display: 'block', color: '#E2E8F0', textDecoration: 'none', padding: '0.6rem 0.5rem', fontSize: '0.92rem', fontWeight: 600 }}>
+                  {link.label}
+                </Link>
+              ))}
+              {/* Mobile user actions */}
+              {user && (
+                <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: '0.8rem', paddingTop: '0.8rem' }}>
+                  <Link to="/profile" onClick={() => setMobileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#E2E8F0', textDecoration: 'none', padding: '0.6rem 0.5rem', fontSize: '0.92rem', fontWeight: 600 }}>
+                    <User size={15} /> My Profile
+                  </Link>
+                  <Link to="/my-bookings" onClick={() => setMobileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#E2E8F0', textDecoration: 'none', padding: '0.6rem 0.5rem', fontSize: '0.92rem', fontWeight: 600 }}>
+                    <Wrench size={15} /> My Bookings
+                  </Link>
+                  <Link to="/wishlist" onClick={() => setMobileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#E2E8F0', textDecoration: 'none', padding: '0.6rem 0.5rem', fontSize: '0.92rem', fontWeight: 600 }}>
+                    <Heart size={15} /> Wishlist
+                  </Link>
+                  {user.role === 'admin' && (
+                    <Link to="/admin" onClick={() => setMobileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#93C5FD', textDecoration: 'none', padding: '0.6rem 0.5rem', fontSize: '0.92rem', fontWeight: 700 }}>
+                      <Settings size={15} /> Admin Panel
+                    </Link>
+                  )}
+                  <button onClick={() => { handleLogout(); setMobileOpen(false); }} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer', padding: '0.6rem 0.5rem', fontSize: '0.92rem', fontWeight: 700, width: '100%' }}>
+                    <LogOut size={15} /> Logout
+                  </button>
+                </div>
               )}
             </div>
-            {navLinks.map((link) => (
-              <Link key={link.href} to={link.href} onClick={() => setMobileOpen(false)}
-                style={{ display: 'block', color: '#ccc', textDecoration: 'none', padding: '0.5rem 0', fontSize: '0.88rem', fontWeight: 500 }}>
-                {link.label}
-              </Link>
-            ))}
-            {/* Mobile user actions */}
-            {user && (
-              <div style={{ borderTop: '1px solid #1e1e1e', marginTop: '0.5rem', paddingTop: '0.5rem' }}>
-                <Link to="/profile" onClick={() => setMobileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#ccc', textDecoration: 'none', padding: '0.5rem 0', fontSize: '0.88rem', fontWeight: 500 }}>
-                  <User size={14} /> My Profile
-                </Link>
-                <Link to="/my-bookings" onClick={() => setMobileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#ccc', textDecoration: 'none', padding: '0.5rem 0', fontSize: '0.88rem', fontWeight: 500 }}>
-                  <Wrench size={14} /> My Bookings
-                </Link>
-                <Link to="/wishlist" onClick={() => setMobileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#ccc', textDecoration: 'none', padding: '0.5rem 0', fontSize: '0.88rem', fontWeight: 500 }}>
-                  <Heart size={14} /> Wishlist
-                </Link>
-                {user.role === 'admin' && (
-                  <Link to="/admin" onClick={() => setMobileOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#60A5FA', textDecoration: 'none', padding: '0.5rem 0', fontSize: '0.88rem', fontWeight: 700 }}>
-                    <Settings size={14} /> Admin Panel
-                  </Link>
-                )}
-                <button onClick={() => { handleLogout(); setMobileOpen(false); }} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer', padding: '0.5rem 0', fontSize: '0.88rem', fontWeight: 600, width: '100%' }}>
-                  <LogOut size={14} /> Logout
-                </button>
-              </div>
-            )}
           </div>
         )}
       </div>
     </nav>
   );
 }
+

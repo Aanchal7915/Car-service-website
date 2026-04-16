@@ -10,7 +10,7 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2 mb-6">
-              <div style={{ background: 'linear-gradient(135deg, #2563EB, #1D4ED8)', borderRadius: '10px', padding: '8px 14px' }}>
+              <div style={{ background: 'linear-gradient(135deg, #1E3A8A, #172554)', borderRadius: '10px', padding: '8px 14px' }}>
                 <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 950, color: 'white', fontSize: '1.2rem', letterSpacing: '0.05em' }}>AUTO</span>
               </div>
               <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 950, color: 'white', fontSize: '1.4rem', letterSpacing: '0.1em' }}>XPRESS</span>
@@ -19,7 +19,7 @@ export default function Footer() {
             <div className="flex items-center gap-3 mt-4">
               {[FaFacebook, FaInstagram, FaYoutube, FaTwitter].map((Icon, i) => (
                 <a key={i} href="#" style={{ width: 40, height: 40, borderRadius: '12px', background: '#1E293B', border: '1px solid #334155', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94A3B8', transition: 'all 0.3s' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#2563EB'; e.currentTarget.style.color = 'white'; e.currentTarget.style.background = '#2563EB'; }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#1E3A8A'; e.currentTarget.style.color = 'white'; e.currentTarget.style.background = '#1E3A8A'; }}
                   onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#334155'; e.currentTarget.style.color = '#94A3B8'; e.currentTarget.style.background = '#1E293B'; }}>
                   <Icon size={16} />
                 </a>
@@ -32,7 +32,7 @@ export default function Footer() {
             <h4 style={{ color: 'white', fontWeight: 600, marginBottom: '1rem', fontSize: '1rem', fontFamily: 'Rajdhani, sans-serif', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Services</h4>
             {['Concierge Service', 'Luxury Detailing', 'Engine Optimization', 'Battery Solutions', 'Precision Braking', 'Elite Washing'].map(s => (
               <Link key={s} to="/services" style={{ display: 'block', color: '#94A3B8', textDecoration: 'none', fontSize: '0.9rem', marginBottom: '0.5rem', transition: 'all 0.3s', fontWeight: 500 }}
-                onMouseEnter={(e) => (e.target.style.color = '#2563EB')}
+                onMouseEnter={(e) => (e.target.style.color = '#1E3A8A')}
                 onMouseLeave={(e) => (e.target.style.color = '#94A3B8')}>
                 {s}
               </Link>
@@ -44,7 +44,7 @@ export default function Footer() {
             <h4 style={{ color: 'white', fontWeight: 600, marginBottom: '1rem', fontSize: '1rem', fontFamily: 'Rajdhani, sans-serif', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Quick Links</h4>
             {[['Buy Cars', '/bikes'], ['Sell My Car', '/sell'], ['Genuine Spares', '/parts'], ['Track Order', '/my-orders'], ['Member Dashboard', '/my-bookings'], ['User Profile', '/profile']].map(([label, href]) => (
               <Link key={href} to={href} style={{ display: 'block', color: '#94A3B8', textDecoration: 'none', fontSize: '0.9rem', marginBottom: '0.5rem', transition: 'all 0.3s', fontWeight: 500 }}
-                onMouseEnter={(e) => (e.target.style.color = '#2563EB')}
+                onMouseEnter={(e) => (e.target.style.color = '#1E3A8A')}
                 onMouseLeave={(e) => (e.target.style.color = '#94A3B8')}>
                 {label}
               </Link>
@@ -60,13 +60,13 @@ export default function Footer() {
               { Icon: MapPin, text: 'Innovation District, Mumbai, India' },
             ].map(({ Icon, text }) => (
               <div key={text} className="flex items-center gap-2" style={{ marginBottom: '0.75rem', fontSize: '0.9rem', fontWeight: 500 }}>
-                <Icon size={16} style={{ color: '#2563EB', flexShrink: 0 }} />
+                <Icon size={16} style={{ color: '#1E3A8A', flexShrink: 0 }} />
                 <span>{text}</span>
               </div>
             ))}
             <div style={{ marginTop: '2rem', padding: '1.2rem', background: '#1E293B', borderRadius: '12px', border: '1px solid #334155' }}>
               <p style={{ fontSize: '0.75rem', color: '#64748B', marginBottom: '0.6rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em' }}>24/7 ROADSIDE ASSISTANCE</p>
-              <a href="tel:+918002886977" style={{ color: '#2563EB', fontWeight: 950, fontSize: '1.25rem', textDecoration: 'none', fontFamily: 'Rajdhani, sans-serif' }}>
+              <a href="tel:+918002886977" style={{ color: '#1E3A8A', fontWeight: 950, fontSize: '1.25rem', textDecoration: 'none', fontFamily: 'Rajdhani, sans-serif' }}>
                 📞 800-AUTO-MVP
               </a>
             </div>
@@ -84,3 +84,4 @@ export default function Footer() {
     </footer>
   );
 }
+

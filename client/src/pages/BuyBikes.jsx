@@ -77,7 +77,7 @@ export default function BuyBikes() {
       <div style={{ background: '#FFFFFF', borderBottom: '1px solid #F1F5F9', padding: '2.5rem 0' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 950, color: '#0F172A', marginBottom: '0.4rem', letterSpacing: '0.02em' }}>
-            Explore <span style={{ color: '#2563EB' }}>Luxury Collection</span>
+            Explore <span style={{ color: '#1E3A8A' }}>Luxury Collection</span>
           </h1>
           <p style={{ color: '#64748B', fontSize: '1.1rem', fontWeight: 600 }}>{total} premium vehicles available</p>
 
@@ -97,9 +97,9 @@ export default function BuyBikes() {
                 <button key={t} onClick={() => handleFilter('type', t)}
                   style={{
                     padding: '0.6rem 1.8rem', borderRadius: '12px', border: '1.5px solid',
-                    borderColor: filters.type === t ? '#2563EB' : '#E2E8F0',
-                    background: filters.type === t ? 'rgba(37, 99, 235, 0.05)' : '#FFF',
-                    color: filters.type === t ? '#2563EB' : '#64748B',
+                    borderColor: filters.type === t ? '#1E3A8A' : '#E2E8F0',
+                    background: filters.type === t ? 'rgba(30, 58, 138, 0.05)' : '#FFF',
+                    color: filters.type === t ? '#1E3A8A' : '#64748B',
                     cursor: 'pointer', fontSize: '0.9rem', fontWeight: 800,
                     transition: 'all 0.3s', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.05em'
                   }}>
@@ -194,7 +194,7 @@ export default function BuyBikes() {
                 {[...Array(pages)].map((_, i) => (
                   <button key={i} onClick={() => setPage(i + 1)}
                     style={{
-                      width: 44, height: 44, borderRadius: '12px', border: 'none',
+                      width: 44, height: 44, borderRadius: '12px',
                       background: page === i + 1 ? '#0F172A' : '#FFF',
                       color: page === i + 1 ? 'white' : '#64748B',
                       cursor: 'pointer', fontWeight: 950, fontSize: '0.95rem',
@@ -218,3 +218,4 @@ export default function BuyBikes() {
     </div>
   );
 }
+

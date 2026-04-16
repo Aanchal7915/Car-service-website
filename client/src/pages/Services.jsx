@@ -53,7 +53,7 @@ export default function Services() {
           name: 'AutoXpress', description: `Service: ${selectedService.label}`,
           order_id: rzpOrder.id,
           prefill: { name: user.name, email: user.email, contact: user.phone || '' },
-          theme: { color: '#2563EB' },
+          theme: { color: '#1E3A8A' },
           handler: async (response) => {
             try {
               await verifyServicePayment(bookingId, {
@@ -116,7 +116,7 @@ export default function Services() {
       <div style={{ background: '#F9F9F9', borderBottom: '1px solid #EEE', padding: '1rem 0' }}>
         <div className="max-w-4xl mx-auto px-4">
           <h1 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.8rem', fontWeight: 800, color: '#111', margin: 0 }}>
-            Premium Car <span style={{ color: '#2563EB' }}>Services</span>
+            Premium Car <span style={{ color: '#1E3A8A' }}>Services</span>
           </h1>
           <p style={{ color: '#666', marginTop: '0.3rem', fontWeight: 500 }}>Elite maintenance for your luxury vehicle at your doorstep</p>
  
@@ -146,8 +146,8 @@ export default function Services() {
         {/* Step 1: Service Selection */}
         {step === 1 && (
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.5rem', padding: '0.8rem 1.2rem', background: 'rgba(37, 99, 235, 0.1)', border: '1px solid rgba(37, 99, 235, 0.2)', borderRadius: '12px' }}>
-              <span style={{ color: '#2563EB', fontSize: '0.85rem', fontWeight: 850, fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.04em' }}>EXCLUSIVE DOORSTEP SERVICE — ELITE MECHANICS AT YOUR SERVICE!</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.5rem', padding: '0.8rem 1.2rem', background: 'rgba(30, 58, 138, 0.1)', border: '1px solid rgba(30, 58, 138, 0.2)', borderRadius: '12px' }}>
+              <span style={{ color: '#1E3A8A', fontSize: '0.85rem', fontWeight: 850, fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.04em' }}>EXCLUSIVE DOORSTEP SERVICE — ELITE MECHANICS AT YOUR SERVICE!</span>
             </div>
  
             {typesLoading ? (
@@ -159,13 +159,13 @@ export default function Services() {
               {serviceTypes.map((service) => (
                 <button key={service.value} onClick={() => handleServiceSelect(service)}
                   style={{ textAlign: 'left', background: '#FFF', border: '1px solid rgba(156, 163, 175, 0.15)', borderRadius: '20px', padding: '1.5rem', cursor: 'pointer', transition: 'all 0.4s', width: '100%', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#2563EB'; e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 12px 30px rgba(0,0,0,0.06)'; }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#1E3A8A'; e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 12px 30px rgba(0,0,0,0.06)'; }}
                   onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(156, 163, 175, 0.15)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.02)'; }}>
                   <h3 style={{ color: '#0F172A', fontWeight: 900, fontSize: '1rem', marginBottom: '0.2rem', fontFamily: 'Rajdhani, sans-serif' }}>{service.label.toUpperCase()}</h3>
                   <p style={{ color: '#64748B', fontSize: '0.75rem', marginBottom: '0.8rem', lineHeight: 1.4, fontWeight: 600 }}>{service.desc}</p>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ color: '#2563EB', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.1rem' }}>{service.price}</span>
-                    <ChevronRight size={18} style={{ color: '#2563EB' }} />
+                    <span style={{ color: '#1E3A8A', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.1rem' }}>{service.price}</span>
+                    <ChevronRight size={18} style={{ color: '#1E3A8A' }} />
                   </div>
                 </button>
               ))}
@@ -180,7 +180,7 @@ export default function Services() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', padding: '1.5rem', background: '#FFF', borderRadius: '16px', marginBottom: '1.5rem', border: '1px solid rgba(156, 163, 175, 0.15)', boxShadow: '0 8px 30px rgba(0,0,0,0.03)' }}>
               <div style={{ flex: 1 }}>
                 <h3 style={{ color: '#0F172A', fontWeight: 950, fontSize: '1.25rem', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.05em' }}>{selectedService.label}</h3>
-                <span style={{ color: '#2563EB', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.15rem' }}>{selectedService.price}</span>
+                <span style={{ color: '#1E3A8A', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.15rem' }}>{selectedService.price}</span>
               </div>
               <button onClick={() => setStep(1)} style={{ background: '#0F172A', border: 'none', borderRadius: '8px', color: 'white', padding: '0.6rem 1.2rem', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif' }}>
                 CHANGE
@@ -229,11 +229,11 @@ export default function Services() {
  
               <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1.2rem', flexWrap: 'wrap' }}>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer' }}>
-                  <input type="checkbox" value="true" {...register('isPickupDrop')} style={{ accentColor: '#2563EB', width: 22, height: 22 }} />
+                  <input type="checkbox" value="true" {...register('isPickupDrop')} style={{ accentColor: '#1E3A8A', width: 22, height: 22 }} />
                   <span style={{ color: '#0F172A', fontSize: '0.9rem', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif' }}>EXCLUSIVE PICKUP & DROP</span>
                 </label>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer' }}>
-                  <input type="checkbox" value="true" {...register('isOneHourRepair')} style={{ accentColor: '#2563EB', width: 22, height: 22 }} />
+                  <input type="checkbox" value="true" {...register('isOneHourRepair')} style={{ accentColor: '#1E3A8A', width: 22, height: 22 }} />
                   <span style={{ color: '#0F172A', fontSize: '0.9rem', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif' }}>PRIORITY EXPRESS SERVICE</span>
                 </label>
               </div>
@@ -255,19 +255,19 @@ export default function Services() {
           <div className="animate-fadeInUp" style={{ textAlign: 'center', padding: '1.5rem 1.2rem', background: '#FFF', borderRadius: '24px', border: '1px solid #EEE', boxShadow: '0 15px 50px rgba(0,0,0,0.04)' }}>
             <div style={{ fontSize: '4.5rem', marginBottom: '0.8rem', color: '#10B981' }}>✓</div>
             <h2 style={{ color: '#111', fontFamily: 'Rajdhani, sans-serif', fontSize: '2rem', fontWeight: 900, marginBottom: '0.4rem' }}>
-              SERVICE <span style={{ color: '#2563EB' }}>CONFIRMED!</span>
+              SERVICE <span style={{ color: '#1E3A8A' }}>CONFIRMED!</span>
             </h2>
             <p style={{ color: '#666', marginBottom: '1.2rem', fontSize: '0.95rem', fontWeight: 500 }}>Our specialist mechanic will arrive at your location as per schedule.</p>
             
             {/* Advance Payment Option - More compact & Blue themed */}
             {bookingId && !paid && (
-              <div style={{ margin: '0 auto 1.8rem', maxWidth: 440, background: 'rgba(37,99,235,0.03)', border: '1.5px dashed rgba(37,99,235,0.15)', borderRadius: '20px', padding: '1.2rem' }}>
-                <h4 style={{ color: '#2563EB', fontWeight: 950, marginBottom: '0.3rem', fontFamily: 'Rajdhani, sans-serif', fontSize: '1.05rem', letterSpacing: '0.05em', textTransform: 'uppercase' }}>PRIORITIZE YOUR BOOKING</h4>
+              <div style={{ margin: '0 auto 1.8rem', maxWidth: 440, background: 'rgba(30,58,138,0.03)', border: '1.5px dashed rgba(30,58,138,0.15)', borderRadius: '20px', padding: '1.2rem' }}>
+                <h4 style={{ color: '#1E3A8A', fontWeight: 950, marginBottom: '0.3rem', fontFamily: 'Rajdhani, sans-serif', fontSize: '1.05rem', letterSpacing: '0.05em', textTransform: 'uppercase' }}>PRIORITIZE YOUR BOOKING</h4>
                 <p style={{ color: '#64748B', fontSize: '0.8rem', marginBottom: '1.2rem', fontWeight: 700 }}>
                   Pay ₹200 advance to get your car serviced on top priority.
                 </p>
                 <button onClick={handleAdvancePayment} disabled={paying}
-                  style={{ width: '100%', padding: '0.85rem', background: paying ? '#E2E8F0' : '#2563EB', color: 'white', border: 'none', borderRadius: '12px', fontWeight: 950, cursor: paying ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.08em', fontSize: '0.95rem', boxShadow: paying ? 'none' : '0 8px 25px rgba(37, 99, 235, 0.25)', transition: 'all 0.3s' }}>
+                  style={{ width: '100%', padding: '0.85rem', background: paying ? '#E2E8F0' : '#1E3A8A', color: 'white', border: 'none', borderRadius: '12px', fontWeight: 950, cursor: paying ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.08em', fontSize: '0.95rem', boxShadow: paying ? 'none' : '0 8px 25px rgba(30, 58, 138, 0.25)', transition: 'all 0.3s' }}>
                   <CreditCard size={18} /> {paying ? 'PROCESSING...' : 'PAY ₹200 & PRIORITIZE →'}
                 </button>
               </div>
@@ -283,8 +283,8 @@ export default function Services() {
             <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
               <button onClick={() => navigate('/my-bookings')} className="btn-primary" style={{ padding: '0.8rem 2.2rem', fontWeight: 950, background: '#0F172A', border: 'none', borderRadius: '12px', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.04em', fontSize: '0.9rem' }}>TRACK STATUS</button>
               <button onClick={() => { setStep(1); setSelectedService(null); setBookingId(null); setPaid(false); }} 
-                style={{ padding: '0.8rem 2.2rem', fontWeight: 950, borderRadius: '12px', border: '2px solid rgba(37,99,235,0.2)', background: 'transparent', color: '#2563EB', cursor: 'pointer', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.04em', fontSize: '0.9rem', transition: 'all 0.3s' }}
-                onMouseEnter={e => e.currentTarget.style.background = 'rgba(37,99,235,0.02)'}
+                style={{ padding: '0.8rem 2.2rem', fontWeight: 950, borderRadius: '12px', border: '2px solid rgba(30,58,138,0.2)', background: 'transparent', color: '#1E3A8A', cursor: 'pointer', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.04em', fontSize: '0.9rem', transition: 'all 0.3s' }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(30,58,138,0.02)'}
                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                 BOOK ANOTHER
               </button>
@@ -295,3 +295,4 @@ export default function Services() {
     </div>
   );
 }
+

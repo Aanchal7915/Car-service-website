@@ -42,7 +42,7 @@ export default function Login() {
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <Link to="/" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.6rem' }}>
-            <div style={{ background: 'linear-gradient(135deg, #2563EB, #1D4ED8)', borderRadius: '10px', padding: '10px 14px' }}>
+            <div style={{ background: 'linear-gradient(135deg, #1E3A8A, #172554)', borderRadius: '10px', padding: '10px 14px' }}>
               <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 800, color: 'white', fontSize: '1.4rem' }}>AUTO</span>
             </div>
             <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 800, color: '#111', fontSize: '1.6rem' }}>XPRESS</span>
@@ -58,9 +58,9 @@ export default function Login() {
               style={{
                 flex: 1, padding: '0.7rem', borderRadius: '8px', border: 'none', cursor: 'pointer',
                 background: mode === m ? '#FFF' : 'transparent',
-                color: mode === m ? '#2563EB' : '#888',
+                color: mode === m ? '#1E3A8A' : '#888',
                 fontWeight: 700, fontSize: '0.9rem', transition: 'all 0.25s',
-                boxShadow: mode === m ? '0 4px 12px rgba(37, 99, 235, 0.1)' : 'none'
+                boxShadow: mode === m ? '0 4px 12px rgba(30, 58, 138, 0.1)' : 'none'
               }}>
               {m === 'password' ? 'Password' : 'OTP Login'}
             </button>
@@ -79,7 +79,7 @@ export default function Login() {
                   placeholder="you@example.com"
                   {...register('email', { pattern: { value: /^\S+@\S+$/i, message: 'Invalid email' } })} />
               </div>
-              {errors.otp && <p style={{ color: '#2563EB', fontSize: '0.82rem', marginTop: '0.4rem', fontWeight: 600 }}>{errors.otp.message}</p>}
+              {errors.otp && <p style={{ color: '#1E3A8A', fontSize: '0.82rem', marginTop: '0.4rem', fontWeight: 600 }}>{errors.otp.message}</p>}
             </div>
  
             {/* For OTP - phone option */}
@@ -139,9 +139,10 @@ export default function Login() {
  
         <p style={{ textAlign: 'center', color: '#666', marginTop: '2rem', fontSize: '0.95rem', fontWeight: 500 }}>
           Don't have an account?{' '}
-          <Link to="/register" style={{ color: '#2563EB', textDecoration: 'none', fontWeight: 700 }}>Sign Up Now</Link>
+          <Link to="/register" style={{ color: '#1E3A8A', textDecoration: 'none', fontWeight: 700 }}>Sign Up Now</Link>
         </p>
       </div>
     </div>
   );
 }
+

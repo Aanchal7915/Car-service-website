@@ -55,7 +55,7 @@ export default function CarCard({ car, bike, hideBadges = false }) {
         display: 'flex',
         flexDirection: 'column',
         cursor: 'pointer',
-        boxShadow: hovered ? '0 30px 60px rgba(15, 23, 42, 0.15), 0 0 0 1px rgba(37, 99, 235, 0.1)' : '0 10px 30px rgba(0,0,0,0.04)',
+        boxShadow: hovered ? '0 30px 60px rgba(15, 23, 42, 0.15), 0 0 0 1px rgba(30, 58, 138, 0.1)' : '0 10px 30px rgba(0,0,0,0.04)',
         transform: hovered ? 'translateY(-12px)' : 'translateY(0)',
         transition: 'all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)',
         height: '100%',
@@ -95,7 +95,7 @@ export default function CarCard({ car, bike, hideBadges = false }) {
 
           {/* Top-left: Type Badge */}
           <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', gap: '0.5rem' }}>
-            <span style={{
+            <span className="product-card-badge" style={{
               background: target?.type === 'new' ? '#10B981' : '#0F172A', color: 'white',
               fontSize: '0.65rem', fontWeight: 900,
               padding: '4px 14px', borderRadius: '30px',
@@ -112,7 +112,7 @@ export default function CarCard({ car, bike, hideBadges = false }) {
           {/* Metadata Row 1 */}
           <div style={{ marginBottom: '0.3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', gap: '0.6rem' }}>
-              <span style={{ color: '#2563EB', fontSize: '0.6rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '2px', fontFamily: 'Rajdhani, sans-serif' }}>
+              <span style={{ color: '#1E3A8A', fontSize: '0.6rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '2px', fontFamily: 'Rajdhani, sans-serif' }}>
                 <Calendar size={11} /> {target?.year}
               </span>
               <span style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '2px', fontFamily: 'Rajdhani, sans-serif' }}>
@@ -151,18 +151,18 @@ export default function CarCard({ car, bike, hideBadges = false }) {
 
           {/* Price row + Action */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
-            <span className="product-card-price" style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.25rem', fontWeight: 950, color: '#2563EB', lineHeight: 1 }}>
+            <span className="product-card-price" style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.05rem', fontWeight: 950, color: '#1E3A8A', lineHeight: 1 }}>
               ₹{effectivePrice?.toLocaleString('en-IN')}
             </span>
             <div className="product-card-btn" style={{
-              height: '32px', padding: '0 1rem',
-              background: '#2563EB', borderRadius: '8px', color: 'white',
-              display: 'flex', alignItems: 'center', gap: '0.4rem',
-              fontSize: '0.7rem', fontWeight: 800, fontFamily: 'Rajdhani, sans-serif',
-              letterSpacing: '0.05em', boxShadow: '0 6px 15px rgba(37, 99, 235, 0.2)',
+              height: '28px', padding: '0 0.75rem',
+              background: '#1E3A8A', borderRadius: '6px', color: 'white',
+              display: 'flex', alignItems: 'center', gap: '0.3rem',
+              fontSize: '0.65rem', fontWeight: 800, fontFamily: 'Rajdhani, sans-serif',
+              letterSpacing: '0.05em', boxShadow: '0 4px 10px rgba(30, 58, 138, 0.15)',
               transition: 'all 0.3s'
             }}>
-              DETAILS <ArrowRight size={14} />
+              DETAILS <ArrowRight size={12} />
             </div>
           </div>
         </div>
@@ -170,3 +170,4 @@ export default function CarCard({ car, bike, hideBadges = false }) {
     </div>
   );
 }
+

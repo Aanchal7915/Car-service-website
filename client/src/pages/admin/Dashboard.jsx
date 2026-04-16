@@ -1177,11 +1177,11 @@ const SellsTab = () => {
                     {s.condition ? ` • ${s.condition.toUpperCase()}` : ''}
                   </p>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginTop: '0.8rem' }}>
-                    <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#2563EB10', color: '#2563EB', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.8rem' }}>{s.user?.name?.charAt(0).toUpperCase()}</div>
+                    <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#1E3A8A10', color: '#1E3A8A', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.8rem' }}>{s.user?.name?.charAt(0).toUpperCase()}</div>
                     <p style={{ color: '#111', fontSize: '0.85rem', fontWeight: 800, margin: 0 }}>{s.user?.name || 'N/A'} <span style={{ color: '#888', fontWeight: 600 }}>• {s.user?.phone || ''}</span></p>
                   </div>
-                  {s.pickupAddress?.city && <p style={{ color: '#2563EB', fontSize: '0.8rem', fontWeight: 800, marginTop: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>📍 {[s.pickupAddress.street, s.pickupAddress.city].filter(Boolean).join(', ').toUpperCase()}</p>}
-                  {s.isOneHourSell && <span style={{ display: 'inline-block', marginTop: '0.8rem', background: '#F0F7FF', color: '#2563EB', border: '1.5px solid rgba(37,99,235,0.1)', padding: '0.3rem 0.8rem', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 900 }}>⚡ EXPRESS SALE</span>}
+                  {s.pickupAddress?.city && <p style={{ color: '#1E3A8A', fontSize: '0.8rem', fontWeight: 800, marginTop: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>📍 {[s.pickupAddress.street, s.pickupAddress.city].filter(Boolean).join(', ').toUpperCase()}</p>}
+                  {s.isOneHourSell && <span style={{ display: 'inline-block', marginTop: '0.8rem', background: '#F0F7FF', color: '#1E3A8A', border: '1.5px solid rgba(30,58,138,0.1)', padding: '0.3rem 0.8rem', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 900 }}>⚡ EXPRESS SALE</span>}
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>
@@ -1582,3 +1582,4 @@ export default function AdminDashboard() {
     </div>
   );
 }
+

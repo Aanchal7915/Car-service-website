@@ -26,6 +26,7 @@ import BestsellerParts from './pages/BestsellerParts';
 import FeaturedBikes from './pages/FeaturedBikes';
 import BestsellerBikes from './pages/BestsellerBikes';
 import Contact from './pages/Contact';
+import About from './pages/About';
 
 const Layout = ({ children, hideNav = false }) => (
   <>
@@ -75,13 +76,14 @@ function App() {
             <Route path="/profile" element={<Layout><Profile /></Layout>} />
             <Route path="/wishlist" element={<Layout><Wishlist /></Layout>} />
             <Route path="/contact" element={<Layout><Contact /></Layout>} />
+            <Route path="/about" element={<Layout><About /></Layout>} />
 
             {/* 404 */}
             <Route path="*" element={
               <Layout>
                 <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1.5rem', background: '#FFFFFF', textAlign: 'center' }}>
                   <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: 'clamp(5rem, 15vw, 10rem)', fontWeight: 950, color: '#111', lineHeight: 1, letterSpacing: '-0.05em' }}>404</div>
-                  <div style={{ height: '6px', width: '80px', background: '#2563EB', borderRadius: '4px' }} />
+                  <div style={{ height: '6px', width: '80px', background: '#1E3A8A', borderRadius: '4px' }} />
                   <h2 style={{ color: '#0F172A', fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', fontFamily: 'Rajdhani, sans-serif', fontWeight: 950, textTransform: 'uppercase', letterSpacing: '0.05em' }}>PAGE NOT FOUND</h2>
                   <p style={{ color: '#64748B', fontSize: '1.2rem', maxWidth: '450px', fontWeight: 600 }}>The luxury destination you're seeking was not found.</p>
                   <a href="/" style={{ marginTop: '1.5rem', background: '#0F172A', color: 'white', padding: '1.2rem 3rem', borderRadius: '18px', textDecoration: 'none', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.1em', boxShadow: '0 15px 40px rgba(15, 23, 42, 0.2)', transition: 'all 0.3s' }}
@@ -100,3 +102,4 @@ function App() {
 }
 
 export default App;
+

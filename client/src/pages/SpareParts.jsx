@@ -61,7 +61,7 @@ export default function SpareParts() {
        {/* ── HERO HEADER ── */}
         <div style={{ background: '#FFFFFF', borderBottom: '1px solid #F1F5F9', padding: '3.5rem 0' }}>
           {/* Decorative blue line */}
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: '#2563EB' }} />
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: '#1E3A8A' }} />
  
          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style={{ paddingTop: '2.5rem', paddingBottom: '1.5rem' }}>
            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
@@ -69,13 +69,13 @@ export default function SpareParts() {
              <div>
                {/* Eyebrow */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem' }}>
-                  <div style={{ width: 30, height: 4, background: '#2563EB', borderRadius: '4px' }} />
-                  <span style={{ color: '#2563EB', fontSize: '0.8rem', fontWeight: 900, letterSpacing: '0.25em', textTransform: 'uppercase', fontFamily: 'Rajdhani, sans-serif' }}>
+                  <div style={{ width: 30, height: 4, background: '#1E3A8A', borderRadius: '4px' }} />
+                  <span style={{ color: '#1E3A8A', fontSize: '0.8rem', fontWeight: 900, letterSpacing: '0.25em', textTransform: 'uppercase', fontFamily: 'Rajdhani, sans-serif' }}>
                     AutoXpress Spares
                   </span>
                 </div>
                 <h1 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: 'clamp(1.8rem, 4.5vw, 3.5rem)', fontWeight: 950, color: '#0F172A', lineHeight: 1, margin: 0, letterSpacing: '0.05em' }}>
-                  GENUINE <span style={{ color: '#2563EB' }}>SPARES</span>
+                  GENUINE <span style={{ color: '#1E3A8A' }}>SPARES</span>
                 </h1>
                <p style={{ color: '#94A3B8', marginTop: '0.5rem', fontSize: '0.88rem' }}>
                  {total > 0 ? <><span style={{ color: '#0F172A', fontWeight: 700 }}>{total}</span> products available</> : 'Browse our collection'}
@@ -91,20 +91,20 @@ export default function SpareParts() {
               <Link to="/cart" style={{
                 display: 'flex', alignItems: 'center', gap: '0.7rem',
                  padding: '0.8rem 1.8rem',
-                 background: '#2563EB',
+                 background: '#1E3A8A',
                  borderRadius: '14px', color: 'white', textDecoration: 'none',
                  fontWeight: 900, fontSize: '0.95rem', position: 'relative',
                  transition: 'all 0.3s',
                  fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.08em',
-                 boxShadow: '0 10px 25px rgba(37, 99, 235, 0.3)'
+                 boxShadow: '0 10px 25px rgba(30, 58, 138, 0.3)'
               }}
-                onMouseEnter={e => { e.currentTarget.style.background = '#3B82F6'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = '#2563EB'; e.currentTarget.style.transform = 'translateY(0)'; }}>
+                onMouseEnter={e => { e.currentTarget.style.background = '#93C5FD'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = '#1E3A8A'; e.currentTarget.style.transform = 'translateY(0)'; }}>
                 <ShoppingCart size={19} />
                 MY CART
                 {itemCount > 0 && (
                    <span style={{
-                     background: 'white', color: '#2563EB',
+                     background: 'white', color: '#1E3A8A',
                      borderRadius: '999px', padding: '0 8px',
                      fontSize: '0.8rem', fontWeight: 950, marginLeft: '0.4rem'
                    }}>{itemCount}</span>
@@ -158,7 +158,7 @@ export default function SpareParts() {
                        flexShrink: 0,
                         padding: '1.2rem 1.5rem',
                         background: 'none', border: 'none',
-                        borderBottom: `4px solid ${isActive ? '#2563EB' : 'transparent'}`,
+                        borderBottom: `4px solid ${isActive ? '#1E3A8A' : 'transparent'}`,
                         color: isActive ? '#0F172A' : '#64748B',
                         cursor: 'pointer', fontSize: '0.9rem', fontWeight: isActive ? 900 : 700,
                         transition: 'all 0.3s', whiteSpace: 'nowrap',
@@ -183,7 +183,7 @@ export default function SpareParts() {
              <SlidersHorizontal size={14} style={{ color: '#888' }} />
              <span style={{ color: '#888', fontSize: '0.82rem', fontWeight: 600 }}>Filtering by:</span>
               {category && (
-                <span style={{ background: 'rgba(37, 99, 235, 0.08)', color: '#2563EB', border: '1px solid rgba(37, 99, 235, 0.15)', fontSize: '0.8rem', fontWeight: 800, padding: '4px 14px', borderRadius: '999px', fontFamily: 'Rajdhani, sans-serif' }}>
+                <span style={{ background: 'rgba(30, 58, 138, 0.08)', color: '#1E3A8A', border: '1px solid rgba(30, 58, 138, 0.15)', fontSize: '0.8rem', fontWeight: 800, padding: '4px 14px', borderRadius: '999px', fontFamily: 'Rajdhani, sans-serif' }}>
                   {activeCatLabel}
                 </span>
               )}
@@ -249,7 +249,7 @@ export default function SpareParts() {
              <p style={{ color: '#64748B', fontSize: '0.95rem', fontWeight: 600 }}>We couldn't find any parts matching your current filters.</p>
              {(category || search) && (
                 <button onClick={() => { setCategory(''); setSearch(''); }}
-                  style={{ marginTop: '2rem', background: '#2563EB', color: 'white', border: 'none', borderRadius: '12px', padding: '1rem 2.5rem', cursor: 'pointer', fontWeight: 900, fontSize: '1rem', boxShadow: '0 8px 25px rgba(37, 99, 235, 0.3)', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.1em' }}>
+                  style={{ marginTop: '2rem', background: '#1E3A8A', color: 'white', border: 'none', borderRadius: '12px', padding: '1rem 2.5rem', cursor: 'pointer', fontWeight: 900, fontSize: '1rem', boxShadow: '0 8px 25px rgba(30, 58, 138, 0.3)', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.1em' }}>
                  Clear All Filters
                </button>
              )}
@@ -259,3 +259,4 @@ export default function SpareParts() {
     </div>
   );
 }
+

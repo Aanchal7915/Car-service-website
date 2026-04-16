@@ -49,7 +49,7 @@ export default function PartCard({ part }) {
         display: 'flex',
         flexDirection: 'column',
         cursor: 'pointer',
-        boxShadow: hovered ? '0 30px 60px rgba(15, 23, 42, 0.15), 0 0 0 1px rgba(37, 99, 235, 0.1)' : '0 10px 30px rgba(0,0,0,0.04)',
+        boxShadow: hovered ? '0 30px 60px rgba(15, 23, 42, 0.15), 0 0 0 1px rgba(30, 58, 138, 0.1)' : '0 10px 30px rgba(0,0,0,0.04)',
         transform: hovered ? 'translateY(-12px)' : 'translateY(0)',
         transition: 'all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)',
         height: '100%',
@@ -123,7 +123,7 @@ export default function PartCard({ part }) {
           {/* Category & Status */}
           <div style={{ marginBottom: '0.4rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{
-              fontSize: '0.65rem', color: '#2563EB',
+              fontSize: '0.65rem', color: '#1E3A8A',
               textTransform: 'uppercase', fontWeight: 950,
               letterSpacing: '0.08em', fontFamily: 'Rajdhani, sans-serif'
             }}>
@@ -162,7 +162,7 @@ export default function PartCard({ part }) {
           {/* Price row + CTA */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.6rem' }}>
-              <span className="product-card-price" style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.25rem', fontWeight: 950, color: '#2563EB', lineHeight: 1 }}>
+              <span className="product-card-price" style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.25rem', fontWeight: 950, color: '#1E3A8A', lineHeight: 1 }}>
                 ₹{effectivePrice?.toLocaleString('en-IN')}
               </span>
             </div>
@@ -182,7 +182,7 @@ export default function PartCard({ part }) {
                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); updateQty(part._id, cartItem.quantity - 1); }}
                     style={{ 
                       width: 24, height: 24, borderRadius: '4px', border: 'none', 
-                      background: '#2563EB', color: 'white', display: 'flex', 
+                      background: '#1E3A8A', color: 'white', display: 'flex', 
                       alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
                       fontSize: '1rem', fontWeight: 900
                     }}
@@ -194,7 +194,7 @@ export default function PartCard({ part }) {
                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); updateQty(part._id, cartItem.quantity + 1); }}
                     style={{ 
                       width: 24, height: 24, borderRadius: '4px', border: 'none', 
-                      background: '#2563EB', color: 'white', display: 'flex', 
+                      background: '#1E3A8A', color: 'white', display: 'flex', 
                       alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
                       fontSize: '1rem', fontWeight: 900
                     }}
@@ -208,11 +208,11 @@ export default function PartCard({ part }) {
                   style={{
                     height: '28px',
                     padding: '0 0.7rem',
-                    background: effectiveStock === 0 ? '#E2E8F0' : '#2563EB',
+                    background: effectiveStock === 0 ? '#E2E8F0' : '#1E3A8A',
                     border: 'none', borderRadius: '8px', color: 'white',
                     cursor: effectiveStock === 0 ? 'not-allowed' : 'pointer',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    boxShadow: effectiveStock === 0 ? 'none' : '0 4px 12px rgba(37, 99, 235, 0.25)',
+                    boxShadow: effectiveStock === 0 ? 'none' : '0 4px 12px rgba(30, 58, 138, 0.25)',
                     transition: 'all 0.2s',
                     gap: '0.3rem', fontWeight: 950, fontFamily: 'Rajdhani, sans-serif', fontSize: '0.65rem', letterSpacing: '0.04em'
                   }}
@@ -228,3 +228,4 @@ export default function PartCard({ part }) {
 
   );
 }
+

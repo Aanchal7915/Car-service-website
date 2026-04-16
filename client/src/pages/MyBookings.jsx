@@ -55,7 +55,7 @@ export default function MyBookings() {
       <div style={{ background: '#F9F9F9', borderBottom: '1px solid #EEE', padding: '2.5rem 0' }}>
         <div className="max-w-4xl mx-auto px-4">
           <h1 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.8rem', fontWeight: 950, color: '#0F172A', letterSpacing: '0.02em' }}>
-            MY <span style={{ color: '#2563EB' }}>DASHBOARD</span>
+            MY <span style={{ color: '#1E3A8A' }}>DASHBOARD</span>
           </h1>
           <p style={{ color: '#64748B', marginTop: '0.6rem', fontWeight: 600, fontSize: '1.1rem' }}>Track your premium services, showroom requests, and orders</p>
  
@@ -65,12 +65,12 @@ export default function MyBookings() {
                 style={{
                   display: 'flex', alignItems: 'center', gap: '0.6rem',
                   padding: '0.8rem 1.6rem', borderRadius: '14px', border: '2px solid',
-                  borderColor: activeTab === id ? '#2563EB' : '#E2E8F0',
+                  borderColor: activeTab === id ? '#1E3A8A' : '#E2E8F0',
                   background: activeTab === id ? '#EFF6FF' : '#F8FAFC',
-                  color: activeTab === id ? '#2563EB' : '#64748B',
+                  color: activeTab === id ? '#1E3A8A' : '#64748B',
                   cursor: 'pointer', fontSize: '0.95rem', fontWeight: 900, transition: 'all 0.3s',
                   whiteSpace: 'nowrap',
-                  boxShadow: activeTab === id ? '0 10px 25px rgba(37, 99, 235, 0.15)' : 'none',
+                  boxShadow: activeTab === id ? '0 10px 25px rgba(30, 58, 138, 0.15)' : 'none',
                   fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.05em'
                 }}>
                 <Icon size={16} /> {label}
@@ -99,8 +99,8 @@ export default function MyBookings() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
                   <div style={{ flex: 1, minWidth: '250px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.8rem' }}>
-                      <div style={{ background: '#F8FAFC', width: 44, height: 44, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 20px rgba(37, 99, 235, 0.15)', border: '1.5px solid rgba(37, 99, 235, 0.2)' }}>
-                        <Wrench size={20} style={{ color: '#2563EB' }} />
+                      <div style={{ background: '#F8FAFC', width: 44, height: 44, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 20px rgba(30, 58, 138, 0.15)', border: '1.5px solid rgba(30, 58, 138, 0.2)' }}>
+                        <Wrench size={20} style={{ color: '#1E3A8A' }} />
                       </div>
                       <div>
                         <h3 style={{ color: '#111', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.25rem', lineHeight: 1 }}>{booking.serviceLabel}</h3>
@@ -118,8 +118,8 @@ export default function MyBookings() {
                   </div>
                   <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
                     {booking.estimatedCost && (
-                      <div style={{ background: '#EFF6FF', padding: '0.8rem 1.2rem', borderRadius: '14px', border: '1px solid rgba(37, 99, 235, 0.1)' }}>
-                        <div style={{ color: '#2563EB', fontSize: '0.75rem', fontWeight: 950, letterSpacing: '0.06em', textTransform: 'uppercase', fontFamily: 'Rajdhani, sans-serif' }}>ESTIMATED COST</div>
+                      <div style={{ background: '#EFF6FF', padding: '0.8rem 1.2rem', borderRadius: '14px', border: '1px solid rgba(30, 58, 138, 0.1)' }}>
+                        <div style={{ color: '#1E3A8A', fontSize: '0.75rem', fontWeight: 950, letterSpacing: '0.06em', textTransform: 'uppercase', fontFamily: 'Rajdhani, sans-serif' }}>ESTIMATED COST</div>
                         <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.6rem', fontWeight: 950, color: '#0F172A' }}>₹{booking.estimatedCost?.toLocaleString('en-IN')}</div>
                       </div>
                     )}
@@ -142,11 +142,11 @@ export default function MyBookings() {
                       return (
                         <div key={s} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                           <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                            {i > 0 && <div style={{ flex: 1, height: 3, background: isComplete ? '#2563EB' : '#F1F5F9' }} />}
-                            <div style={{ width: 24, height: 24, borderRadius: '50%', background: isComplete ? '#2563EB' : '#F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: isComplete ? '0 6px 15px rgba(37, 99, 235, 0.25)' : 'none' }}>
+                            {i > 0 && <div style={{ flex: 1, height: 3, background: isComplete ? '#1E3A8A' : '#F1F5F9' }} />}
+                            <div style={{ width: 24, height: 24, borderRadius: '50%', background: isComplete ? '#1E3A8A' : '#F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: isComplete ? '0 6px 15px rgba(30, 58, 138, 0.25)' : 'none' }}>
                               {isComplete ? <CheckCircle size={14} color="white" /> : <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#CCC' }} />}
                             </div>
-                            {i < 3 && <div style={{ flex: 1, height: 3, background: stepIdx < currentIdx ? '#2563EB' : '#F1F5F9' }} />}
+                            {i < 3 && <div style={{ flex: 1, height: 3, background: stepIdx < currentIdx ? '#1E3A8A' : '#F1F5F9' }} />}
                           </div>
                           <span style={{ color: isComplete ? '#111' : '#AAA', fontSize: '0.75rem', marginTop: '0.5rem', fontWeight: 800, textTransform: 'capitalize', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.02em' }}>{s.replace('_', ' ')}</span>
                         </div>
@@ -201,20 +201,20 @@ export default function MyBookings() {
                   </div>
                   <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
                     {req.offeredPrice ? (
-                      <div style={{ background: '#EFF6FF', padding: '0.8rem 1.2rem', borderRadius: '14px', border: '1px solid rgba(37, 99, 235, 0.1)' }}>
-                        <div style={{ color: '#2563EB', fontSize: '0.75rem', fontWeight: 950, letterSpacing: '0.06em', textTransform: 'uppercase', fontFamily: 'Rajdhani, sans-serif' }}>FINAL OFFER</div>
+                      <div style={{ background: '#EFF6FF', padding: '0.8rem 1.2rem', borderRadius: '14px', border: '1px solid rgba(30, 58, 138, 0.1)' }}>
+                        <div style={{ color: '#1E3A8A', fontSize: '0.75rem', fontWeight: 950, letterSpacing: '0.06em', textTransform: 'uppercase', fontFamily: 'Rajdhani, sans-serif' }}>FINAL OFFER</div>
                         <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.8rem', fontWeight: 950, color: '#0F172A' }}>₹{req.offeredPrice?.toLocaleString('en-IN')}</div>
                       </div>
                     ) : req.estimatedPrice && (
-                      <div style={{ color: '#2563EB', fontWeight: 950, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.4rem', letterSpacing: '0.02em' }}>EST: ₹{req.estimatedPrice?.toLocaleString('en-IN')}</div>
+                      <div style={{ color: '#1E3A8A', fontWeight: 950, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.4rem', letterSpacing: '0.02em' }}>EST: ₹{req.estimatedPrice?.toLocaleString('en-IN')}</div>
                     )}
                   </div>
                 </div>
                 {/* Pickup info */}
                 {req.pickupAddress && (
                   <div style={{ marginTop: '1.2rem', paddingTop: '1.2rem', borderTop: '1px solid #F5F5F5', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                    <div style={{ background: 'rgba(37, 99, 235, 0.08)', padding: '0.5rem', borderRadius: '10px' }}>
-                      <CheckCircle size={16} style={{ color: '#2563EB' }} />
+                    <div style={{ background: 'rgba(30, 58, 138, 0.08)', padding: '0.5rem', borderRadius: '10px' }}>
+                      <CheckCircle size={16} style={{ color: '#1E3A8A' }} />
                     </div>
                     <span style={{ color: '#64748B', fontSize: '0.9rem', fontWeight: 700 }}>
                       Inspection Scheduled: {[req.pickupAddress.street, req.pickupAddress.city].filter(Boolean).join(', ')}
@@ -256,7 +256,7 @@ export default function MyBookings() {
                 <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
                   {order.items?.map((item) => (
                     <div key={item._id} style={{ fontSize: '0.8rem', color: '#0F172A', background: '#F8FAFC', padding: '0.4rem 0.8rem', borderRadius: '10px', border: '1px solid #E2E8F0', fontWeight: 800 }}>
-                      {item.name} <span style={{ color: '#2563EB' }}>×{item.quantity}</span>
+                      {item.name} <span style={{ color: '#1E3A8A' }}>×{item.quantity}</span>
                     </div>
                   ))}
                 </div>
@@ -271,11 +271,11 @@ export default function MyBookings() {
                       return (
                         <div key={s} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                           <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                            {i > 0 && <div style={{ flex: 1, height: 3, background: isComplete ? '#2563EB' : '#F1F5F9' }} />}
-                            <div style={{ width: 22, height: 22, borderRadius: '50%', background: isComplete ? '#2563EB' : '#F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                            {i > 0 && <div style={{ flex: 1, height: 3, background: isComplete ? '#1E3A8A' : '#F1F5F9' }} />}
+                            <div style={{ width: 22, height: 22, borderRadius: '50%', background: isComplete ? '#1E3A8A' : '#F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                               {isComplete ? <CheckCircle size={14} color="white" /> : <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#CBD5E1' }} />}
                             </div>
-                            {i < 3 && <div style={{ flex: 1, height: 3, background: stepIdx < currentIdx ? '#2563EB' : '#F1F5F9' }} />}
+                            {i < 3 && <div style={{ flex: 1, height: 3, background: stepIdx < currentIdx ? '#1E3A8A' : '#F1F5F9' }} />}
                           </div>
                           <span style={{ color: isComplete ? '#111' : '#AAA', fontSize: '0.72rem', marginTop: '0.4rem', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'Rajdhani, sans-serif' }}>{s}</span>
                         </div>
@@ -309,8 +309,8 @@ export default function MyBookings() {
                         {enq.bike?.images?.[0] ? (
                           <img src={enq.bike.images[0]} alt={enq.bike.model} style={{ width: 80, height: 60, borderRadius: '12px', objectFit: 'cover', border: '1px solid #EEE' }} />
                         ) : (
-                          <div style={{ background: '#EFF6FF', width: 80, height: 60, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid rgba(37, 99, 235, 0.15)' }}>
-                            <MessageSquare size={20} style={{ color: '#2563EB' }} />
+                          <div style={{ background: '#EFF6FF', width: 80, height: 60, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid rgba(30, 58, 138, 0.15)' }}>
+                            <MessageSquare size={20} style={{ color: '#1E3A8A' }} />
                           </div>
                         )}
                       </div>
@@ -323,13 +323,13 @@ export default function MyBookings() {
                       </div>
                     </div>
                     {enq.message && (
-                      <div style={{ background: '#F8FAFC', padding: '1rem', borderRadius: '12px', fontSize: '0.95rem', color: '#334155', fontWeight: 700, borderLeft: '4px solid #2563EB' }}>
+                      <div style={{ background: '#F8FAFC', padding: '1rem', borderRadius: '12px', fontSize: '0.95rem', color: '#334155', fontWeight: 700, borderLeft: '4px solid #1E3A8A' }}>
                         "{enq.message}"
                       </div>
                     )}
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.6rem', fontWeight: 950, color: '#2563EB' }}>
+                    <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.6rem', fontWeight: 950, color: '#1E3A8A' }}>
                       ₹{enq.bike?.discountedPrice || enq.bike?.price?.toLocaleString('en-IN')}
                     </div>
                     <div style={{ color: '#888', fontSize: '0.75rem', fontWeight: 700, marginTop: '0.3rem' }}>Registered Ph: {enq.phone || 'N/A'}</div>
@@ -343,3 +343,4 @@ export default function MyBookings() {
     </div>
   );
 }
+
