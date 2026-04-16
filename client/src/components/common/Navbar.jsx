@@ -12,8 +12,8 @@ const navLinks = [
   { label: 'Sell Car', href: '/sell' },
   { label: 'Service', href: '/services' },
   { label: 'Parts', href: '/parts' },
-  { label: 'Featured', href: '/featured' },
-  { label: 'Bestseller', href: '/bestseller' },
+  { label: 'Featured', href: '/bikes/featured' },
+  { label: 'Bestseller', href: '/bikes/bestseller' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ];

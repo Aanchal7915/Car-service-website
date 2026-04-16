@@ -60,8 +60,6 @@ export default function Home() {
   useEffect(() => {
     Promise.all([
       getFeaturedBikes().then(({ data }) => setFeatured(data.bikes)),
-      getFeaturedParts().then(({ data }) => setFeaturedParts(data.parts || [])),
-      getBestsellerParts({ limit: 8 }).then(({ data }) => setBestsellerParts(data.parts || [])),
       getBestsellerBikes().then(({ data }) => setBestsellerBikes(data.bikes || [])),
       getActiveServiceTypes().then(({ data }) => setServiceTypes(data.serviceTypes || []))
     ])
@@ -385,7 +383,7 @@ export default function Home() {
       </section>
 
       {/* FEATURED PRODUCTS section */}
-      {(partsLoading || featuredParts.length > 0 || featured.length > 0) && (
+      {(loading || featured.length > 0) && (
         <section style={{ background: '#FFFFFF', padding: '5rem 0', borderTop: '1px solid rgba(156, 163, 175, 0.1)' }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem' }}>
@@ -396,7 +394,7 @@ export default function Home() {
               </h2>
               <p style={{ color: '#64748B', marginTop: '0.3rem', fontWeight: 600 }}>Exquisite performance machines</p>
             </div>
-              <Link to="/featured" style={{
+              <Link to="/bikes/featured" style={{
                 background: '#1E3A8A', color: 'white', padding: '0.6rem 1.4rem',
                 fontSize: '0.9rem', borderRadius: '10px', textDecoration: 'none',
                 fontWeight: 800, display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
@@ -407,7 +405,7 @@ export default function Home() {
               </Link>
             </div>
 
-            {partsLoading ? (
+            {loading ? (
               <div className="home-parts-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.5rem' }}>
                 {[...Array(4)].map((_, i) => (
                   <div key={i} className="skeleton" style={{ height: 300, background: '#eee' }} />
@@ -416,7 +414,6 @@ export default function Home() {
             ) : (
               <div className="home-parts-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.5rem' }}>
                 {featured.map((car) => <CarCard key={car._id} car={car} />)}
-                {featuredParts.map((part) => <PartCard key={part._id} part={part} />)}
               </div>
             )}
           </div>
@@ -424,7 +421,7 @@ export default function Home() {
       )}
 
       {/* BESTSELLER PRODUCTS section */}
-      {(loading || bestsellerBikes.length > 0 || bestsellerParts.length > 0) && (
+      {(loading || bestsellerBikes.length > 0) && (
         <section style={{ background: '#F8FAFC', padding: '5rem 0', borderTop: '1px solid rgba(156, 163, 175, 0.1)' }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem' }}>
@@ -435,7 +432,7 @@ export default function Home() {
               </h2>
               <p style={{ color: '#64748B', marginTop: '0.3rem', fontWeight: 600 }}>Our most celebrated vehicles</p>
             </div>
-              <Link to="/bestseller" style={{
+              <Link to="/bikes/bestseller" style={{
                 background: '#1E3A8A', color: 'white', padding: '0.6rem 1.4rem',
                 fontSize: '0.9rem', borderRadius: '10px', textDecoration: 'none',
                 fontWeight: 800, display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
@@ -446,7 +443,7 @@ export default function Home() {
               </Link>
             </div>
 
-            {partsLoading ? (
+            {loading ? (
               <div className="home-parts-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.5rem' }}>
                 {[...Array(4)].map((_, i) => (
                   <div key={i} className="skeleton" style={{ height: 300, background: '#eee' }} />
@@ -456,9 +453,6 @@ export default function Home() {
               <div className="home-parts-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.5rem' }}>
                 {bestsellerBikes.map((car) => (
                   <CarCard key={car._id} car={car} />
-                ))}
-                {bestsellerParts.map((part) => (
-                  <PartCard key={part._id} part={part} />
                 ))}
               </div>
             )}
