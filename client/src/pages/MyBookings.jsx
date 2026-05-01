@@ -3,14 +3,16 @@ import { useAuth } from '../context/AuthContext';
 import { getMyBookings } from '../api/serviceApi';
 import { getMySellRequests, getMyOrders } from '../api/storeApi';
 import { getMyEnquiries } from '../api/bikeApi';
+import { getMyRentalBookings, cancelMyRentalBooking } from '../api/rentalApi';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { PageLoader } from '../components/common/LoadingSpinner';
-import { Wrench, TrendingUp, ShoppingBag, Clock, CheckCircle, XCircle, Loader, MessageSquare } from 'lucide-react';
+import { Wrench, TrendingUp, ShoppingBag, Clock, CheckCircle, XCircle, Loader, MessageSquare, Car, Calendar } from 'lucide-react';
 
 const statusBadge = (status) => {
   const map = {
     requested: 'badge-orange', accepted: 'badge-blue', in_progress: 'badge-blue',
-    completed: 'badge-green', cancelled: 'badge-red',
+    completed: 'badge-green', cancelled: 'badge-red', active: 'badge-blue',
     pending: 'badge-orange', under_review: 'badge-blue', approved: 'badge-green',
     rejected: 'badge-red', placed: 'badge-blue', confirmed: 'badge-blue',
     shipped: 'badge-orange', delivered: 'badge-green',
@@ -26,25 +28,39 @@ export default function MyBookings() {
   const [sells, setSells] = useState([]);
   const [orders, setOrders] = useState([]);
   const [enquiries, setEnquiries] = useState([]);
+  const [rentals, setRentals] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user) { navigate('/login'); return; }
-    Promise.allSettled([getMyBookings(), getMySellRequests(), getMyOrders(), getMyEnquiries()])
+    Promise.allSettled([getMyBookings(), getMySellRequests(), getMyOrders(), getMyEnquiries(), getMyRentalBookings()])
       .then((results) => {
         if (results[0].status === 'fulfilled') setServices(results[0].value.data.bookings);
         if (results[1].status === 'fulfilled') setSells(results[1].value.data.requests);
         if (results[2].status === 'fulfilled') setOrders(results[2].value.data.orders);
         if (results[3].status === 'fulfilled') setEnquiries(results[3].value.data.enquiries || []);
+        if (results[4].status === 'fulfilled') setRentals(results[4].value.data.bookings || []);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
+  const handleCancelRental = async (id) => {
+    if (!window.confirm('Cancel this rental booking?')) return;
+    try {
+      await cancelMyRentalBooking(id);
+      setRentals(rentals.map(r => r._id === id ? { ...r, status: 'cancelled' } : r));
+      toast.success('Rental cancelled');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to cancel');
+    }
+  };
+
   if (loading) return <PageLoader />;
 
   const tabs = [
     { id: 'services', label: `Services (${services.length})`, icon: Wrench },
+    { id: 'rentals', label: `Rentals (${rentals.length})`, icon: Car },
     { id: 'enquiries', label: `Buy Requests (${enquiries.length})`, icon: MessageSquare },
     { id: 'sells', label: `Sell Requests (${sells.length})`, icon: TrendingUp },
     { id: 'orders', label: `Orders (${orders.length})`, icon: ShoppingBag },
@@ -287,6 +303,91 @@ export default function MyBookings() {
             ))}
           </div>
         )}
+        {/* RENTAL BOOKINGS */}
+        {activeTab === 'rentals' && (
+          <div className="animate-fadeInUp">
+            {rentals.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '5rem 2rem', background: '#F9F9F9', borderRadius: '24px', border: '1.5px dashed #EEE' }}>
+                <div style={{ background: '#FFF', width: 80, height: 80, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', boxShadow: '0 10px 30px rgba(0,0,0,0.04)' }}>
+                  <Car size={40} style={{ color: '#CCC' }} />
+                </div>
+                <p style={{ color: '#888', fontSize: '1.1rem', fontWeight: 500, marginBottom: '2rem' }}>No rental bookings yet</p>
+                <button onClick={() => navigate('/rentals')} className="btn-primary" style={{ background: '#1E3A8A', padding: '0.8rem 2.5rem', fontWeight: 900, borderRadius: '14px' }}>Rent a Car</button>
+              </div>
+            ) : rentals.map((booking) => (
+              <div key={booking._id} style={{ background: '#FFF', border: '1px solid #EEE', borderRadius: '20px', padding: '1.8rem', marginBottom: '1.5rem', boxShadow: '0 4px 20px rgba(0,0,0,0.02)', transition: 'all 0.3s' }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = '#1E3A8A'}
+                onMouseLeave={e => e.currentTarget.style.borderColor = '#EEE'}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
+                  <div style={{ flex: 1, minWidth: '250px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.8rem' }}>
+                      {booking.carSnapshot?.image || booking.rentalCar?.images?.[0] ? (
+                        <img src={booking.carSnapshot?.image || booking.rentalCar?.images?.[0]} alt="" style={{ width: 80, height: 60, borderRadius: '12px', objectFit: 'cover', border: '1px solid #EEE' }} />
+                      ) : (
+                        <div style={{ background: '#EFF6FF', width: 80, height: 60, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid rgba(30, 58, 138, 0.15)' }}>
+                          <Car size={24} style={{ color: '#1E3A8A' }} />
+                        </div>
+                      )}
+                      <div>
+                        <h3 style={{ color: '#111', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.3rem', lineHeight: 1 }}>
+                          {booking.carSnapshot?.brand || booking.rentalCar?.brand} {booking.carSnapshot?.model || booking.rentalCar?.model}
+                        </h3>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.4rem' }}>
+                          <span style={{ color: '#666', fontSize: '0.85rem', fontWeight: 600 }}>{booking.carSnapshot?.year || booking.rentalCar?.year} • {booking.totalDays} day(s)</span>
+                          {statusBadge(booking.status)}
+                        </div>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', marginTop: '0.8rem' }}>
+                      <div style={{ background: '#F5F5F5', padding: '0.3rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', color: '#555', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                        <Calendar size={13} /> Pickup: {new Date(booking.pickupDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} {booking.pickupTime}
+                      </div>
+                      <div style={{ background: '#F5F5F5', padding: '0.3rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', color: '#555', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                        <Calendar size={13} /> Return: {new Date(booking.returnDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} {booking.returnTime}
+                      </div>
+                    </div>
+                  </div>
+                  <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
+                    <div style={{ background: '#EFF6FF', padding: '0.8rem 1.2rem', borderRadius: '14px', border: '1px solid rgba(30, 58, 138, 0.1)' }}>
+                      <div style={{ color: '#1E3A8A', fontSize: '0.75rem', fontWeight: 950, letterSpacing: '0.06em', textTransform: 'uppercase', fontFamily: 'Rajdhani, sans-serif' }}>TOTAL</div>
+                      <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.6rem', fontWeight: 950, color: '#0F172A' }}>₹{booking.totalAmount?.toLocaleString('en-IN')}</div>
+                    </div>
+                    {['requested', 'confirmed'].includes(booking.status) && (
+                      <button onClick={() => handleCancelRental(booking._id)} style={{ background: 'rgba(239, 68, 68, 0.08)', color: '#DC2626', border: 'none', borderRadius: '10px', padding: '0.5rem 1rem', fontWeight: 800, fontSize: '0.78rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                        <XCircle size={13} /> CANCEL
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Status Timeline */}
+                <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #F5F5F5' }}>
+                  <div style={{ display: 'flex', gap: '0' }}>
+                    {['requested', 'confirmed', 'active', 'completed'].map((s, i) => {
+                      const order = ['requested', 'confirmed', 'active', 'completed'];
+                      const currentIdx = order.indexOf(booking.status);
+                      const stepIdx = order.indexOf(s);
+                      const isComplete = stepIdx <= currentIdx;
+                      return (
+                        <div key={s} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                            {i > 0 && <div style={{ flex: 1, height: 3, background: isComplete ? '#1E3A8A' : '#F1F5F9' }} />}
+                            <div style={{ width: 22, height: 22, borderRadius: '50%', background: isComplete ? '#1E3A8A' : '#F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                              {isComplete ? <CheckCircle size={14} color="white" /> : <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#CBD5E1' }} />}
+                            </div>
+                            {i < 3 && <div style={{ flex: 1, height: 3, background: stepIdx < currentIdx ? '#1E3A8A' : '#F1F5F9' }} />}
+                          </div>
+                          <span style={{ color: isComplete ? '#111' : '#AAA', fontSize: '0.72rem', marginTop: '0.4rem', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'Rajdhani, sans-serif' }}>{s}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* CAR ENQUIRIES */}
         {activeTab === 'enquiries' && (
           <div className="animate-fadeInUp">

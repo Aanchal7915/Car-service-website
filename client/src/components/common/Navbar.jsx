@@ -9,6 +9,7 @@ import API from '../../api/axios';
 
 const navLinks = [
   { label: 'Buy Cars', href: '/bikes' },
+  { label: 'Rent Car', href: '/rentals' },
   { label: 'Sell Car', href: '/sell' },
   { label: 'Service', href: '/services' },
   { label: 'Parts', href: '/parts' },

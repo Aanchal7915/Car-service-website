@@ -8,20 +8,25 @@ const Order = require('../models/Order');
 const Category = require('../models/Category');
 const Brand = require('../models/Brand');
 const ServiceType = require('../models/ServiceType');
+const RentalCar = require('../models/RentalCar');
+const RentalBooking = require('../models/RentalBooking');
 
 // @desc  Dashboard stats
 // @route GET /api/admin/stats
 const getDashboardStats = asyncHandler(async (req, res) => {
-  const [users, bikes, services, sells, orders] = await Promise.all([
+  const [users, bikes, services, sells, orders, rentalCars, rentalBookings] = await Promise.all([
     User.countDocuments({ role: 'user' }),
     Bike.countDocuments(),
     ServiceBooking.countDocuments(),
     SellRequest.countDocuments(),
     Order.countDocuments(),
+    RentalCar.countDocuments(),
+    RentalBooking.countDocuments(),
   ]);
 
   const pendingServices = await ServiceBooking.countDocuments({ status: 'requested' });
   const pendingSells = await SellRequest.countDocuments({ status: 'pending' });
+  const pendingRentals = await RentalBooking.countDocuments({ status: 'requested' });
   const revenue = await Order.aggregate([
     { $match: { 'payment.status': 'paid' } },
     { $group: { _id: null, total: { $sum: '$total' } } },
@@ -30,8 +35,8 @@ const getDashboardStats = asyncHandler(async (req, res) => {
   res.json({
     success: true,
     stats: {
-      users, bikes, services, sells, orders,
-      pendingServices, pendingSells,
+      users, bikes, services, sells, orders, rentalCars, rentalBookings,
+      pendingServices, pendingSells, pendingRentals,
       revenue: revenue[0]?.total || 0,
     },
   });

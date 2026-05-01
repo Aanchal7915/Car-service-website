@@ -27,6 +27,8 @@ import FeaturedBikes from './pages/FeaturedBikes';
 import BestsellerBikes from './pages/BestsellerBikes';
 import Contact from './pages/Contact';
 import About from './pages/About';
+import Rentals from './pages/Rentals';
+import RentalDetail from './pages/RentalDetail';
 
 const Layout = ({ children, hideNav = false }) => (
   <>
@@ -77,6 +79,8 @@ function App() {
             <Route path="/wishlist" element={<Layout><Wishlist /></Layout>} />
             <Route path="/contact" element={<Layout><Contact /></Layout>} />
             <Route path="/about" element={<Layout><About /></Layout>} />
+            <Route path="/rentals" element={<Layout><Rentals /></Layout>} />
+            <Route path="/rentals/:id" element={<Layout><RentalDetail /></Layout>} />
 
             {/* 404 */}
             <Route path="*" element={

@@ -3,8 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import API from '../../api/axios';
 import * as adminApi from '../../api/adminApi';
+import * as rentalApi from '../../api/rentalApi';
 import toast from 'react-hot-toast';
-import { Users, Bike, Wrench, TrendingUp, Package, Clock, Check, CheckCircle, AlertCircle, BarChart3, Settings, LogOut, Home, ShoppingBag, List, Loader, Plus, Edit2, Trash2, Menu, X } from 'lucide-react';
+import { Users, Bike, Wrench, TrendingUp, Package, Clock, Check, CheckCircle, AlertCircle, BarChart3, Settings, LogOut, Home, ShoppingBag, List, Loader, Plus, Edit2, Trash2, Menu, X, Car, Calendar } from 'lucide-react';
 
 const StatCard = ({ icon: Icon, label, value, color }) => (
   <div style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '1.2rem 1.5rem', boxShadow: '0 10px 30px rgba(0,0,0,0.02)', transition: 'all 0.3s' }}>
@@ -1404,6 +1405,288 @@ const LeadsTab = () => {
   );
 };
 
+// ── RENTAL CARS TAB (Admin CRUD) ──
+const RentalsTab = () => {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [editId, setEditId] = useState(null);
+  const [images, setImages] = useState([]);
+  const [existingImages, setExistingImages] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const [form, setForm] = useState({
+    title: '', brand: '', model: '', year: '', pricePerDay: '', pricePerHour: '',
+    securityDeposit: '', fuelType: 'petrol', transmission: 'manual', seats: 5,
+    mileage: '', description: '', city: '', state: '', pincode: '',
+    minRentalDays: 1, maxRentalDays: 30, isFeatured: false, status: 'available',
+    features: '',
+  });
+
+  useEffect(() => {
+    rentalApi.getRentalCars({ isAdmin: true, limit: 50 })
+      .then(({ data }) => setData(data.cars || []))
+      .catch(() => toast.error('Failed to load rentals'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const resetForm = () => {
+    setShowForm(false); setEditId(null); setImages([]); setExistingImages([]); setImagePreviews([]);
+    setForm({
+      title: '', brand: '', model: '', year: '', pricePerDay: '', pricePerHour: '',
+      securityDeposit: '', fuelType: 'petrol', transmission: 'manual', seats: 5,
+      mileage: '', description: '', city: '', state: '', pincode: '',
+      minRentalDays: 1, maxRentalDays: 30, isFeatured: false, status: 'available',
+      features: '',
+    });
+  };
+
+  const handleEdit = (car) => {
+    setEditId(car._id);
+    setForm({
+      title: car.title || '', brand: car.brand || '', model: car.model || '', year: car.year || '',
+      pricePerDay: car.pricePerDay || '', pricePerHour: car.pricePerHour || '',
+      securityDeposit: car.securityDeposit || '', fuelType: car.fuelType || 'petrol',
+      transmission: car.transmission || 'manual', seats: car.seats || 5,
+      mileage: car.mileage || '', description: car.description || '',
+      city: car.location?.city || '', state: car.location?.state || '', pincode: car.location?.pincode || '',
+      minRentalDays: car.minRentalDays || 1, maxRentalDays: car.maxRentalDays || 30,
+      isFeatured: car.isFeatured || false, status: car.status || 'available',
+      features: (car.features || []).join(', '),
+    });
+    setExistingImages(car.images || []);
+    setImages([]); setImagePreviews([]);
+    setShowForm(true);
+  };
+
+  const handleImagesChange = (e) => {
+    const files = Array.from(e.target.files || []);
+    setImages(files);
+    setImagePreviews(files.map(f => URL.createObjectURL(f)));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const fd = new FormData();
+      fd.append('title', form.title || `${form.brand} ${form.model} ${form.year}`);
+      fd.append('brand', form.brand); fd.append('model', form.model); fd.append('year', form.year);
+      fd.append('pricePerDay', form.pricePerDay); fd.append('pricePerHour', form.pricePerHour || 0);
+      fd.append('securityDeposit', form.securityDeposit || 0);
+      fd.append('fuelType', form.fuelType); fd.append('transmission', form.transmission);
+      fd.append('seats', form.seats); fd.append('mileage', form.mileage);
+      fd.append('description', form.description); fd.append('isFeatured', form.isFeatured);
+      fd.append('status', form.status);
+      fd.append('minRentalDays', form.minRentalDays); fd.append('maxRentalDays', form.maxRentalDays);
+      fd.append('location', JSON.stringify({ city: form.city, state: form.state, pincode: form.pincode }));
+      fd.append('features', JSON.stringify(form.features.split(',').map(f => f.trim()).filter(Boolean)));
+      for (const img of images) fd.append('images', img);
+      for (const url of existingImages) fd.append('existingImages', url);
+
+      if (editId) {
+        const { data: res } = await rentalApi.updateRentalCar(editId, fd);
+        setData(data.map(d => d._id === editId ? res.car : d));
+        toast.success('Rental car updated');
+      } else {
+        const { data: res } = await rentalApi.createRentalCar(fd);
+        setData([res.car, ...data]);
+        toast.success('Rental car added');
+      }
+      resetForm();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Save failed');
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Delete this rental car?')) return;
+    try {
+      await rentalApi.deleteRentalCar(id);
+      setData(data.filter(d => d._id !== id));
+      toast.success('Deleted');
+    } catch { toast.error('Failed'); }
+  };
+
+  if (loading) return <div style={{ textAlign: 'center', padding: '3rem', color: '#888' }}><Loader style={{ animation: 'spin 1s linear infinite' }} size={24} /></div>;
+
+  if (showForm) {
+    return (
+      <div className="admin-form-wrap" style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '2.5rem', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
+        <h3 style={{ color: '#111', fontWeight: 950, marginBottom: '2rem', fontSize: '2rem', fontFamily: 'Rajdhani, sans-serif', textTransform: 'uppercase' }}>{editId ? 'UPDATE' : 'ADD'} <span style={{ color: '#1E3A8A' }}>RENTAL CAR</span></h3>
+        <form onSubmit={handleSubmit}>
+          <div style={{ background: '#F9F9F9', padding: '1.5rem', borderRadius: '16px', marginBottom: '1.2rem', border: '1px solid #EEE' }}>
+            <h4 style={{ fontSize: '0.78rem', fontWeight: 900, marginBottom: '1rem', color: '#111', textTransform: 'uppercase', letterSpacing: '0.08em' }}>BASIC DETAILS</h4>
+            <div className="admin-form-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.9rem' }}>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>TITLE</label><input className="input-light" placeholder="Auto-generated" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} style={{ height: 46 }} /></div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>BRAND *</label><input className="input-light" required placeholder="e.g. Maruti" value={form.brand} onChange={e => setForm({ ...form, brand: e.target.value })} style={{ height: 46 }} /></div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>MODEL *</label><input className="input-light" required placeholder="e.g. Swift" value={form.model} onChange={e => setForm({ ...form, model: e.target.value })} style={{ height: 46 }} /></div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>YEAR *</label><input type="number" className="input-light" required min={2000} max={new Date().getFullYear() + 1} value={form.year} onChange={e => setForm({ ...form, year: e.target.value })} style={{ height: 46 }} /></div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>PRICE / DAY (₹) *</label><input type="number" className="input-light" required value={form.pricePerDay} onChange={e => setForm({ ...form, pricePerDay: e.target.value })} style={{ height: 46 }} /></div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>PRICE / HOUR (₹)</label><input type="number" className="input-light" value={form.pricePerHour} onChange={e => setForm({ ...form, pricePerHour: e.target.value })} style={{ height: 46 }} /></div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>SECURITY DEPOSIT (₹)</label><input type="number" className="input-light" value={form.securityDeposit} onChange={e => setForm({ ...form, securityDeposit: e.target.value })} style={{ height: 46 }} /></div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>SEATS</label><input type="number" className="input-light" min={2} max={12} value={form.seats} onChange={e => setForm({ ...form, seats: e.target.value })} style={{ height: 46 }} /></div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>FUEL TYPE</label>
+                <select className="input-light" value={form.fuelType} onChange={e => setForm({ ...form, fuelType: e.target.value })} style={{ height: 46 }}>
+                  {['petrol', 'diesel', 'electric', 'hybrid', 'cng'].map(f => <option key={f} value={f}>{f.toUpperCase()}</option>)}
+                </select>
+              </div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>TRANSMISSION</label>
+                <select className="input-light" value={form.transmission} onChange={e => setForm({ ...form, transmission: e.target.value })} style={{ height: 46 }}>
+                  <option value="manual">MANUAL</option><option value="automatic">AUTOMATIC</option>
+                </select>
+              </div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>MILEAGE</label><input className="input-light" placeholder="e.g. 18 kmpl" value={form.mileage} onChange={e => setForm({ ...form, mileage: e.target.value })} style={{ height: 46 }} /></div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>STATUS</label>
+                <select className="input-light" value={form.status} onChange={e => setForm({ ...form, status: e.target.value })} style={{ height: 46 }}>
+                  <option value="available">AVAILABLE</option>
+                  <option value="rented">RENTED</option>
+                  <option value="maintenance">MAINTENANCE</option>
+                  <option value="inactive">INACTIVE</option>
+                </select>
+              </div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>MIN RENTAL DAYS</label><input type="number" min={1} className="input-light" value={form.minRentalDays} onChange={e => setForm({ ...form, minRentalDays: e.target.value })} style={{ height: 46 }} /></div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>MAX RENTAL DAYS</label><input type="number" min={1} className="input-light" value={form.maxRentalDays} onChange={e => setForm({ ...form, maxRentalDays: e.target.value })} style={{ height: 46 }} /></div>
+            </div>
+          </div>
+
+          <div style={{ background: '#F9F9F9', padding: '1.5rem', borderRadius: '16px', marginBottom: '1.2rem', border: '1px solid #EEE' }}>
+            <h4 style={{ fontSize: '0.78rem', fontWeight: 900, marginBottom: '1rem', color: '#111', textTransform: 'uppercase', letterSpacing: '0.08em' }}>LOCATION & EXTRAS</h4>
+            <div className="admin-form-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.9rem', marginBottom: '0.9rem' }}>
+              <input className="input-light" placeholder="City" value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} style={{ height: 46 }} />
+              <input className="input-light" placeholder="State" value={form.state} onChange={e => setForm({ ...form, state: e.target.value })} style={{ height: 46 }} />
+              <input className="input-light" placeholder="Pincode" value={form.pincode} onChange={e => setForm({ ...form, pincode: e.target.value })} style={{ height: 46 }} />
+            </div>
+            <input className="input-light" placeholder="Features (comma separated, e.g. AC, Bluetooth, GPS)" value={form.features} onChange={e => setForm({ ...form, features: e.target.value })} style={{ height: 46, marginBottom: '0.9rem' }} />
+            <textarea className="input-light" placeholder="Description" rows={3} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} style={{ minHeight: 80, padding: '0.8rem', resize: 'vertical' }} />
+          </div>
+
+          <div style={{ background: '#F9F9F9', padding: '1.5rem', borderRadius: '16px', marginBottom: '1.2rem', border: '1px solid #EEE' }}>
+            <h4 style={{ fontSize: '0.78rem', fontWeight: 900, marginBottom: '1rem', color: '#111', textTransform: 'uppercase', letterSpacing: '0.08em' }}>IMAGES</h4>
+            <input type="file" multiple accept="image/*" onChange={handleImagesChange} style={{ marginBottom: '0.8rem' }} />
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+              {existingImages.map((url, i) => (
+                <div key={`ex-${i}`} style={{ position: 'relative', width: 90, height: 70 }}>
+                  <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8, border: '1px solid #EEE' }} />
+                  <button type="button" onClick={() => setExistingImages(existingImages.filter((_, idx) => idx !== i))} style={{ position: 'absolute', top: -6, right: -6, background: '#E53935', color: 'white', border: 'none', borderRadius: '50%', width: 22, height: 22, cursor: 'pointer', fontSize: '0.7rem' }}>×</button>
+                </div>
+              ))}
+              {imagePreviews.map((url, i) => (
+                <img key={`new-${i}`} src={url} alt="" style={{ width: 90, height: 70, objectFit: 'cover', borderRadius: 8, border: '2px solid #1E3A8A' }} />
+              ))}
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: '0.8rem' }}>
+            <button type="submit" style={{ background: '#1E3A8A', color: 'white', border: 'none', borderRadius: '10px', padding: '0.8rem 2rem', fontWeight: 800, cursor: 'pointer' }}>{editId ? 'UPDATE' : 'CREATE'}</button>
+            <button type="button" onClick={resetForm} style={{ background: '#F5F5F5', color: '#666', border: 'none', borderRadius: '10px', padding: '0.8rem 2rem', fontWeight: 800, cursor: 'pointer' }}>CANCEL</button>
+          </div>
+        </form>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '1.5rem', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
+        <h3 style={{ color: '#111', fontWeight: 950, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.3rem', margin: 0, textTransform: 'uppercase' }}>RENTAL <span style={{ color: '#1E3A8A' }}>CARS</span> ({data.length})</h3>
+        <button onClick={() => { resetForm(); setShowForm(true); }} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: '#1E3A8A', color: 'white', border: 'none', borderRadius: '10px', padding: '0.5rem 1.2rem', cursor: 'pointer', fontWeight: 800, fontSize: '0.82rem' }}>
+          <Plus size={14} /> ADD CAR
+        </button>
+      </div>
+      <div className="admin-card-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
+        {data.map(car => (
+          <div key={car._id} style={{ background: '#FFF', border: '1px solid #EEE', borderRadius: '16px', padding: '1rem' }}>
+            <div style={{ height: 140, background: '#F1F5F9', borderRadius: '10px', overflow: 'hidden', marginBottom: '0.8rem' }}>
+              {car.images?.[0] ? <img src={car.images[0]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#CBD5E1' }}><Car size={36} /></div>}
+            </div>
+            <h4 style={{ fontWeight: 900, color: '#111', margin: 0, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.1rem' }}>{car.brand} {car.model}</h4>
+            <p style={{ color: '#888', fontSize: '0.78rem', fontWeight: 600, marginTop: '0.2rem' }}>{car.year} • {car.transmission?.toUpperCase()} • {car.fuelType?.toUpperCase()}</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.8rem' }}>
+              <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 950, color: '#1E3A8A', fontSize: '1.2rem' }}>₹{car.pricePerDay?.toLocaleString('en-IN')}/d</span>
+              <span style={{ background: car.status === 'available' ? '#DCFCE7' : car.status === 'rented' ? '#FEF3C7' : '#FEE2E2', color: car.status === 'available' ? '#16A34A' : car.status === 'rented' ? '#CA8A04' : '#DC2626', padding: '0.2rem 0.6rem', borderRadius: '999px', fontSize: '0.68rem', fontWeight: 800, textTransform: 'uppercase' }}>{car.status}</span>
+            </div>
+            <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.8rem' }}>
+              <button onClick={() => handleEdit(car)} style={{ flex: 1, background: '#F1F5F9', color: '#1E3A8A', border: 'none', borderRadius: '8px', padding: '0.4rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem', fontSize: '0.78rem' }}><Edit2 size={12} /> EDIT</button>
+              <button onClick={() => handleDelete(car._id)} style={{ flex: 1, background: '#FEE2E2', color: '#DC2626', border: 'none', borderRadius: '8px', padding: '0.4rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem', fontSize: '0.78rem' }}><Trash2 size={12} /> DEL</button>
+            </div>
+          </div>
+        ))}
+        {data.length === 0 && <p style={{ gridColumn: '1 / -1', textAlign: 'center', color: '#AAA', padding: '3rem', fontWeight: 600 }}>No rental cars yet</p>}
+      </div>
+    </div>
+  );
+};
+
+// ── RENTAL BOOKINGS TAB (Admin view + status update) ──
+const RentalBookingsTab = () => {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    rentalApi.getAllRentalBookings({ limit: 100 })
+      .then(({ data }) => setData(data.bookings || []))
+      .catch(() => toast.error('Failed to load rental bookings'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleStatus = async (id, status) => {
+    try {
+      const { data: res } = await rentalApi.updateRentalBookingStatus(id, { status });
+      setData(data.map(b => b._id === id ? { ...b, status: res.booking.status } : b));
+      toast.success('Status updated');
+    } catch { toast.error('Failed to update'); }
+  };
+
+  if (loading) return <div style={{ textAlign: 'center', padding: '3rem', color: '#888' }}><Loader style={{ animation: 'spin 1s linear infinite' }} size={24} /></div>;
+
+  return (
+    <div className="admin-table-wrap" style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '1.5rem', overflowX: 'auto', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
+      <h3 style={{ color: '#111', fontWeight: 950, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.3rem', marginBottom: '1rem', textTransform: 'uppercase' }}>RENTAL <span style={{ color: '#1E3A8A' }}>BOOKINGS</span> ({data.length})</h3>
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem' }}>
+        <thead>
+          <tr>
+            <th style={{ padding: '0.75rem', textAlign: 'left', color: '#aaa', borderBottom: '1px solid #2A2A2A' }}>Customer</th>
+            <th style={{ padding: '0.75rem', textAlign: 'left', color: '#aaa', borderBottom: '1px solid #2A2A2A' }}>Car</th>
+            <th style={{ padding: '0.75rem', textAlign: 'left', color: '#aaa', borderBottom: '1px solid #2A2A2A' }}>Dates</th>
+            <th style={{ padding: '0.75rem', textAlign: 'left', color: '#aaa', borderBottom: '1px solid #2A2A2A' }}>Total</th>
+            <th style={{ padding: '0.75rem', textAlign: 'left', color: '#aaa', borderBottom: '1px solid #2A2A2A' }}>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.length > 0 ? data.map(b => (
+            <tr key={b._id} style={{ borderBottom: '1px solid #F5F5F5' }}>
+              <td style={{ padding: '1rem', fontWeight: 700, color: '#111' }}>
+                {b.user?.name}<br />
+                <span style={{ color: '#888', fontSize: '0.78rem', fontWeight: 600 }}>{b.contactPhone || b.user?.phone}</span>
+              </td>
+              <td style={{ padding: '1rem', fontWeight: 700, color: '#111' }}>
+                {b.carSnapshot?.brand || b.rentalCar?.brand} {b.carSnapshot?.model || b.rentalCar?.model}<br />
+                <span style={{ color: '#888', fontSize: '0.78rem', fontWeight: 600 }}>{b.carSnapshot?.year || b.rentalCar?.year}</span>
+              </td>
+              <td style={{ padding: '1rem', fontWeight: 700, color: '#111' }}>
+                {new Date(b.pickupDate).toLocaleDateString('en-IN')}<br />
+                <span style={{ color: '#888', fontSize: '0.78rem', fontWeight: 600 }}>→ {new Date(b.returnDate).toLocaleDateString('en-IN')} ({b.totalDays}d)</span>
+              </td>
+              <td style={{ padding: '1rem', fontWeight: 800, color: '#1E3A8A', fontFamily: 'Rajdhani, sans-serif', fontSize: '1.05rem' }}>₹{b.totalAmount?.toLocaleString('en-IN')}</td>
+              <td style={{ padding: '1rem' }}>
+                <select value={b.status} onChange={e => handleStatus(b._id, e.target.value)}
+                  className="input-light" style={{ padding: '0.4rem', fontSize: '0.82rem', height: 'auto', background: '#F9F9F9', fontWeight: 700, minWidth: 130 }}>
+                  <option value="requested">Requested</option>
+                  <option value="confirmed">Confirmed</option>
+                  <option value="active">Active</option>
+                  <option value="completed">Completed</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </td>
+            </tr>
+          )) : (
+            <tr><td colSpan={5} style={{ textAlign: 'center', padding: '3rem', color: '#AAA', fontWeight: 600 }}>No rental bookings yet</td></tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
 export default function AdminDashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -1422,6 +1705,8 @@ export default function AdminDashboard() {
     { id: 'dashboard', icon: BarChart3, label: 'Dashboard' },
     { id: 'users', icon: Users, label: 'Users' },
     { id: 'bikes', icon: Bike, label: 'Bikes' },
+    { id: 'rentals', icon: Car, label: 'Rental Cars' },
+    { id: 'rental-bookings', icon: Calendar, label: 'Rental Bookings' },
     { id: 'services', icon: Wrench, label: 'Services' },
     { id: 'sells', icon: TrendingUp, label: 'Sell Requests' },
     { id: 'orders', icon: ShoppingBag, label: 'Orders' },
@@ -1536,6 +1821,8 @@ export default function AdminDashboard() {
                 <StatCard icon={TrendingUp} label="Revenue" value={`₹${(stats.revenue / 1000).toFixed(1)}K`} color="#2E7D32" />
                 <StatCard icon={Clock} label="Pending Services" value={stats.pendingServices} color="#FB8C00" />
                 <StatCard icon={AlertCircle} label="Pending Sells" value={stats.pendingSells} color="#E53935" />
+                <StatCard icon={Car} label="Rental Cars" value={stats.rentalCars?.toLocaleString() || 0} color="#1E3A8A" />
+                <StatCard icon={Calendar} label="Rental Bookings" value={stats.rentalBookings?.toLocaleString() || 0} color="#0F172A" />
               </div>
 
               {/* Recent Service Bookings */}
@@ -1574,6 +1861,8 @@ export default function AdminDashboard() {
           {activeTab === 'services' && <ServicesTab />}
           {activeTab === 'parts' && <PartsTab />}
           {activeTab === 'bikes' && <BikesTab />}
+          {activeTab === 'rentals' && <RentalsTab />}
+          {activeTab === 'rental-bookings' && <RentalBookingsTab />}
           {activeTab === 'sells' && <SellsTab />}
           {activeTab === 'orders' && <OrdersTab />}
           {activeTab === 'leads' && <LeadsTab />}
