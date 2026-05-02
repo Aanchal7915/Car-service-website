@@ -40,7 +40,7 @@ export default function CarCard({ car, bike, hideBadges = false }) {
     e.preventDefault();
     e.stopPropagation();
     toggleWishlist(target?._id);
-    toast.success(isWishlisted ? 'Removed from favorites' : 'Added to favorites');
+    toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist');
   };
 
   return (

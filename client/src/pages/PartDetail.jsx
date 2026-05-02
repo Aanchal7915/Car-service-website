@@ -222,7 +222,7 @@ export default function PartDetail() {
               onClick={() => isMobile && !isVideoUrl(images[activeImg]) && setFullScreenZoom(true)}>
 
               {/* Wishlist Floating Button */}
-              <button onClick={(e) => { e.stopPropagation(); toggleWishlist?.(id); }}
+              <button onClick={(e) => { e.stopPropagation(); toggleWishlist?.(id); toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist'); }}
                 style={{ position: 'absolute', top: '15px', right: '15px', width: '42px', height: '42px', borderRadius: '50%', background: 'white', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 10, boxShadow: '0 4px 15px rgba(0,0,0,0.1)', transition: 'transform 0.2s' }}
                 onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
                 onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}>

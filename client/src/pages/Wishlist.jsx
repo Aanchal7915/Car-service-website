@@ -224,7 +224,7 @@ export default function Wishlist() {
           <Heart size={60} style={{ color: '#0F172A', opacity: 0.15 }} />
         </div>
         <div style={{ textAlign: 'center', maxWidth: '400px' }}>
-          <h2 style={{ color: '#0F172A', fontFamily: 'Rajdhani, sans-serif', fontSize: '2.5rem', fontWeight: 950, margin: 0, lineHeight: 1.1 }}>READY TO SAVE <span style={{ color: '#1E3A8A' }}>YOUR FAVORITES?</span></h2>
+          <h2 style={{ color: '#0F172A', fontFamily: 'Rajdhani, sans-serif', fontSize: '2.5rem', fontWeight: 950, margin: 0, lineHeight: 1.1 }}>READY TO SAVE <span style={{ color: '#1E3A8A' }}>YOUR WISHLIST?</span></h2>
           <p style={{ color: '#64748B', marginTop: '1rem', fontSize: '1.1rem', fontWeight: 700, lineHeight: 1.5 }}>Login to your AutoXpress account to view and manage your personalized wishlist.</p>
         </div>
         <Link to="/login" style={{ background: '#1E3A8A', color: 'white', padding: '1.2rem 3.5rem', borderRadius: '20px', fontWeight: 950, textDecoration: 'none', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.15em', fontSize: '1.1rem', boxShadow: '0 15px 40px rgba(30, 58, 138, 0.3)', transition: 'all 0.4s' }}>

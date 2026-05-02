@@ -11,12 +11,12 @@ const isVideo = (url = '') => /\.(mp4|mov|webm|ogg|m4v)(\?.*)?$/i.test(url) || u
 
 export default function BikeDetail() {
   const { id } = useParams();
-  const { user } = useAuth();
+  const { user, wishlist = [], toggleWishlist: toggleWishlistCtx } = useAuth();
+  const wishlisted = Array.isArray(wishlist) && wishlist.includes(id);
   const navigate = useNavigate();
   const [bike, setBike] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
-  const [wishlisted, setWishlisted] = useState(false);
   const [enquiryMsg, setEnquiryMsg] = useState('');
   const [enquiryPhone, setEnquiryPhone] = useState('');
   const [zoomed, setZoomed] = useState(false);
@@ -40,7 +40,6 @@ export default function BikeDetail() {
   useEffect(() => {
     getBike(id).then(({ data }) => {
       setBike(data.bike);
-      setWishlisted(user?.wishlist?.includes(data.bike._id));
     }).catch(() => navigate('/bikes'))
       .finally(() => setLoading(false));
   }, [id]);
@@ -48,8 +47,7 @@ export default function BikeDetail() {
   const handleWishlist = async () => {
     if (!user) { toast.error('Please login'); navigate('/login'); return; }
     try {
-      await toggleWishlist(id);
-      setWishlisted(!wishlisted);
+      toggleWishlistCtx(id);
       toast.success(wishlisted ? 'Removed from wishlist' : 'Added to wishlist');
     } catch { toast.error('Failed'); }
   };

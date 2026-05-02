@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { ShoppingCart, Star, Heart } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export default function PartCard({ part }) {
   const { items, addToCart, updateQty } = useCart();
@@ -70,7 +71,7 @@ export default function PartCard({ part }) {
           
           {/* Top-right: Heart (Wishlist) */}
           <button
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist(part._id); }}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist(part._id); toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist'); }}
             style={{
               position: 'absolute', top: 12, right: 12,
               width: 34, height: 34, borderRadius: '50%',
