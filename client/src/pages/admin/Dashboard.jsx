@@ -1704,7 +1704,7 @@ export default function AdminDashboard() {
   const sidebarLinks = [
     { id: 'dashboard', icon: BarChart3, label: 'Dashboard' },
     { id: 'users', icon: Users, label: 'Users' },
-    { id: 'bikes', icon: Bike, label: 'Cars' },
+    { id: 'bikes', icon: Car, label: 'Cars' },
     { id: 'rentals', icon: Car, label: 'Rental Cars' },
     { id: 'rental-bookings', icon: Calendar, label: 'Rental Bookings' },
     { id: 'services', icon: Wrench, label: 'Services' },
@@ -1816,7 +1816,7 @@ export default function AdminDashboard() {
               {/* Stats Grid */}
               <div className="admin-stat-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.75rem', marginBottom: '2rem' }}>
                 <StatCard icon={Users} label="Total Users" value={stats.users?.toLocaleString()} color="#2196F3" />
-                <StatCard icon={Bike} label="Car Listings" value={stats.bikes?.toLocaleString()} color="#E53935" />
+                <StatCard icon={Car} label="Car Listings" value={stats.bikes?.toLocaleString()} color="#E53935" />
                 <StatCard icon={Wrench} label="Services" value={stats.services?.toLocaleString()} color="#FB8C00" />
                 <StatCard icon={TrendingUp} label="Revenue" value={`₹${(stats.revenue / 1000).toFixed(1)}K`} color="#2E7D32" />
                 <StatCard icon={Clock} label="Pending Services" value={stats.pendingServices} color="#FB8C00" />

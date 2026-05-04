@@ -98,8 +98,14 @@ const updateBike = asyncHandler(async (req, res) => {
 
   // Merge with existing valid data if body field is empty or not provided
   for (const key of Object.keys(existingBike.toObject())) {
-    if (body[key] === '' || body[key] === undefined || body[key] === 'undefined' || body[key] === 'null') {
-      body[key] = existingBike[key];
+    if (key === 'price' || key === 'discountedPrice') {
+      if (body[key] === '' || body[key] === undefined || body[key] === 'undefined' || body[key] === 'null' || Number(body[key]) === 0) {
+        body[key] = existingBike[key];
+      }
+    } else {
+      if (body[key] === '' || body[key] === undefined || body[key] === 'undefined' || body[key] === 'null') {
+        body[key] = existingBike[key];
+      }
     }
   }
 

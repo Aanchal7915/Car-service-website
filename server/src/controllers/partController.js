@@ -125,8 +125,14 @@ const updatePart = asyncHandler(async (req, res) => {
 
   // Merge with existing valid data if body field is empty or not provided
   for (const key of Object.keys(existingPart.toObject())) {
-    if (body[key] === '' || body[key] === undefined || body[key] === 'undefined' || body[key] === 'null') {
-      body[key] = existingPart[key];
+    if (key === 'price' || key === 'discountedPrice') {
+      if (body[key] === '' || body[key] === undefined || body[key] === 'undefined' || body[key] === 'null' || Number(body[key]) === 0) {
+        body[key] = existingPart[key];
+      }
+    } else {
+      if (body[key] === '' || body[key] === undefined || body[key] === 'undefined' || body[key] === 'null') {
+        body[key] = existingPart[key];
+      }
     }
   }
 
