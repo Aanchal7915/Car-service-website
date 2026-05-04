@@ -86,14 +86,45 @@ const createBike = asyncHandler(async (req, res) => {
 // @desc  Update bike
 // @route PUT /api/bikes/:id
 const updateBike = asyncHandler(async (req, res) => {
-  const bike = await Bike.findById(req.params.id);
-  if (!bike) { res.status(404); throw new Error('Bike not found'); }
+  const existingBike = await Bike.findById(req.params.id);
+  if (!existingBike) { res.status(404); throw new Error('Bike not found'); }
+
   const body = { ...req.body };
   if (typeof body.specifications === 'string') body.specifications = JSON.parse(body.specifications);
   if (typeof body.location === 'string') body.location = JSON.parse(body.location);
   if (typeof body.features === 'string') body.features = JSON.parse(body.features);
   if (typeof body.pincodePricing === 'string') body.pincodePricing = JSON.parse(body.pincodePricing);
   if (typeof body.sellerDetails === 'string') body.sellerDetails = JSON.parse(body.sellerDetails);
+
+  // Merge with existing valid data if body field is empty or not provided
+  for (const key of Object.keys(existingBike.toObject())) {
+    if (body[key] === '' || body[key] === undefined || body[key] === 'undefined' || body[key] === 'null') {
+      body[key] = existingBike[key];
+    }
+  }
+
+  // Same for nested objects
+  if (body.location && existingBike.location) {
+    for (const k of Object.keys(existingBike.location.toObject() || {})) {
+      if (body.location[k] === '' || body.location[k] === undefined) {
+        body.location[k] = existingBike.location[k];
+      }
+    }
+  }
+  if (body.specifications && existingBike.specifications) {
+    for (const k of Object.keys(existingBike.specifications.toObject() || {})) {
+      if (body.specifications[k] === '' || body.specifications[k] === undefined) {
+        body.specifications[k] = existingBike.specifications[k];
+      }
+    }
+  }
+  if (body.sellerDetails && existingBike.sellerDetails) {
+    for (const k of Object.keys(existingBike.sellerDetails.toObject() || {})) {
+      if (body.sellerDetails[k] === '' || body.sellerDetails[k] === undefined) {
+        body.sellerDetails[k] = existingBike.sellerDetails[k];
+      }
+    }
+  }
 
   // Merge existing images (URLs kept from client) + newly uploaded files
   const existing = body.existingImages ? (Array.isArray(body.existingImages) ? body.existingImages : [body.existingImages]) : [];
