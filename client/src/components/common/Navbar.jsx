@@ -334,6 +334,7 @@ export default function Navbar() {
                       <Settings size={15} /> Admin Panel
                     </Link>
                   )}
+
                   <button onClick={() => { handleLogout(); setMobileOpen(false); }} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer', padding: '0.6rem 0.5rem', fontSize: '0.92rem', fontWeight: 700, width: '100%' }}>
                     <LogOut size={15} /> Logout
                   </button>

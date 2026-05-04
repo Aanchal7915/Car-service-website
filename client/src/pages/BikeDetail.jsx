@@ -12,7 +12,7 @@ const isVideo = (url = '') => /\.(mp4|mov|webm|ogg|m4v)(\?.*)?$/i.test(url) || u
 export default function BikeDetail() {
   const { id } = useParams();
   const { user, wishlist = [], toggleWishlist: toggleWishlistCtx } = useAuth();
-  const wishlisted = Array.isArray(wishlist) && wishlist.includes(id);
+  const wishlisted = user && Array.isArray(wishlist) && wishlist.includes(id);
   const navigate = useNavigate();
   const [bike, setBike] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -45,7 +45,7 @@ export default function BikeDetail() {
   }, [id]);
 
   const handleWishlist = async () => {
-    if (!user) { toast.error('Please login'); navigate('/login'); return; }
+    if (!user) { toast.error('Please login first to wishlist this item'); return; }
     try {
       toggleWishlistCtx(id);
       toast.success(wishlisted ? 'Removed from wishlist' : 'Added to wishlist');
@@ -53,7 +53,7 @@ export default function BikeDetail() {
   };
 
   const handleEnquire = async () => {
-    if (!user) { toast.error('Please login'); navigate('/login'); return; }
+    if (!user) { toast.error('Please login first to enquire about this bike'); return; }
     if (!enquiryPhone) { toast.error('Please enter your phone number'); return; }
     setEnquirySending(true);
     try {
@@ -160,6 +160,7 @@ export default function BikeDetail() {
                   className="main-detail-img"
                   style={{
                     width: '100%', height: 420, objectFit: 'contain', padding: isMobile ? '1.5rem' : '0.5rem',
+                    display: 'block', margin: '0 auto',
                     transition: 'transform 0.5s ease-out',
                     transform: zoomed && !isMobile ? 'scale(2)' : 'scale(1)',
                     transformOrigin: zoomed && !isMobile ? `${mousePos.x}% ${mousePos.y}%` : 'center',

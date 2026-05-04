@@ -60,7 +60,7 @@ export default function RentalDetail() {
     e.preventDefault();
     if (!user) {
       toast.error('Please login to book a rental');
-      return navigate('/login');
+      return;
     }
     if (!form.contactPhone) return toast.error('Contact phone is required');
     if (new Date(form.returnDate) <= new Date(form.pickupDate)) {

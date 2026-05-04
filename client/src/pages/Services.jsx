@@ -85,7 +85,7 @@ export default function Services() {
   };
 
   const onSubmit = async (data) => {
-    if (!user) { toast.error('Please login first'); navigate('/login'); return; }
+    if (!user) { toast.error('Please login first'); return; }
     setSubmitting(true);
     try {
       const res = await createBooking({

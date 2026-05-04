@@ -36,7 +36,7 @@ export default function PartDetail() {
   const userPickedSize = useRef(false);
 
   const isMobile = window.matchMedia("(pointer: coarse)").matches;
-  const isWishlisted = Array.isArray(wishlist) && (wishlist.includes(id) || wishlist.some(i => i._id === id));
+  const isWishlisted = user && Array.isArray(wishlist) && (wishlist.includes(id) || wishlist.some(i => i._id === id));
 
   useEffect(() => {
     setLoading(true);
@@ -113,7 +113,7 @@ export default function PartDetail() {
   const isCheckingPincode = selectedPincode.length > 0 && selectedPincode.length < 6;
 
   const handleAddToCart = () => {
-    if (!user) { toast.error('Please login to continue'); navigate('/login'); return; }
+    if (!user) { toast.error('Please login first to add items to cart'); return; }
     if (isUnavailable) { toast.error('Not available at this pincode'); return; }
     if (effectiveStock <= 0) { toast.error('Out of stock'); return; }
     
@@ -222,7 +222,15 @@ export default function PartDetail() {
               onClick={() => isMobile && !isVideoUrl(images[activeImg]) && setFullScreenZoom(true)}>
 
               {/* Wishlist Floating Button */}
-              <button onClick={(e) => { e.stopPropagation(); toggleWishlist?.(id); toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist'); }}
+              <button onClick={(e) => {
+                e.stopPropagation();
+                if (!user) {
+                  toast.error('Please login first to wishlist this item');
+                  return;
+                }
+                toggleWishlist?.(id);
+                toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist');
+              }}
                 style={{ position: 'absolute', top: '15px', right: '15px', width: '42px', height: '42px', borderRadius: '50%', background: 'white', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 10, boxShadow: '0 4px 15px rgba(0,0,0,0.1)', transition: 'transform 0.2s' }}
                 onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
                 onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}>
@@ -249,6 +257,7 @@ export default function PartDetail() {
                   className="main-detail-img"
                   style={{
                     width: '100%', height: 420, objectFit: 'contain', padding: isMobile ? '1.5rem' : '0.5rem',
+                    display: 'block', margin: '0 auto',
                     transition: 'transform 0.5s ease-out',
                     transform: zoomed && !isMobile ? 'scale(2)' : 'scale(1)',
                     transformOrigin: zoomed && !isMobile ? `${mousePos.x}% ${mousePos.y}%` : 'center',

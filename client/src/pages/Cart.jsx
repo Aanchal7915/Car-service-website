@@ -84,7 +84,7 @@ export default function Cart() {
   const watchedPincode = watch('pincode', savedPincode);
 
   const handleOrder = async (data) => {
-    if (!user) { toast.error('Login to place order'); navigate('/login'); return; }
+    if (!user) { toast.error('Login to place order'); return; }
     if (!isDeliverableAtPincode(items, data.pincode)) {
       toast.error('One or more items are not deliverable to this pincode');
       return;

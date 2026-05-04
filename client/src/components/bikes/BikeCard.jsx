@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Heart, Calendar, Gauge, MapPin, Star, ArrowRight } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { toggleWishlist as toggleWishlistApi } from '../../api/authApi';
@@ -7,8 +7,9 @@ import toast from 'react-hot-toast';
 
 export default function CarCard({ car, bike, hideBadges = false }) {
   const target = car || bike;
-  const { wishlist = [], toggleWishlist } = useAuth();
-  const isWishlisted = Array.isArray(wishlist) && wishlist.includes(target?._id);
+  const navigate = useNavigate();
+  const { wishlist = [], toggleWishlist, user } = useAuth();
+  const isWishlisted = user && Array.isArray(wishlist) && wishlist.includes(target?._id);
   const [hovered, setHovered] = useState(false);
 
   const [selectedPincode, setSelectedPincode] = useState(
@@ -39,6 +40,10 @@ export default function CarCard({ car, bike, hideBadges = false }) {
   const handleWishlist = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!user) {
+      toast.error('Please login first to wishlist this item');
+      return;
+    }
     toggleWishlist(target?._id);
     toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist');
   };

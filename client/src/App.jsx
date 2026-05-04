@@ -56,7 +56,6 @@ function App() {
             {/* Auth pages - no nav */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-
             {/* Admin - no footer */}
             <Route path="/admin" element={<Layout hideNav={true}><AdminDashboard /></Layout>} />
 

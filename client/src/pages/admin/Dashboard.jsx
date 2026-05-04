@@ -237,7 +237,7 @@ const ServicesTab = () => {
           <thead>
             <tr>
               <th style={{ padding: '0.75rem', textAlign: 'left', color: '#aaa', borderBottom: '1px solid #2A2A2A' }}>Customer</th>
-              <th style={{ padding: '0.75rem', textAlign: 'left', color: '#aaa', borderBottom: '1px solid #2A2A2A' }}>Bike & Service</th>
+              <th style={{ padding: '0.75rem', textAlign: 'left', color: '#aaa', borderBottom: '1px solid #2A2A2A' }}>Car & Service</th>
               <th style={{ padding: '0.75rem', textAlign: 'left', color: '#aaa', borderBottom: '1px solid #2A2A2A' }}>Date & Type</th>
               <th style={{ padding: '0.75rem', textAlign: 'left', color: '#aaa', borderBottom: '1px solid #2A2A2A' }}>Status & Mechanic Assign</th>
             </tr>
@@ -829,7 +829,7 @@ const BikesTab = () => {
     return result;
   };
 
-  const handleDelete = async (id) => { if (!confirm('Delete this bike?')) return; try { await adminApi.deleteBike(id); setData(data.filter(d => d._id !== id)); toast.success('Deleted'); } catch { toast.error('Failed'); } };
+  const handleDelete = async (id) => { if (!confirm('Delete this car?')) return; try { await adminApi.deleteBike(id); setData(data.filter(d => d._id !== id)); toast.success('Deleted'); } catch { toast.error('Failed'); } };
   const handleApprove = async (id) => { try { await adminApi.approveBike(id); setData(data.map(b => b._id === id ? { ...b, isApproved: !b.isApproved } : b)); toast.success('Updated'); } catch { toast.error('Failed'); } };
 
   const handleSubmit = async (e) => {
@@ -854,11 +854,11 @@ const BikesTab = () => {
       if (editId) {
         const { data: res } = await adminApi.updateBikeMultipart(editId, fd);
         setData(data.map(d => d._id === editId ? res.bike : d));
-        toast.success('Bike updated');
+        toast.success('Car updated');
       } else {
         const { data: res } = await adminApi.createBike(fd);
         setData([res.bike, ...data]);
-        toast.success('Bike created');
+        toast.success('Car created');
       }
       resetForm();
     } catch (err) { toast.error(err.response?.data?.message || 'Save failed'); }
@@ -869,11 +869,11 @@ const BikesTab = () => {
   if (showForm) {
     return (
       <div className="admin-form-wrap" style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '2.5rem', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
-        <h3 style={{ color: '#111', fontWeight: 950, marginBottom: '2rem', fontSize: '2rem', fontFamily: 'Rajdhani, sans-serif', textTransform: 'uppercase' }}>{editId ? 'UPDATE' : 'ADD NEW'} <span style={{ color: '#E53935' }}>BIKE</span></h3>
+        <h3 style={{ color: '#111', fontWeight: 950, marginBottom: '2rem', fontSize: '2rem', fontFamily: 'Rajdhani, sans-serif', textTransform: 'uppercase' }}>{editId ? 'UPDATE' : 'ADD NEW'} <span style={{ color: '#E53935' }}>CAR</span></h3>
         <form onSubmit={handleSubmit}>
           {/* Core Details */}
           <div style={{ background: '#F9F9F9', padding: '2rem', borderRadius: '20px', border: '1.5px solid #EEE', marginBottom: '1.8rem' }}>
-            <h4 style={{ color: '#111', fontSize: '0.85rem', fontWeight: 900, textTransform: 'uppercase', marginBottom: '1.5rem', letterSpacing: '0.1em' }}>BIKE DETAILS</h4>
+            <h4 style={{ color: '#111', fontSize: '0.85rem', fontWeight: 900, textTransform: 'uppercase', marginBottom: '1.5rem', letterSpacing: '0.1em' }}>CAR DETAILS</h4>
             <div className="admin-form-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.2rem' }}>
               <div><label style={{ color: '#666', fontSize: '0.85rem', fontWeight: 800, marginBottom: '0.5rem', display: 'block' }}>TITLE</label><input className="input-light" style={{ height: '54px', fontWeight: 600 }} placeholder="Auto-generated if empty" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} /></div>
               <div><label style={{ color: '#666', fontSize: '0.85rem', fontWeight: 800, marginBottom: '0.5rem', display: 'block' }}>BRAND *</label>
@@ -1054,7 +1054,7 @@ const BikesTab = () => {
 
           <div style={{ display: 'flex', gap: '1.2rem' }}>
             <button type="button" onClick={resetForm} style={{ flex: 1, padding: '1.1rem', borderRadius: '16px', fontWeight: 900, color: '#E53935', border: '1.5px solid #E53935', background: 'transparent' }}>CANCEL</button>
-            <button type="submit" className="btn-primary" style={{ flex: 2, padding: '1.1rem', borderRadius: '16px', fontWeight: 900, justifyContent: 'center', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.12em' }}>SAVE BIKE LISTING</button>
+            <button type="submit" className="btn-primary" style={{ flex: 2, padding: '1.1rem', borderRadius: '16px', fontWeight: 900, justifyContent: 'center', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.12em' }}>SAVE CAR LISTING</button>
           </div>
         </form>
       </div>
@@ -1064,8 +1064,8 @@ const BikesTab = () => {
   return (
     <div style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '2rem', overflowX: 'auto', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
-        <h3 style={{ color: '#111', fontWeight: 950, margin: 0, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.8rem', letterSpacing: '-0.02em' }}>BIKE <span style={{ color: '#E53935' }}>LISTINGS</span> ({data.length})</h3>
-        <button className="btn-primary" style={{ padding: '0.8rem 1.6rem', borderRadius: '14px', gap: '0.6rem', fontWeight: 900 }} onClick={() => setShowForm(true)}><Plus size={20} /> ADD NEW BIKE</button>
+        <h3 style={{ color: '#111', fontWeight: 950, margin: 0, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.8rem', letterSpacing: '-0.02em' }}>CAR <span style={{ color: '#E53935' }}>LISTINGS</span> ({data.length})</h3>
+        <button className="btn-primary" style={{ padding: '0.8rem 1.6rem', borderRadius: '14px', gap: '0.6rem', fontWeight: 900 }} onClick={() => setShowForm(true)}><Plus size={20} /> ADD NEW CAR</button>
       </div>
       <div className="admin-card-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2rem' }}>
         {data.map((item) => (
@@ -1121,7 +1121,7 @@ const BikesTab = () => {
             </div>
           </div>
         ))}
-        {data.length === 0 && <div style={{ gridColumn: '1 / -1', padding: '5rem 2rem', textAlign: 'center', color: '#AAA', fontWeight: 700, fontSize: '1.1rem', background: '#F9F9F9', borderRadius: '24px', border: '1.5px dashed #EEE' }}>No bike listings found. Ready to sell?</div>}
+        {data.length === 0 && <div style={{ gridColumn: '1 / -1', padding: '5rem 2rem', textAlign: 'center', color: '#AAA', fontWeight: 700, fontSize: '1.1rem', background: '#F9F9F9', borderRadius: '24px', border: '1.5px dashed #EEE' }}>No car listings found. Ready to sell?</div>}
       </div>
     </div>
   );
@@ -1341,7 +1341,7 @@ const LeadsTab = () => {
   return (
     <div style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '2rem', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <h3 style={{ color: '#111', fontWeight: 950, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.8rem', textTransform: 'uppercase', letterSpacing: '-0.02em', margin: 0 }}>BUY BIKE <span style={{ color: '#E53935' }}>REQUESTS</span></h3>
+        <h3 style={{ color: '#111', fontWeight: 950, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.8rem', textTransform: 'uppercase', letterSpacing: '-0.02em', margin: 0 }}>BUY CAR <span style={{ color: '#E53935' }}>REQUESTS</span></h3>
         <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
           {['', 'pending', 'contacted', 'sold', 'rejected'].map(s => (
             <button key={s} onClick={() => setFilter(s)}
@@ -1399,7 +1399,7 @@ const LeadsTab = () => {
           ))}
         </div>
       ) : (
-        <div style={{ textAlign: 'center', padding: '5rem 2rem', color: '#AAA', fontWeight: 800, fontSize: '1.1rem', background: '#F9F9F9', borderRadius: '24px', border: '1.5px dashed #EEE' }}>No buy bike requests found.</div>
+        <div style={{ textAlign: 'center', padding: '5rem 2rem', color: '#AAA', fontWeight: 800, fontSize: '1.1rem', background: '#F9F9F9', borderRadius: '24px', border: '1.5px dashed #EEE' }}>No buy car requests found.</div>
       )}
     </div>
   );
@@ -1704,7 +1704,7 @@ export default function AdminDashboard() {
   const sidebarLinks = [
     { id: 'dashboard', icon: BarChart3, label: 'Dashboard' },
     { id: 'users', icon: Users, label: 'Users' },
-    { id: 'bikes', icon: Bike, label: 'Bikes' },
+    { id: 'bikes', icon: Bike, label: 'Cars' },
     { id: 'rentals', icon: Car, label: 'Rental Cars' },
     { id: 'rental-bookings', icon: Calendar, label: 'Rental Bookings' },
     { id: 'services', icon: Wrench, label: 'Services' },
@@ -1816,7 +1816,7 @@ export default function AdminDashboard() {
               {/* Stats Grid */}
               <div className="admin-stat-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.75rem', marginBottom: '2rem' }}>
                 <StatCard icon={Users} label="Total Users" value={stats.users?.toLocaleString()} color="#2196F3" />
-                <StatCard icon={Bike} label="Bike Listings" value={stats.bikes?.toLocaleString()} color="#E53935" />
+                <StatCard icon={Bike} label="Car Listings" value={stats.bikes?.toLocaleString()} color="#E53935" />
                 <StatCard icon={Wrench} label="Services" value={stats.services?.toLocaleString()} color="#FB8C00" />
                 <StatCard icon={TrendingUp} label="Revenue" value={`₹${(stats.revenue / 1000).toFixed(1)}K`} color="#2E7D32" />
                 <StatCard icon={Clock} label="Pending Services" value={stats.pendingServices} color="#FB8C00" />
@@ -1832,7 +1832,7 @@ export default function AdminDashboard() {
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
                     <thead>
                       <tr>
-                        {['CUSTOMER', 'BIKE', 'SERVICE', 'DATE', 'STATUS'].map(h => (
+                        {['CUSTOMER', 'CAR', 'SERVICE', 'DATE', 'STATUS'].map(h => (
                           <th key={h} style={{ padding: '1.2rem', textAlign: 'left', color: '#888', borderBottom: '1.5px solid #EEE', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.05em' }}>{h}</th>
                         ))}
                       </tr>

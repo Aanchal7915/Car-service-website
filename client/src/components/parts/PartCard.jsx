@@ -1,15 +1,16 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { ShoppingCart, Star, Heart } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function PartCard({ part }) {
+  const navigate = useNavigate();
   const { items, addToCart, updateQty } = useCart();
   const cartItem = items.find(i => i._id === part._id);
-  const { wishlist = [], toggleWishlist } = useAuth();
-  const isWishlisted = Array.isArray(wishlist) && wishlist.includes(part._id);
+  const { wishlist = [], toggleWishlist, user } = useAuth();
+  const isWishlisted = user && Array.isArray(wishlist) && wishlist.includes(part._id);
   const [hovered, setHovered] = useState(false);
 
   const [selectedPincode, setSelectedPincode] = useState(
@@ -71,7 +72,16 @@ export default function PartCard({ part }) {
           
           {/* Top-right: Heart (Wishlist) */}
           <button
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist(part._id); toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist'); }}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (!user) {
+                toast.error('Please login first to wishlist this item');
+                return;
+              }
+              toggleWishlist(part._id);
+              toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist');
+            }}
             style={{
               position: 'absolute', top: 12, right: 12,
               width: 34, height: 34, borderRadius: '50%',
@@ -202,9 +212,17 @@ export default function PartCard({ part }) {
                   >+</button>
                 </div>
               ) : (
-                <button
+                 <button
                   className="product-card-btn"
-                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); addToCart({ ...part, effectivePrice }); }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (!user) {
+                      toast.error('Please login first to add items to cart');
+                      return;
+                    }
+                    addToCart({ ...part, effectivePrice });
+                  }}
                   disabled={effectiveStock === 0}
                   style={{
                     height: '28px',

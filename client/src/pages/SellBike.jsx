@@ -23,16 +23,13 @@ export default function SellBike() {
   const [submitting, setSubmitting] = useState(false);
   const { register, handleSubmit, watch, formState: { errors } } = useForm();
 
-  if (!user) {
-    return (
-      <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1.5rem', background: '#0F172A' }}>
-        <h2 style={{ color: 'white', fontSize: '1.8rem', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif' }}>Login to Sell Your Car</h2>
-        <button onClick={() => navigate('/login')} className="btn-primary" style={{ padding: '0.8rem 2.5rem' }}>Login Now</button>
-      </div>
-    );
-  }
+
 
   const handleEstimate = async () => {
+    if (!user) {
+      toast.error('Please login first to appraise your car');
+      return;
+    }
     const formData = watch();
     if (!formData.brand || !formData.model || !formData.year || !formData.kmDriven || !formData.fuelType || !formData.transmission || !formData.variant || !formData.ownerNumber) {
       toast.error('Fill all required technical fields first');
@@ -65,6 +62,10 @@ export default function SellBike() {
   };
 
   const onSubmit = async (data) => {
+    if (!user) {
+      toast.error('Please login first to sell your car');
+      return;
+    }
     setSubmitting(true);
     try {
       const formData = new FormData();
