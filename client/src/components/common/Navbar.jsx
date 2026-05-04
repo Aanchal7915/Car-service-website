@@ -106,9 +106,9 @@ export default function Navbar() {
                 to={link.href}
                 style={{
                   color: location.pathname.startsWith(link.href) ? '#1E3A8A' : '#475569',
-                  padding: '0.5rem 1rem',
+                  padding: '0.4rem 0.6rem',
                   borderRadius: '6px',
-                  fontSize: '0.9rem',
+                  fontSize: '0.82rem',
                   fontWeight: 500,
                   textDecoration: 'none',
                   transition: 'all 0.2s',
