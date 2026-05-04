@@ -395,7 +395,14 @@ const PartsTab = () => {
       const rowMap = {};
       part.pincodePricing.forEach(p => {
         const key = `${p.size}|${p.price}|${p.originalPrice}|${p.discount}|${p.inventory}`;
-        if (!rowMap[key]) rowMap[key] = { pincodes: p.pincode, size: p.size || '', originalPrice: String(p.originalPrice || ''), discount: String(p.discount || ''), price: String(p.price || ''), inventory: String(p.inventory || '') };
+        if (!rowMap[key]) rowMap[key] = {
+          pincodes: p.pincode,
+          size: p.size || '',
+          originalPrice: p.originalPrice !== undefined && p.originalPrice !== null ? String(p.originalPrice) : '',
+          discount: p.discount !== undefined && p.discount !== null ? String(p.discount) : '',
+          price: p.price !== undefined && p.price !== null ? String(p.price) : '',
+          inventory: p.inventory !== undefined && p.inventory !== null ? String(p.inventory) : ''
+        };
         else rowMap[key].pincodes += ', ' + p.pincode;
       });
       setPincodePricingRows(Object.values(rowMap));
@@ -801,7 +808,14 @@ const BikesTab = () => {
       const rowMap = {};
       bike.pincodePricing.forEach(p => {
         const key = `${p.size}|${p.price}|${p.originalPrice}|${p.discount}|${p.inventory}`;
-        if (!rowMap[key]) rowMap[key] = { pincodes: p.pincode, size: p.size || '', originalPrice: String(p.originalPrice || ''), discount: String(p.discount || ''), price: String(p.price || ''), inventory: String(p.inventory || '') };
+        if (!rowMap[key]) rowMap[key] = {
+          pincodes: p.pincode,
+          size: p.size || '',
+          originalPrice: p.originalPrice !== undefined && p.originalPrice !== null ? String(p.originalPrice) : '',
+          discount: p.discount !== undefined && p.discount !== null ? String(p.discount) : '',
+          price: p.price !== undefined && p.price !== null ? String(p.price) : '',
+          inventory: p.inventory !== undefined && p.inventory !== null ? String(p.inventory) : ''
+        };
         else rowMap[key].pincodes += ', ' + p.pincode;
       });
       setBikePincodeRows(Object.values(rowMap));

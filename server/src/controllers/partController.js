@@ -129,6 +129,25 @@ const updatePart = asyncHandler(async (req, res) => {
       if (body[key] === '' || body[key] === undefined || body[key] === 'undefined' || body[key] === 'null' || Number(body[key]) === 0) {
         body[key] = existingPart[key];
       }
+    } else if (key === 'pincodePricing') {
+      if (!body.pincodePricing || !Array.isArray(body.pincodePricing) || body.pincodePricing.length === 0) {
+        body.pincodePricing = existingPart.pincodePricing;
+      } else if (Array.isArray(existingPart.pincodePricing)) {
+        body.pincodePricing = body.pincodePricing.map(newP => {
+          const existingP = existingPart.pincodePricing.find(p => p.pincode === newP.pincode && p.size === newP.size);
+          if (existingP) {
+            return {
+              ...existingP.toObject(),
+              ...newP,
+              price: newP.price || existingP.price,
+              originalPrice: newP.originalPrice || existingP.originalPrice,
+              discount: newP.discount || existingP.discount,
+              inventory: newP.inventory !== undefined && newP.inventory !== null ? newP.inventory : existingP.inventory
+            };
+          }
+          return newP;
+        });
+      }
     } else {
       if (body[key] === '' || body[key] === undefined || body[key] === 'undefined' || body[key] === 'null') {
         body[key] = existingPart[key];
