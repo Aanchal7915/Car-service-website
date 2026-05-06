@@ -75,6 +75,39 @@ const getMechanics = asyncHandler(async (req, res) => {
   res.json({ success: true, mechanics });
 });
 
+// @desc  Create a mechanic user (admin)
+// @route POST /api/admin/mechanics
+const createMechanic = asyncHandler(async (req, res) => {
+  const { name, phone, email, password } = req.body;
+  if (!name || !phone) {
+    res.status(400);
+    throw new Error('Name and phone are required');
+  }
+  const existing = await User.findOne({ $or: [{ phone }, ...(email ? [{ email }] : [])] });
+  if (existing) {
+    if (existing.role !== 'mechanic') {
+      existing.role = 'mechanic';
+      existing.isActive = true;
+      await existing.save();
+      return res.status(200).json({ success: true, mechanic: { _id: existing._id, name: existing.name, phone: existing.phone, email: existing.email } });
+    }
+    res.status(400);
+    throw new Error('A mechanic with this phone or email already exists');
+  }
+  const mechanic = await User.create({
+    name,
+    phone,
+    email: email || undefined,
+    password: password || phone, // default password = phone (must be reset later)
+    role: 'mechanic',
+    isActive: true,
+  });
+  res.status(201).json({
+    success: true,
+    mechanic: { _id: mechanic._id, name: mechanic.name, phone: mechanic.phone, email: mechanic.email },
+  });
+});
+
 const toUrl = (f) => f.path.includes('uploads') ? '/uploads' + f.path.split('uploads')[1].replace(/\\/g, '/') : f.path;
 
 // @desc  Create Category
@@ -167,7 +200,7 @@ const deleteServiceType = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
-  getDashboardStats, getUsers, updateUser, approveBike, getMechanics,
+  getDashboardStats, getUsers, updateUser, approveBike, getMechanics, createMechanic,
   createCategory, getCategories, deleteCategory,
   createBrand, getBrandsList, deleteBrand,
   getAllEnquiries, updateEnquiry,

@@ -39,14 +39,39 @@ const updateBookingStatus = asyncHandler(async (req, res) => {
   const booking = await ServiceBooking.findById(req.params.id);
   if (!booking) { res.status(404); throw new Error('Booking not found'); }
 
-  booking.status = status;
-  booking.statusHistory.push({ status, note });
-  if (mechanic) booking.mechanic = mechanic;
+  // Track if mechanic field was explicitly sent in this request
+  const mechanicProvided = Object.prototype.hasOwnProperty.call(req.body, 'mechanic');
+  const previousMechanic = booking.mechanic ? String(booking.mechanic) : null;
+
+  // Mechanic assignment: empty/null unassigns, valid id assigns
+  if (mechanicProvided) {
+    booking.mechanic = mechanic ? mechanic : null;
+  }
+
+  // Auto-promote to "accepted" the moment a mechanic is assigned to a fresh request
+  let effectiveStatus = status || booking.status;
+  if (mechanicProvided && mechanic && booking.status === 'requested' && (!status || status === 'requested')) {
+    effectiveStatus = 'accepted';
+  }
+
+  if (effectiveStatus !== booking.status) {
+    booking.status = effectiveStatus;
+    booking.statusHistory.push({ status: effectiveStatus, note: note || '' });
+  } else if (mechanicProvided && previousMechanic !== (mechanic || null)) {
+    booking.statusHistory.push({
+      status: booking.status,
+      note: mechanic ? 'Mechanic assigned' : 'Mechanic unassigned',
+    });
+  }
+
   if (estimatedCost) booking.estimatedCost = estimatedCost;
   if (finalCost) booking.finalCost = finalCost;
 
   await booking.save();
-  res.json({ success: true, booking });
+  const populated = await ServiceBooking.findById(booking._id)
+    .populate('user', 'name phone email')
+    .populate('mechanic', 'name phone email');
+  res.json({ success: true, booking: populated });
 });
 
 // @desc  All bookings (admin)

@@ -4,14 +4,28 @@ const RentalBooking = require('../models/RentalBooking');
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
+let razorpayInstance = null;
+const getRazorpay = () => {
+  if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) return null;
+  if (!razorpayInstance) {
+    razorpayInstance = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID,
+      key_secret: process.env.RAZORPAY_KEY_SECRET,
+    });
+  }
+  return razorpayInstance;
+};
 
 const dayDiff = (start, end) => {
   const ms = new Date(end).getTime() - new Date(start).getTime();
   return Math.max(1, Math.ceil(ms / (1000 * 60 * 60 * 24)));
+};
+
+const hourDiff = (startDate, startTime, endDate, endTime) => {
+  const s = new Date(`${new Date(startDate).toISOString().split('T')[0]}T${startTime || '00:00'}:00`);
+  const e = new Date(`${new Date(endDate).toISOString().split('T')[0]}T${endTime || '00:00'}:00`);
+  const ms = e.getTime() - s.getTime();
+  return Math.max(1, Math.ceil(ms / (1000 * 60 * 60)));
 };
 
 // ── RENTAL CARS ───────────────────────────────────────────────
@@ -76,13 +90,35 @@ const getRentalCar = asyncHandler(async (req, res) => {
   res.json({ success: true, car });
 });
 
+const normalizeRentalCarBody = (body) => {
+  if (typeof body.location === 'string') body.location = JSON.parse(body.location);
+  if (typeof body.features === 'string') body.features = JSON.parse(body.features);
+
+  // rentalUnits arrives as `rentalUnits[]` field — multer/body-parser may give array or single
+  let units = body['rentalUnits[]'] ?? body.rentalUnits;
+  if (units !== undefined) {
+    if (typeof units === 'string') units = [units];
+    if (Array.isArray(units)) {
+      body.rentalUnits = units.filter(u => u === 'day' || u === 'hour');
+    }
+    delete body['rentalUnits[]'];
+  }
+
+  if (body.securityDepositRefundable !== undefined) {
+    body.securityDepositRefundable = body.securityDepositRefundable === true || body.securityDepositRefundable === 'true';
+  }
+  if (body.isFeatured !== undefined) {
+    body.isFeatured = body.isFeatured === true || body.isFeatured === 'true';
+  }
+
+  return body;
+};
+
 // @desc  Create rental car (admin)
 // @route POST /api/rentals/cars
 const createRentalCar = asyncHandler(async (req, res) => {
   const images = req.files ? req.files.map((f) => f.path) : [];
-  const body = { ...req.body };
-  if (typeof body.location === 'string') body.location = JSON.parse(body.location);
-  if (typeof body.features === 'string') body.features = JSON.parse(body.features);
+  const body = normalizeRentalCarBody({ ...req.body });
   const car = await RentalCar.create({ ...body, images });
   res.status(201).json({ success: true, car });
 });
@@ -92,9 +128,7 @@ const createRentalCar = asyncHandler(async (req, res) => {
 const updateRentalCar = asyncHandler(async (req, res) => {
   const car = await RentalCar.findById(req.params.id);
   if (!car) { res.status(404); throw new Error('Rental car not found'); }
-  const body = { ...req.body };
-  if (typeof body.location === 'string') body.location = JSON.parse(body.location);
-  if (typeof body.features === 'string') body.features = JSON.parse(body.features);
+  const body = normalizeRentalCarBody({ ...req.body });
 
   const existing = body.existingImages
     ? (Array.isArray(body.existingImages) ? body.existingImages : [body.existingImages])
@@ -123,35 +157,76 @@ const createRentalBooking = asyncHandler(async (req, res) => {
   const {
     rentalCar, pickupDate, returnDate, pickupTime, returnTime,
     pickupAddress, driverLicense, contactPhone, notes, paymentMethod,
+    rentalUnit,
   } = req.body;
 
   const car = await RentalCar.findById(rentalCar);
   if (!car) { res.status(404); throw new Error('Rental car not found'); }
   if (car.status !== 'available') { res.status(400); throw new Error('This car is not available for rent'); }
 
-  const totalDays = dayDiff(pickupDate, returnDate);
-  if (totalDays < (car.minRentalDays || 1)) {
+  // Auto-derive allowed units from prices + any explicit rentalUnits flag.
+  // If pricePerHour > 0, hour mode is enabled even when rentalUnits doesn't list it.
+  const fromPrices = [];
+  if (car.pricePerDay > 0) fromPrices.push('day');
+  if (car.pricePerHour > 0) fromPrices.push('hour');
+  const explicit = Array.isArray(car.rentalUnits) ? car.rentalUnits.filter(u => u === 'day' || u === 'hour') : [];
+  const allowedUnits = Array.from(new Set([...explicit, ...fromPrices]));
+  if (!allowedUnits.length) allowedUnits.push('day');
+
+  const unit = rentalUnit && allowedUnits.includes(rentalUnit) ? rentalUnit : allowedUnits[0];
+  if (unit === 'hour' && (!car.pricePerHour || car.pricePerHour <= 0)) {
     res.status(400);
-    throw new Error(`Minimum rental period is ${car.minRentalDays} day(s)`);
-  }
-  if (car.maxRentalDays && totalDays > car.maxRentalDays) {
-    res.status(400);
-    throw new Error(`Maximum rental period is ${car.maxRentalDays} day(s)`);
+    throw new Error('Hourly rental is not available for this car');
   }
 
-  // Conflict check
+  let totalDays = 0;
+  let totalHours = 0;
+  let subtotal = 0;
+
+  if (unit === 'hour') {
+    totalHours = hourDiff(pickupDate, pickupTime, returnDate, returnTime);
+    if (totalHours < (car.minRentalHours || 1)) {
+      res.status(400);
+      throw new Error(`Minimum rental period is ${car.minRentalHours} hour(s)`);
+    }
+    if (car.maxRentalHours && totalHours > car.maxRentalHours) {
+      res.status(400);
+      throw new Error(`Maximum rental period is ${car.maxRentalHours} hour(s)`);
+    }
+    subtotal = totalHours * car.pricePerHour;
+  } else {
+    totalDays = dayDiff(pickupDate, returnDate);
+    if (totalDays < (car.minRentalDays || 1)) {
+      res.status(400);
+      throw new Error(`Minimum rental period is ${car.minRentalDays} day(s)`);
+    }
+    if (car.maxRentalDays && totalDays > car.maxRentalDays) {
+      res.status(400);
+      throw new Error(`Maximum rental period is ${car.maxRentalDays} day(s)`);
+    }
+    subtotal = totalDays * car.pricePerDay;
+  }
+
+  // Conflict check (strict: only block actually overlapping bookings)
+  // For day rentals dates differ; for hour rentals same-day must check timestamp
   const overlap = await RentalBooking.findOne({
     rentalCar,
     status: { $in: ['requested', 'confirmed', 'active'] },
-    pickupDate: { $lt: new Date(returnDate) },
-    returnDate: { $gt: new Date(pickupDate) },
+    pickupDate: { $lte: new Date(returnDate) },
+    returnDate: { $gte: new Date(pickupDate) },
   });
   if (overlap) {
-    res.status(400);
-    throw new Error('Car is already booked for the selected dates');
+    // For hour rentals on same date, a `<=`/`>=` overlap may be a false positive — verify with timestamps
+    const requestedStart = new Date(`${new Date(pickupDate).toISOString().split('T')[0]}T${pickupTime || '00:00'}:00`).getTime();
+    const requestedEnd = new Date(`${new Date(returnDate).toISOString().split('T')[0]}T${returnTime || '23:59'}:00`).getTime();
+    const existingStart = new Date(`${new Date(overlap.pickupDate).toISOString().split('T')[0]}T${overlap.pickupTime || '00:00'}:00`).getTime();
+    const existingEnd = new Date(`${new Date(overlap.returnDate).toISOString().split('T')[0]}T${overlap.returnTime || '23:59'}:00`).getTime();
+    if (requestedStart < existingEnd && requestedEnd > existingStart) {
+      res.status(400);
+      throw new Error('Car is already booked for the selected time window');
+    }
   }
 
-  const subtotal = totalDays * car.pricePerDay;
   const totalAmount = subtotal + (car.securityDeposit || 0);
 
   const booking = await RentalBooking.create({
@@ -166,7 +241,10 @@ const createRentalBooking = asyncHandler(async (req, res) => {
       pricePerDay: car.pricePerDay,
     },
     pickupDate, returnDate, pickupTime, returnTime,
-    totalDays, pricePerDay: car.pricePerDay,
+    rentalUnit: unit,
+    totalDays, totalHours,
+    pricePerDay: car.pricePerDay,
+    pricePerHour: car.pricePerHour || 0,
     securityDeposit: car.securityDeposit || 0,
     subtotal, totalAmount,
     pickupAddress, driverLicense, contactPhone, notes,
@@ -175,15 +253,25 @@ const createRentalBooking = asyncHandler(async (req, res) => {
   });
 
   if (paymentMethod === 'online') {
-    const options = {
-      amount: Math.round(totalAmount * 100),
-      currency: 'INR',
-      receipt: `rental_${booking._id}`,
-    };
-    const order = await razorpay.orders.create(options);
-    booking.payment.razorpayOrderId = order.id;
-    await booking.save();
-    return res.status(201).json({ success: true, booking, order });
+    const razorpay = getRazorpay();
+    if (!razorpay) {
+      res.status(500);
+      throw new Error('Online payment is not configured. Please contact support.');
+    }
+    try {
+      const options = {
+        amount: Math.round(totalAmount * 100),
+        currency: 'INR',
+        receipt: `rental_${booking._id}`,
+      };
+      const order = await razorpay.orders.create(options);
+      booking.payment.razorpayOrderId = order.id;
+      await booking.save();
+      return res.status(201).json({ success: true, booking, order, key: process.env.RAZORPAY_KEY_ID });
+    } catch (err) {
+      res.status(500);
+      throw new Error(err?.error?.description || err?.message || 'Failed to create payment order');
+    }
   }
 
   res.status(201).json({ success: true, booking });

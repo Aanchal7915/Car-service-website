@@ -8,7 +8,13 @@ const rentalCarSchema = new mongoose.Schema(
     year: { type: Number, required: true },
     pricePerDay: { type: Number, required: true },
     pricePerHour: { type: Number, default: 0 },
+    rentalUnits: {
+      type: [String],
+      enum: ['day', 'hour'],
+      default: ['day'],
+    },
     securityDeposit: { type: Number, default: 0 },
+    securityDepositRefundable: { type: Boolean, default: true },
     fuelType: {
       type: String,
       enum: ['petrol', 'diesel', 'electric', 'hybrid', 'cng'],
@@ -37,6 +43,8 @@ const rentalCarSchema = new mongoose.Schema(
     isFeatured: { type: Boolean, default: false },
     minRentalDays: { type: Number, default: 1 },
     maxRentalDays: { type: Number, default: 30 },
+    minRentalHours: { type: Number, default: 1 },
+    maxRentalHours: { type: Number, default: 24 },
     views: { type: Number, default: 0 },
   },
   { timestamps: true }

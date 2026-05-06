@@ -4,6 +4,7 @@ export const getStats = () => API.get('/admin/stats');
 export const getUsers = (page = 1) => API.get(`/admin/users?page=${page}&limit=20`);
 export const updateUser = (id, data) => API.put(`/admin/users/${id}`, data);
 export const getMechanics = () => API.get('/admin/mechanics');
+export const createMechanic = (data) => API.post('/admin/mechanics', data);
 
 export const getBikes = (page = 1) => API.get(`/bikes?page=${page}&limit=20&isAdmin=true`);
 export const createBike = (data) => API.post('/bikes', data, { headers: { 'Content-Type': 'multipart/form-data' } });

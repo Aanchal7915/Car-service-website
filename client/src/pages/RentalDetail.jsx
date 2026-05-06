@@ -37,15 +37,34 @@ export default function RentalDetail() {
     driverLicense: '',
     notes: '',
     paymentMethod: 'online',
+    rentalUnit: 'day',
     pickupAddress: { street: '', city: '', state: '', pincode: '' },
   });
 
+  // Auto-derive allowed rental units from prices + any explicit rentalUnits flag.
+  // If pricePerHour > 0, hour mode is enabled automatically (same for day).
+  const computeAllowedUnits = (c) => {
+    const fromPrices = [];
+    if (c?.pricePerDay > 0) fromPrices.push('day');
+    if (c?.pricePerHour > 0) fromPrices.push('hour');
+    const explicit = Array.isArray(c?.rentalUnits) ? c.rentalUnits.filter(u => u === 'day' || u === 'hour') : [];
+    const merged = Array.from(new Set([...explicit, ...fromPrices]));
+    return merged.length ? merged : ['day'];
+  };
+
   useEffect(() => {
     getRentalCar(id)
-      .then(({ data }) => setCar(data.car))
+      .then(({ data }) => {
+        setCar(data.car);
+        const allowedUnits = computeAllowedUnits(data.car);
+        setForm(prev => ({ ...prev, rentalUnit: allowedUnits[0] }));
+      })
       .catch(() => toast.error('Failed to load rental details'))
       .finally(() => setLoading(false));
   }, [id]);
+
+  const allowedUnits = computeAllowedUnits(car);
+  const unit = allowedUnits.includes(form.rentalUnit) ? form.rentalUnit : allowedUnits[0];
 
   const totalDays = useMemo(() => {
     if (!form.pickupDate || !form.returnDate) return 0;
@@ -53,7 +72,16 @@ export default function RentalDetail() {
     return Math.max(1, Math.ceil(ms / (1000 * 60 * 60 * 24)));
   }, [form.pickupDate, form.returnDate]);
 
-  const subtotal = (car?.pricePerDay || 0) * totalDays;
+  const totalHours = useMemo(() => {
+    if (!form.pickupDate || !form.returnDate) return 0;
+    const s = new Date(`${form.pickupDate}T${form.pickupTime || '00:00'}:00`);
+    const e = new Date(`${form.returnDate}T${form.returnTime || '00:00'}:00`);
+    return Math.max(1, Math.ceil((e.getTime() - s.getTime()) / (1000 * 60 * 60)));
+  }, [form.pickupDate, form.returnDate, form.pickupTime, form.returnTime]);
+
+  const subtotal = unit === 'hour'
+    ? (car?.pricePerHour || 0) * totalHours
+    : (car?.pricePerDay || 0) * totalDays;
   const totalAmount = subtotal + (car?.securityDeposit || 0);
 
   const handleSubmit = async (e) => {
@@ -63,14 +91,27 @@ export default function RentalDetail() {
       return;
     }
     if (!form.contactPhone) return toast.error('Contact phone is required');
-    if (new Date(form.returnDate) <= new Date(form.pickupDate)) {
+
+    if (unit === 'hour') {
+      const start = new Date(`${form.pickupDate}T${form.pickupTime || '00:00'}:00`);
+      const end = new Date(`${form.returnDate}T${form.returnTime || '00:00'}:00`);
+      if (end.getTime() <= start.getTime()) {
+        return toast.error('Return time must be after pickup time');
+      }
+    } else if (new Date(form.returnDate) <= new Date(form.pickupDate)) {
       return toast.error('Return date must be after pickup date');
     }
 
     setSubmitting(true);
     try {
-      const { data: res } = await createRentalBooking({ rentalCar: id, ...form });
-      
+      const { data: res } = await createRentalBooking({ rentalCar: id, ...form, rentalUnit: unit });
+
+      if (!res.order) {
+        toast.success('Booking created!');
+        navigate('/my-bookings');
+        return;
+      }
+
       const loaded = await loadRazorpay();
       if (!loaded) {
         toast.error('Razorpay SDK failed to load. Are you online?');
@@ -78,9 +119,16 @@ export default function RentalDetail() {
         return;
       }
 
+      const razorpayKey = res.key || import.meta.env.VITE_RAZORPAY_KEY_ID;
+      if (!razorpayKey) {
+        toast.error('Payment is not configured. Please contact support.');
+        setSubmitting(false);
+        return;
+      }
+
       const order = res.order;
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        key: razorpayKey,
         amount: order.amount,
         currency: order.currency,
         name: 'AutoXpress Rental',
@@ -113,6 +161,10 @@ export default function RentalDetail() {
       };
 
       const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', (resp) => {
+        toast.error(resp?.error?.description || 'Payment failed');
+        setSubmitting(false);
+      });
       rzp.open();
     } catch (err) {
       toast.error(err.response?.data?.message || 'Booking failed');
@@ -160,9 +212,22 @@ export default function RentalDetail() {
               </h1>
               <p style={{ color: '#64748B', fontSize: '0.9rem', fontWeight: 600, marginTop: '0.4rem' }}>{car.year} • {car.title}</p>
 
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.4rem', margin: '1.2rem 0' }}>
-                <span style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.1rem', fontWeight: 950, color: '#1E3A8A' }}>₹{car.pricePerDay?.toLocaleString('en-IN')}</span>
-                <span style={{ color: '#64748B', fontWeight: 700, fontSize: '0.9rem' }}>/ day</span>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.8rem', flexWrap: 'wrap', margin: '1.2rem 0' }}>
+                {allowedUnits.includes('day') && car.pricePerDay > 0 && (
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.3rem' }}>
+                    <span style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.1rem', fontWeight: 950, color: '#1E3A8A' }}>₹{car.pricePerDay?.toLocaleString('en-IN')}</span>
+                    <span style={{ color: '#64748B', fontWeight: 700, fontSize: '0.9rem' }}>/ day</span>
+                  </div>
+                )}
+                {allowedUnits.includes('day') && allowedUnits.includes('hour') && car.pricePerDay > 0 && car.pricePerHour > 0 && (
+                  <span style={{ color: '#94A3B8', fontWeight: 700, fontSize: '0.95rem', alignSelf: 'baseline' }}>or</span>
+                )}
+                {allowedUnits.includes('hour') && car.pricePerHour > 0 && (
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.3rem' }}>
+                    <span style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.1rem', fontWeight: 950, color: '#1E3A8A' }}>₹{car.pricePerHour?.toLocaleString('en-IN')}</span>
+                    <span style={{ color: '#64748B', fontWeight: 700, fontSize: '0.9rem' }}>/ hour</span>
+                  </div>
+                )}
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.8rem', marginTop: '1.5rem' }}>
@@ -170,13 +235,21 @@ export default function RentalDetail() {
                   { icon: Settings, label: 'Transmission', value: car.transmission?.toUpperCase() },
                   { icon: Fuel, label: 'Fuel', value: car.fuelType?.toUpperCase() },
                   { icon: Users, label: 'Seats', value: car.seats },
-                  { icon: Shield, label: 'Deposit', value: `₹${(car.securityDeposit || 0).toLocaleString('en-IN')}` },
-                ].map(({ icon: Icon, label, value }) => (
+                  {
+                    icon: Shield,
+                    label: 'Deposit',
+                    value: `₹${(car.securityDeposit || 0).toLocaleString('en-IN')}`,
+                    extra: car.securityDepositRefundable !== false ? 'REFUNDABLE' : 'NON-REFUNDABLE',
+                  },
+                ].map(({ icon: Icon, label, value, extra }) => (
                   <div key={label} style={{ background: '#F8FAFC', padding: '1rem', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#64748B', fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       <Icon size={14} /> {label}
                     </div>
                     <div style={{ marginTop: '0.4rem', fontWeight: 800, color: '#0F172A', fontSize: '0.9rem' }}>{value}</div>
+                    {extra && (
+                      <div style={{ marginTop: '0.3rem', display: 'inline-block', fontSize: '0.6rem', fontWeight: 800, color: extra === 'REFUNDABLE' ? '#16A34A' : '#DC2626', background: extra === 'REFUNDABLE' ? '#DCFCE7' : '#FEE2E2', padding: '2px 8px', borderRadius: '999px', letterSpacing: '0.05em' }}>{extra}</div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -212,9 +285,26 @@ export default function RentalDetail() {
 
           {/* RIGHT: Booking form */}
           <form onSubmit={handleSubmit} style={{ background: 'white', borderRadius: '20px', padding: '1.5rem', border: '1px solid #E2E8F0', height: 'fit-content' }}>
-            <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.3rem', fontWeight: 950, color: '#0F172A', marginBottom: '1.2rem', letterSpacing: '0.01em' }}>
+            <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.3rem', fontWeight: 950, color: '#0F172A', marginBottom: '1rem', letterSpacing: '0.01em' }}>
               BOOK THIS CAR
             </h2>
+
+            {allowedUnits.length > 1 && (
+              <div style={{ display: 'flex', gap: '0.4rem', marginBottom: '1rem', background: '#F1F5F9', borderRadius: '10px', padding: '4px' }}>
+                {allowedUnits.map(u => (
+                  <button key={u} type="button" onClick={() => setForm({ ...form, rentalUnit: u })}
+                    style={{
+                      flex: 1, padding: '0.5rem 0.6rem', borderRadius: '7px', border: 'none', cursor: 'pointer',
+                      background: unit === u ? '#1E3A8A' : 'transparent',
+                      color: unit === u ? 'white' : '#475569',
+                      fontWeight: 800, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em',
+                      transition: 'all 0.2s'
+                    }}>
+                    BY {u}
+                  </button>
+                ))}
+              </div>
+            )}
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem', marginBottom: '0.8rem' }}>
               <div>
@@ -268,12 +358,21 @@ export default function RentalDetail() {
             {/* Price Summary */}
             <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '14px', padding: '1rem', marginBottom: '1rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 700, color: '#475569', marginBottom: '0.4rem' }}>
-                <span>₹{car.pricePerDay?.toLocaleString('en-IN')} × {totalDays} day(s)</span>
+                <span>
+                  {unit === 'hour'
+                    ? `₹${car.pricePerHour?.toLocaleString('en-IN')} × ${totalHours} hour(s)`
+                    : `₹${car.pricePerDay?.toLocaleString('en-IN')} × ${totalDays} day(s)`}
+                </span>
                 <span>₹{subtotal.toLocaleString('en-IN')}</span>
               </div>
               {car.securityDeposit > 0 && (
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 700, color: '#475569', marginBottom: '0.4rem' }}>
-                  <span>Security deposit</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem', fontWeight: 700, color: '#475569', marginBottom: '0.4rem' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    Security deposit
+                    {car.securityDepositRefundable !== false && (
+                      <span style={{ fontSize: '0.6rem', fontWeight: 800, color: '#16A34A', background: '#DCFCE7', padding: '2px 6px', borderRadius: '999px', letterSpacing: '0.04em' }}>REFUNDABLE</span>
+                    )}
+                  </span>
                   <span>₹{car.securityDeposit.toLocaleString('en-IN')}</span>
                 </div>
               )}

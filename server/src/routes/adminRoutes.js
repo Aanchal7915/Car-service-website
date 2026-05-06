@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {
-  getDashboardStats, getUsers, updateUser, approveBike, getMechanics,
+  getDashboardStats, getUsers, updateUser, approveBike, getMechanics, createMechanic,
   createCategory, getCategories, deleteCategory,
   createBrand, getBrandsList, deleteBrand,
   getAllEnquiries, updateEnquiry,
@@ -21,6 +21,7 @@ router.get('/users', getUsers);
 router.put('/users/:id', updateUser);
 router.put('/bikes/:id/approve', approveBike);
 router.get('/mechanics', getMechanics);
+router.post('/mechanics', createMechanic);
 
 // Categories
 router.get('/categories', getCategories);
