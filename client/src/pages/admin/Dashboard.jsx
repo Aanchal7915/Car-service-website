@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import API from '../../api/axios';
 import * as adminApi from '../../api/adminApi';
 import * as rentalApi from '../../api/rentalApi';
 import toast from 'react-hot-toast';
-import { Users, Bike, Wrench, TrendingUp, Package, Clock, Check, CheckCircle, AlertCircle, BarChart3, Settings, LogOut, Home, ShoppingBag, List, Loader, Plus, Edit2, Trash2, Menu, X, Car, Calendar } from 'lucide-react';
+import { Users, Car, Wrench, TrendingUp, Package, Clock, Check, CheckCircle, AlertCircle, BarChart3, Settings, LogOut, Home, ShoppingBag, List, Loader, Plus, Edit2, Trash2, Menu, X, Calendar, MapPin } from 'lucide-react';
+import { io } from 'socket.io-client';
 
 const StatCard = ({ icon: Icon, label, value, color }) => (
   <div style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '1.2rem 1.5rem', boxShadow: '0 10px 30px rgba(0,0,0,0.02)', transition: 'all 0.3s' }}>
@@ -1808,6 +1809,241 @@ const RentalBookingsTab = () => {
   );
 };
 
+
+// ── LIVE TRACKING TAB ──────────────────────────────────────────
+const LiveTrackingTab = () => {
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [socketConnected, setSocketConnected] = useState(false);
+  const mapRef = useRef(null);
+  const mapInstanceRef = useRef(null);
+  const markersRef = useRef({});
+  const socketRef = useRef(null);
+
+  useEffect(() => {
+    // Load Leaflet CSS
+    if (!document.getElementById('leaflet-css')) {
+      const link = document.createElement('link');
+      link.id = 'leaflet-css';
+      link.rel = 'stylesheet';
+      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+      document.head.appendChild(link);
+    }
+
+    // Fetch active bookings
+    rentalApi.getActiveLocations()
+      .then(({ data }) => {
+        setBookings(data.bookings || []);
+      })
+      .catch(() => toast.error('Failed to load active rentals'))
+      .finally(() => setLoading(false));
+
+    // Connect socket
+    const serverUrl = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, '') || 'http://localhost:5003';
+    const socket = io(serverUrl, { transports: ['websocket'] });
+    socketRef.current = socket;
+
+    socket.on('connect', () => {
+      setSocketConnected(true);
+      socket.emit('admin_watch_all');
+    });
+    socket.on('disconnect', () => setSocketConnected(false));
+
+    socket.on('location_update', (data) => {
+      setBookings(prev => prev.map(b =>
+        b._id === data.bookingId
+          ? { ...b, currentLocation: { lat: data.lat, lng: data.lng, heading: data.heading, speed: data.speed, updatedAt: data.updatedAt } }
+          : b
+      ));
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  // Sync markers when bookings change
+  useEffect(() => {
+    const L = window.L;
+    const map = mapInstanceRef.current;
+    if (!L || !map) return;
+
+    bookings.forEach(b => {
+      if (b.currentLocation?.lat && b.currentLocation?.lng) {
+        if (markersRef.current[b._id]) {
+          // Update existing marker
+          markersRef.current[b._id].setLatLng([b.currentLocation.lat, b.currentLocation.lng]);
+        } else {
+          // Create new marker
+          const carIcon = L.divIcon({
+            className: 'custom-car-marker',
+            html: `<div style="background:#1E3A8A;color:white;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:16px;border:3px solid white;box-shadow:0 4px 15px rgba(30,58,138,0.4);">🚗</div>`,
+            iconSize: [36, 36],
+            iconAnchor: [18, 18],
+          });
+
+          const marker = L.marker([b.currentLocation.lat, b.currentLocation.lng], { icon: carIcon })
+            .bindPopup(`<strong>${b.carSnapshot?.brand || ''} ${b.carSnapshot?.model || ''}</strong><br/>Renter: ${b.user?.name || 'N/A'}<br/>Phone: ${b.user?.phone || 'N/A'}`)
+            .addTo(map);
+
+          markersRef.current[b._id] = marker;
+        }
+      }
+    });
+  }, [bookings]);
+
+  // Initialize map after loading
+  useEffect(() => {
+    if (loading || !mapRef.current || mapInstanceRef.current) return;
+
+    const initMap = () => {
+      const L = window.L;
+      if (!L) {
+        setTimeout(initMap, 200);
+        return;
+      }
+
+      const map = L.map(mapRef.current).setView([20.5937, 78.9629], 5); // India center
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19,
+      }).addTo(map);
+
+      mapInstanceRef.current = map;
+
+      // Add markers for bookings with locations
+      bookings.forEach(b => {
+        if (b.currentLocation?.lat && b.currentLocation?.lng) {
+          const carIcon = L.divIcon({
+            className: 'custom-car-marker',
+            html: `<div style="background:#1E3A8A;color:white;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:16px;border:3px solid white;box-shadow:0 4px 15px rgba(30,58,138,0.4);">🚗</div>`,
+            iconSize: [36, 36],
+            iconAnchor: [18, 18],
+          });
+
+          const marker = L.marker([b.currentLocation.lat, b.currentLocation.lng], { icon: carIcon })
+            .bindPopup(`<strong>${b.carSnapshot?.brand} ${b.carSnapshot?.model}</strong><br/>Renter: ${b.user?.name || 'N/A'}<br/>Phone: ${b.user?.phone || 'N/A'}`)
+            .addTo(map);
+
+          markersRef.current[b._id] = marker;
+        }
+      });
+
+      // Fit bounds if markers exist
+      const markersWithLoc = bookings.filter(b => b.currentLocation?.lat);
+      if (markersWithLoc.length > 0) {
+        const bounds = L.latLngBounds(markersWithLoc.map(b => [b.currentLocation.lat, b.currentLocation.lng]));
+        map.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
+      }
+    };
+
+    // Load Leaflet JS
+    if (!window.L) {
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+      script.onload = initMap;
+      document.head.appendChild(script);
+    } else {
+      initMap();
+    }
+
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+        markersRef.current = {};
+      }
+    };
+  }, [loading, bookings]);
+
+  const focusBooking = (booking) => {
+    setSelectedBooking(booking._id);
+    if (mapInstanceRef.current && booking.currentLocation?.lat) {
+      mapInstanceRef.current.setView([booking.currentLocation.lat, booking.currentLocation.lng], 15, { animate: true });
+      if (markersRef.current[booking._id]) {
+        markersRef.current[booking._id].openPopup();
+      }
+    }
+  };
+
+  if (loading) return <div style={{textAlign:'center', padding:'3rem', color:'#888'}}><Loader style={{ animation: 'spin 1s linear infinite' }} size={24} /></div>;
+
+  return (
+    <div style={{ display: 'flex', gap: '1.5rem', height: 'calc(100vh - 120px)' }}>
+      {/* Sidebar - Active Bookings List */}
+      <div style={{ width: 340, flexShrink: 0, background: '#FFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '1.5rem', overflowY: 'auto', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+          <h3 style={{ color: '#111', fontWeight: 950, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.3rem', margin: 0 }}>
+            ACTIVE <span style={{ color: '#1E3A8A' }}>RENTALS</span>
+          </h3>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: socketConnected ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', padding: '0.3rem 0.8rem', borderRadius: '999px' }}>
+            <div style={{ width: 8, height: 8, borderRadius: '50%', background: socketConnected ? '#10B981' : '#EF4444', animation: socketConnected ? 'pulse 2s infinite' : 'none' }} />
+            <span style={{ fontSize: '0.7rem', fontWeight: 800, color: socketConnected ? '#10B981' : '#EF4444' }}>
+              {socketConnected ? 'LIVE' : 'OFFLINE'}
+            </span>
+          </div>
+        </div>
+
+        {bookings.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#AAA' }}>
+            <MapPin size={40} style={{ marginBottom: '1rem', color: '#DDD' }} />
+            <p style={{ fontWeight: 600 }}>No active rentals at the moment</p>
+          </div>
+        ) : bookings.map(b => (
+          <div key={b._id} onClick={() => focusBooking(b)}
+            style={{
+              background: selectedBooking === b._id ? '#EFF6FF' : '#F9F9F9',
+              border: `1.5px solid ${selectedBooking === b._id ? '#1E3A8A' : '#EEE'}`,
+              borderRadius: '16px', padding: '1rem', marginBottom: '0.8rem', cursor: 'pointer',
+              transition: 'all 0.2s'
+            }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <h4 style={{ color: '#111', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.1rem', margin: 0 }}>
+                  {b.carSnapshot?.brand} {b.carSnapshot?.model}
+                </h4>
+                <p style={{ color: '#666', fontSize: '0.8rem', fontWeight: 600, margin: '0.3rem 0' }}>
+                  Renter: {b.user?.name || 'N/A'}
+                </p>
+                <p style={{ color: '#888', fontSize: '0.75rem', fontWeight: 600, margin: 0 }}>
+                  {b.user?.phone || 'No phone'}
+                </p>
+              </div>
+              {b.currentLocation?.lat ? (
+                <div style={{ background: 'rgba(16,185,129,0.1)', padding: '0.3rem 0.6rem', borderRadius: '8px' }}>
+                  <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#10B981' }}>TRACKING</span>
+                </div>
+              ) : (
+                <div style={{ background: 'rgba(245,158,11,0.1)', padding: '0.3rem 0.6rem', borderRadius: '8px' }}>
+                  <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#F59E0B' }}>WAITING</span>
+                </div>
+              )}
+            </div>
+            {b.currentLocation?.updatedAt && (
+              <p style={{ color: '#94A3B8', fontSize: '0.7rem', fontWeight: 700, margin: '0.5rem 0 0', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                <Clock size={11} /> Last update: {new Date(b.currentLocation.updatedAt).toLocaleTimeString('en-IN')}
+              </p>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Map Container */}
+      <div style={{ flex: 1, background: '#FFF', border: '1.5px solid #EEE', borderRadius: '24px', overflow: 'hidden', position: 'relative', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
+        <div ref={mapRef} style={{ width: '100%', height: '100%' }} />
+        <style>{`
+          @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+          }
+          .custom-car-marker { background: none !important; border: none !important; }
+        `}</style>
+      </div>
+    </div>
+  );
+};
+
 export default function AdminDashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -1824,6 +2060,7 @@ export default function AdminDashboard() {
 
   const sidebarLinks = [
     { id: 'dashboard', icon: BarChart3, label: 'Dashboard' },
+     { id: 'live-tracking', icon: MapPin, label: 'Live Tracking' },
     { id: 'users', icon: Users, label: 'Users' },
     { id: 'bikes', icon: Car, label: 'Cars' },
     { id: 'rentals', icon: Car, label: 'Rental Cars' },
@@ -1987,6 +2224,7 @@ export default function AdminDashboard() {
           {activeTab === 'sells' && <SellsTab />}
           {activeTab === 'orders' && <OrdersTab />}
           {activeTab === 'leads' && <LeadsTab />}
+           {activeTab === 'live-tracking' && <LiveTrackingTab />}
         </div>
       </div>
     </div>

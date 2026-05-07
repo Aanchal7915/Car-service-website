@@ -372,8 +372,31 @@ const cancelMyRentalBooking = asyncHandler(async (req, res) => {
   res.json({ success: true, booking });
 });
 
+
+// ── LOCATION TRACKING ─────────────────────────────────────────
+
+// @desc  Get a single booking's last known location
+// @route GET /api/rentals/bookings/:id/location
+const getBookingLocation = asyncHandler(async (req, res) => {
+  const booking = await RentalBooking.findById(req.params.id)
+    .select('currentLocation carSnapshot status user')
+    .populate('user', 'name phone');
+  if (!booking) { res.status(404); throw new Error('Booking not found'); }
+  res.json({ success: true, location: booking.currentLocation, booking });
+});
+// @desc  Get all active bookings with their locations
+// @route GET /api/rentals/bookings/active-locations
+const getActiveLocations = asyncHandler(async (req, res) => {
+  const bookings = await RentalBooking.find({ status: 'active' })
+    .select('currentLocation carSnapshot user status')
+    .populate('user', 'name phone');
+  res.json({ success: true, bookings });
+});
+
+
 module.exports = {
   getRentalCars, getRentalCar, createRentalCar, updateRentalCar, deleteRentalCar,
   createRentalBooking, getMyRentalBookings, getAllRentalBookings,
-  updateRentalBookingStatus, cancelMyRentalBooking, verifyRentalPayment
+  updateRentalBookingStatus, cancelMyRentalBooking, verifyRentalPayment,
+  getBookingLocation, getActiveLocations
 };

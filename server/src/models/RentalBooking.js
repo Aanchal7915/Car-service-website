@@ -54,6 +54,13 @@ const rentalBookingSchema = new mongoose.Schema(
       razorpaySignature: String,
       paidAt: Date,
     },
+    currentLocation: {
+      lat: { type: Number, default: null },
+      lng: { type: Number, default: null },
+      heading: { type: Number, default: 0 },
+      speed: { type: Number, default: 0 },
+      updatedAt: { type: Date, default: null },
+    },
   },
   { timestamps: true }
 );

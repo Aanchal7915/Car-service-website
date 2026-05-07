@@ -3,7 +3,8 @@ const router = express.Router();
 const {
   getRentalCars, getRentalCar, createRentalCar, updateRentalCar, deleteRentalCar,
   createRentalBooking, getMyRentalBookings, getAllRentalBookings,
-  updateRentalBookingStatus, cancelMyRentalBooking, verifyRentalPayment
+  updateRentalBookingStatus, cancelMyRentalBooking, verifyRentalPayment,
+  getBookingLocation, getActiveLocations
 } = require('../controllers/rentalController');
 const { protect } = require('../middleware/auth');
 const { adminOnly } = require('../middleware/admin');
@@ -23,5 +24,9 @@ router.get('/bookings/my', protect, getMyRentalBookings);
 router.get('/bookings', protect, adminOnly, getAllRentalBookings);
 router.put('/bookings/:id/status', protect, adminOnly, updateRentalBookingStatus);
 router.put('/bookings/:id/cancel', protect, cancelMyRentalBooking);
+
+// Location tracking (static routes MUST come before :id routes)
+router.get('/bookings/active-locations', protect, adminOnly, getActiveLocations);
+router.get('/bookings/:id/location', protect, adminOnly, getBookingLocation);
 
 module.exports = router;

@@ -17,3 +17,8 @@ export const getAllRentalBookings = (params) => API.get('/rentals/bookings', { p
 export const updateRentalBookingStatus = (id, data) =>
   API.put(`/rentals/bookings/${id}/status`, data);
 export const cancelMyRentalBooking = (id) => API.put(`/rentals/bookings/${id}/cancel`);
+
+
+// Location tracking
+export const getBookingLocation = (id) => API.get(`/rentals/bookings/${id}/location`);
+export const getActiveLocations = () => API.get('/rentals/bookings/active-locations');
