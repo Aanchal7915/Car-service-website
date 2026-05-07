@@ -172,14 +172,14 @@ const deleteBike = asyncHandler(async (req, res) => {
 // @desc  Get featured bikes
 // @route GET /api/bikes/featured
 const getFeaturedBikes = asyncHandler(async (req, res) => {
-  const bikes = await Bike.find({ isFeatured: true, isApproved: true, status: 'available' }).limit(6);
+  const bikes = await Bike.find({ isFeatured: true, isApproved: true, status: 'available' }).limit(8);
   res.json({ success: true, bikes });
 });
 
 // @desc  Get bestseller bikes
 // @route GET /api/bikes/bestseller
 const getBestsellerBikes = asyncHandler(async (req, res) => {
-  const bikes = await Bike.find({ bestSeller: true, isApproved: true, status: 'available' }).limit(6);
+  const bikes = await Bike.find({ bestSeller: true, isApproved: true, status: 'available' }).limit(8);
   res.json({ success: true, bikes });
 });
 

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Clock, MapPin, Star, Zap, Wrench, TrendingUp, Shield, CheckCircle, Settings, Sparkles, Droplets, Battery, CircleDot, PaintBucket, Disc } from 'lucide-react';
 import { getFeaturedParts, getBestsellerParts } from '../api/storeApi';
-import { getFeaturedBikes, getBestsellerBikes } from '../api/bikeApi';
+import { getFeaturedBikes, getBestsellerBikes, getBikes } from '../api/bikeApi';
 import CarCard from '../components/bikes/BikeCard';
 import PartCard from '../components/parts/PartCard';
 import RentalCard from '../components/bikes/RentalCard';
@@ -31,6 +31,7 @@ const stats = [
 
 export default function Home() {
   const [featured, setFeatured] = useState([]);
+  const [latestCars, setLatestCars] = useState([]);
   const [featuredParts, setFeaturedParts] = useState([]);
   const [bestsellerParts, setBestsellerParts] = useState([]);
   const [bestsellerBikes, setBestsellerBikes] = useState([]);
@@ -67,7 +68,8 @@ export default function Home() {
       getFeaturedBikes().then(({ data }) => setFeatured(data.bikes)),
       getBestsellerBikes().then(({ data }) => setBestsellerBikes(data.bikes || [])),
       getActiveServiceTypes().then(({ data }) => setServiceTypes(data.serviceTypes || [])),
-      getRentalCars({ limit: 8 }).then(({ data }) => setRentalCars(data.cars || []))
+      getRentalCars({ limit: 8 }).then(({ data }) => setRentalCars(data.cars || [])),
+      getBikes({ limit: 10, sort: 'newest' }).then(({ data }) => setLatestCars(data.bikes || []))
     ])
       .catch(() => { })
       .finally(() => {
@@ -201,7 +203,7 @@ export default function Home() {
 
           {/* RIGHT — Animated Moving Car */}
           <div className="hero-car-wrap" style={{ flex: '1 1 50%', position: 'relative', minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-            
+
             {/* Car Image — rotates with scroll */}
             <img
               ref={carRef}
@@ -224,7 +226,7 @@ export default function Home() {
       </section>
 
       {/* BUY CARS section ── */}
-      {(loading || featured.length > 0) && (
+      {(loading || latestCars.length > 0) && (
         <section style={{ background: '#FFFFFF', padding: '5rem 0', borderTop: '1px solid rgba(156, 163, 175, 0.1)' }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem' }}>
@@ -245,7 +247,7 @@ export default function Home() {
               <LoadingSpinner size="lg" text="Loading premium cars..." />
             ) : (
               <div className="home-bikes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.5rem' }}>
-                {featured.map((car) => <CarCard key={car._id} car={car} />)}
+                {latestCars.slice(0, 10).map((car) => <CarCard key={car._id} car={car} />)}
               </div>
             )}
           </div>
@@ -262,17 +264,17 @@ export default function Home() {
                 Our Expert <span style={{ color: '#93C5FD' }}>Services</span>
               </h2>
             </div>
-            <Link to="/services" style={{ 
-              background: '#1E3A8A', 
-              color: 'white', 
-              padding: '0.75rem 2rem', 
-              fontSize: '0.9rem', 
-              fontWeight: 700, 
-              borderRadius: '8px', 
-              textDecoration: 'none', 
-              display: 'inline-flex', 
-              alignItems: 'center', 
-              gap: '0.6rem', 
+            <Link to="/services" style={{
+              background: '#1E3A8A',
+              color: 'white',
+              padding: '0.75rem 2rem',
+              fontSize: '0.9rem',
+              fontWeight: 700,
+              borderRadius: '8px',
+              textDecoration: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.6rem',
               transition: 'all 0.2s',
               boxShadow: '0 4px 15px rgba(30,58,138,0.3)'
             }}
@@ -289,14 +291,14 @@ export default function Home() {
           ) : (
             <div className="home-services-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '0.6rem' }}>
               {serviceTypes.map((service, idx) => (
-                <div key={service.value} style={{ 
-                  background: 'white', 
+                <div key={service.value} style={{
+                  background: 'white',
                   border: '2px solid transparent',
                   borderLeft: '4px solid #1E3A8A',
-                  borderRadius: '10px', 
-                  padding: '0.8rem', 
-                  textAlign: 'left', 
-                  boxShadow: '0 4px 15px rgba(0,0,0,0.15)', 
+                  borderRadius: '10px',
+                  padding: '0.8rem',
+                  textAlign: 'left',
+                  boxShadow: '0 4px 15px rgba(0,0,0,0.15)',
                   transition: 'all 0.3s ease',
                   display: 'flex',
                   flexDirection: 'column',
@@ -304,21 +306,21 @@ export default function Home() {
                   position: 'relative',
                   overflow: 'hidden'
                 }}
-                  onMouseEnter={(e) => { 
-                    e.currentTarget.style.transform = 'translateY(-5px)'; 
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-5px)';
                     e.currentTarget.style.borderColor = '#1E3A8A';
-                    e.currentTarget.style.boxShadow = '0 12px 25px rgba(30,58,138,0.2)'; 
-                    e.currentTarget.style.background = '#F0F4FF'; 
-                    e.currentTarget.querySelector('h3').style.color = '#1E3A8A'; 
-                    e.currentTarget.querySelector('p').style.color = '#000'; 
+                    e.currentTarget.style.boxShadow = '0 12px 25px rgba(30,58,138,0.2)';
+                    e.currentTarget.style.background = '#F0F4FF';
+                    e.currentTarget.querySelector('h3').style.color = '#1E3A8A';
+                    e.currentTarget.querySelector('p').style.color = '#000';
                   }}
-                  onMouseLeave={(e) => { 
-                    e.currentTarget.style.transform = 'translateY(0)'; 
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
                     e.currentTarget.style.borderColor = 'transparent';
                     e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.15)';
-                    e.currentTarget.style.background = '#fff'; 
-                    e.currentTarget.querySelector('h3').style.color = '#111'; 
-                    e.currentTarget.querySelector('p').style.color = '#666'; 
+                    e.currentTarget.style.background = '#fff';
+                    e.currentTarget.querySelector('h3').style.color = '#111';
+                    e.currentTarget.querySelector('p').style.color = '#666';
                   }}>
                   {/* Numbered watermark */}
                   <div style={{ position: 'absolute', top: '0.4rem', right: '0.6rem', fontSize: '1.8rem', fontWeight: 900, color: 'rgba(0,0,0,0.04)', fontFamily: 'Rajdhani, sans-serif', pointerEvents: 'none' }}>
@@ -328,22 +330,22 @@ export default function Home() {
                     {/* Icon */}
                     <div style={{ color: '#1E3A8A', marginBottom: '0.4rem', transition: 'all 0.3s' }}>
                       {service.label.toLowerCase().includes('engine') ? <Zap size={22} /> :
-                       service.label.toLowerCase().includes('oil') ? <Wrench size={22} /> :
-                       service.label.toLowerCase().includes('brake') ? <Shield size={22} /> :
-                       service.label.toLowerCase().includes('tyre') || service.label.toLowerCase().includes('wheel') ? <TrendingUp size={22} /> :
-                       service.label.toLowerCase().includes('clean') || service.label.toLowerCase().includes('wash') ? <Star size={22} /> :
-                       service.label.toLowerCase().includes('express') ? <Clock size={22} /> :
-                       service.label.toLowerCase().includes('battery') ? <Zap size={22} /> :
-                       service.label.toLowerCase().includes('pick') || service.label.toLowerCase().includes('door') ? <MapPin size={22} /> :
-                       <Wrench size={22} />}
+                        service.label.toLowerCase().includes('oil') ? <Wrench size={22} /> :
+                          service.label.toLowerCase().includes('brake') ? <Shield size={22} /> :
+                            service.label.toLowerCase().includes('tyre') || service.label.toLowerCase().includes('wheel') ? <TrendingUp size={22} /> :
+                              service.label.toLowerCase().includes('clean') || service.label.toLowerCase().includes('wash') ? <Star size={22} /> :
+                                service.label.toLowerCase().includes('express') ? <Clock size={22} /> :
+                                  service.label.toLowerCase().includes('battery') ? <Zap size={22} /> :
+                                    service.label.toLowerCase().includes('pick') || service.label.toLowerCase().includes('door') ? <MapPin size={22} /> :
+                                      <Wrench size={22} />}
                     </div>
                     <h3 style={{ color: '#111', fontWeight: 800, fontSize: '0.95rem', marginBottom: '0.5rem', fontFamily: 'Rajdhani, sans-serif', textTransform: 'uppercase', transition: 'color 0.2s' }}>{service.label}</h3>
                     <p style={{ color: '#666', fontSize: '0.75rem', lineHeight: 1.5, marginBottom: '1.2rem', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', transition: 'color 0.2s' }}>{service.desc}</p>
                   </div>
-                  <Link to="/services" style={{ 
+                  <Link to="/services" style={{
                     display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-                    background: '#1E3A8A', color: 'white', 
-                    padding: '0.5rem 1rem', borderRadius: '4px', 
+                    background: '#1E3A8A', color: 'white',
+                    padding: '0.5rem 1rem', borderRadius: '4px',
                     fontSize: '0.72rem', fontWeight: 700, textDecoration: 'none',
                     transition: 'all 0.2s', width: 'fit-content'
                   }}>
@@ -407,12 +409,12 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem' }}>
               <div>
-               <p style={{ color: '#1E3A8A', fontWeight: 800, fontSize: '0.85rem', letterSpacing: '0.25em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Premium Selection</p>
-              <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.5rem', fontWeight: 900, color: '#0F172A' }}>
-                Featured <span className="gradient-text">Showcase</span>
-              </h2>
-              <p style={{ color: '#64748B', marginTop: '0.3rem', fontWeight: 600 }}>Exquisite performance machines</p>
-            </div>
+                <p style={{ color: '#1E3A8A', fontWeight: 800, fontSize: '0.85rem', letterSpacing: '0.25em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Premium Selection</p>
+                <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.5rem', fontWeight: 900, color: '#0F172A' }}>
+                  Featured <span className="gradient-text">Showcase</span>
+                </h2>
+                <p style={{ color: '#64748B', marginTop: '0.3rem', fontWeight: 600 }}>Exquisite performance machines</p>
+              </div>
               <Link to="/bikes/featured" style={{
                 background: '#1E3A8A', color: 'white', padding: '0.6rem 1.4rem',
                 fontSize: '0.9rem', borderRadius: '10px', textDecoration: 'none',
@@ -428,7 +430,7 @@ export default function Home() {
               <LoadingSpinner size="lg" text="Loading featured cars..." />
             ) : (
               <div className="home-parts-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.5rem' }}>
-                {featured.map((car) => <CarCard key={car._id} car={car} />)}
+                {featured.slice(0, 8).map((car) => <CarCard key={car._id} car={car} />)}
               </div>
             )}
           </div>
@@ -441,12 +443,12 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem' }}>
               <div>
-               <p style={{ color: '#1E3A8A', fontWeight: 800, fontSize: '0.85rem', letterSpacing: '0.25em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Elite Choice</p>
-              <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.5rem', fontWeight: 900, color: '#0F172A' }}>
-                Bestseller <span className="gradient-text">Collection</span>
-              </h2>
-              <p style={{ color: '#64748B', marginTop: '0.3rem', fontWeight: 600 }}>Our most celebrated vehicles</p>
-            </div>
+                <p style={{ color: '#1E3A8A', fontWeight: 800, fontSize: '0.85rem', letterSpacing: '0.25em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Elite Choice</p>
+                <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.5rem', fontWeight: 900, color: '#0F172A' }}>
+                  Bestseller <span className="gradient-text">Collection</span>
+                </h2>
+                <p style={{ color: '#64748B', marginTop: '0.3rem', fontWeight: 600 }}>Our most celebrated vehicles</p>
+              </div>
               <Link to="/bikes/bestseller" style={{
                 background: '#1E3A8A', color: 'white', padding: '0.6rem 1.4rem',
                 fontSize: '0.9rem', borderRadius: '10px', textDecoration: 'none',
@@ -462,7 +464,7 @@ export default function Home() {
               <LoadingSpinner size="lg" text="Loading bestsellers..." />
             ) : (
               <div className="home-parts-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.5rem' }}>
-                {bestsellerBikes.map((car) => (
+                {bestsellerBikes.slice(0, 8).map((car) => (
                   <CarCard key={car._id} car={car} />
                 ))}
               </div>
@@ -472,7 +474,7 @@ export default function Home() {
       )}
 
       {/* WHY CHOOSE US */}
-       <section style={{ background: '#FFFFFF', padding: '5rem 0' }}>
+      <section style={{ background: '#FFFFFF', padding: '5rem 0' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.8rem', fontWeight: 900, color: '#0F172A' }}>Why <span className="gradient-text">AutoXpress?</span></h2>
@@ -626,7 +628,7 @@ export default function Home() {
       }}>
         {/* Subtle accent glow */}
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(circle at 50% 50%, rgba(30,58,138,0.12) 0%, transparent 75%)', pointerEvents: 'none' }} />
-        
+
         <div className="max-w-4xl mx-auto px-4" style={{ position: 'relative', zIndex: 1 }}>
           <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '3rem', fontWeight: 900, color: 'white', marginBottom: '1.2rem' }}>
             Sell Your Car at the Best Value
