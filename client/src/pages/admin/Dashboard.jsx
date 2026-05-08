@@ -1512,8 +1512,13 @@ const RentalsTab = () => {
   const [form, setForm] = useState({
     title: '', brand: '', model: '', year: '', pricePerDay: '', pricePerHour: '',
     securityDeposit: '',
-    fuelType: 'petrol', transmission: 'manual', seats: 5,
-    mileage: '', description: '', city: '', state: '', pincode: '',
+    fuelType: 'petrol', transmission: 'manual', seats: 5, doors: 4,
+    color: '', bodyType: 'sedan',
+    registrationNumber: '', rcNumber: '', chassisNumber: '', engineNumber: '',
+    insuranceValidTill: '', pucValidTill: '',
+    airConditioning: true, gps: false, bluetooth: false, musicSystem: true,
+    powerWindows: true, powerSteering: true, airbags: 2,
+    mileage: '', description: '', city: '', state: '', pincode: '', address: '',
     minRentalDays: 1, maxRentalDays: 30, minRentalHours: 1, maxRentalHours: 24,
     isFeatured: false, status: 'available',
     features: '',
@@ -1531,8 +1536,13 @@ const RentalsTab = () => {
     setForm({
       title: '', brand: '', model: '', year: '', pricePerDay: '', pricePerHour: '',
       securityDeposit: '',
-      fuelType: 'petrol', transmission: 'manual', seats: 5,
-      mileage: '', description: '', city: '', state: '', pincode: '',
+      fuelType: 'petrol', transmission: 'manual', seats: 5, doors: 4,
+      color: '', bodyType: 'sedan',
+      registrationNumber: '', rcNumber: '', chassisNumber: '', engineNumber: '',
+      insuranceValidTill: '', pucValidTill: '',
+      airConditioning: true, gps: false, bluetooth: false, musicSystem: true,
+      powerWindows: true, powerSteering: true, airbags: 2,
+      mileage: '', description: '', city: '', state: '', pincode: '', address: '',
       minRentalDays: 1, maxRentalDays: 30, minRentalHours: 1, maxRentalHours: 24,
       isFeatured: false, status: 'available',
       features: '',
@@ -1541,14 +1551,32 @@ const RentalsTab = () => {
 
   const handleEdit = (car) => {
     setEditId(car._id);
+    const fmtDate = (d) => d ? new Date(d).toISOString().split('T')[0] : '';
     setForm({
       title: car.title || '', brand: car.brand || '', model: car.model || '', year: car.year || '',
       pricePerDay: car.pricePerDay || '', pricePerHour: car.pricePerHour || '',
       securityDeposit: car.securityDeposit || '',
       fuelType: car.fuelType || 'petrol',
       transmission: car.transmission || 'manual', seats: car.seats || 5,
+      doors: car.doors || 4,
+      color: car.color || '',
+      bodyType: car.bodyType || 'sedan',
+      registrationNumber: car.registrationNumber || '',
+      rcNumber: car.rcNumber || '',
+      chassisNumber: car.chassisNumber || '',
+      engineNumber: car.engineNumber || '',
+      insuranceValidTill: fmtDate(car.insuranceValidTill),
+      pucValidTill: fmtDate(car.pucValidTill),
+      airConditioning: car.airConditioning !== false,
+      gps: !!car.gps,
+      bluetooth: !!car.bluetooth,
+      musicSystem: car.musicSystem !== false,
+      powerWindows: car.powerWindows !== false,
+      powerSteering: car.powerSteering !== false,
+      airbags: car.airbags ?? 2,
       mileage: car.mileage || '', description: car.description || '',
       city: car.location?.city || '', state: car.location?.state || '', pincode: car.location?.pincode || '',
+      address: car.location?.address || '',
       minRentalDays: car.minRentalDays || 1, maxRentalDays: car.maxRentalDays || 30,
       minRentalHours: car.minRentalHours || 1, maxRentalHours: car.maxRentalHours || 24,
       isFeatured: car.isFeatured || false, status: car.status || 'available',
@@ -1576,6 +1604,9 @@ const RentalsTab = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!form.registrationNumber.trim()) {
+      return toast.error('Registration number is required');
+    }
     try {
       const fd = new FormData();
       fd.append('title', form.title || `${form.brand} ${form.model} ${form.year}`);
@@ -1583,12 +1614,28 @@ const RentalsTab = () => {
       fd.append('pricePerDay', form.pricePerDay); fd.append('pricePerHour', form.pricePerHour || 0);
       fd.append('securityDeposit', form.securityDeposit || 0);
       fd.append('fuelType', form.fuelType); fd.append('transmission', form.transmission);
-      fd.append('seats', form.seats); fd.append('mileage', form.mileage);
+      fd.append('seats', form.seats); fd.append('doors', form.doors || 4);
+      fd.append('color', form.color || '');
+      fd.append('bodyType', form.bodyType || 'sedan');
+      fd.append('registrationNumber', form.registrationNumber.trim().toUpperCase());
+      fd.append('rcNumber', form.rcNumber || '');
+      fd.append('chassisNumber', form.chassisNumber || '');
+      fd.append('engineNumber', form.engineNumber || '');
+      if (form.insuranceValidTill) fd.append('insuranceValidTill', form.insuranceValidTill);
+      if (form.pucValidTill) fd.append('pucValidTill', form.pucValidTill);
+      fd.append('airConditioning', form.airConditioning);
+      fd.append('gps', form.gps);
+      fd.append('bluetooth', form.bluetooth);
+      fd.append('musicSystem', form.musicSystem);
+      fd.append('powerWindows', form.powerWindows);
+      fd.append('powerSteering', form.powerSteering);
+      fd.append('airbags', form.airbags || 0);
+      fd.append('mileage', form.mileage);
       fd.append('description', form.description); fd.append('isFeatured', form.isFeatured);
       fd.append('status', form.status);
       fd.append('minRentalDays', form.minRentalDays); fd.append('maxRentalDays', form.maxRentalDays);
       fd.append('minRentalHours', form.minRentalHours); fd.append('maxRentalHours', form.maxRentalHours);
-      fd.append('location', JSON.stringify({ city: form.city, state: form.state, pincode: form.pincode }));
+      fd.append('location', JSON.stringify({ city: form.city, state: form.state, pincode: form.pincode, address: form.address }));
       fd.append('features', JSON.stringify(form.features.split(',').map(f => f.trim()).filter(Boolean)));
       for (const img of images) fd.append('images', img);
       for (const url of existingImages) fd.append('existingImages', url);
@@ -1661,6 +1708,41 @@ const RentalsTab = () => {
             </div>
           </div>
 
+          {/* VEHICLE IDENTITY */}
+          <div style={{ background: '#F9F9F9', padding: '1.5rem', borderRadius: '16px', marginBottom: '1.2rem', border: '1px solid #EEE' }}>
+            <h4 style={{ fontSize: '0.78rem', fontWeight: 900, marginBottom: '1rem', color: '#111', textTransform: 'uppercase', letterSpacing: '0.08em' }}>VEHICLE IDENTITY</h4>
+            <div className="admin-form-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.9rem' }}>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>REGISTRATION NUMBER *</label><input className="input-light" required placeholder="e.g. DL01AB1234" value={form.registrationNumber} onChange={e => setForm({ ...form, registrationNumber: e.target.value.toUpperCase() })} style={{ height: 46, textTransform: 'uppercase' }} /></div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>RC NUMBER</label><input className="input-light" placeholder="RC book number" value={form.rcNumber} onChange={e => setForm({ ...form, rcNumber: e.target.value })} style={{ height: 46 }} /></div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>CHASSIS NUMBER</label><input className="input-light" placeholder="VIN" value={form.chassisNumber} onChange={e => setForm({ ...form, chassisNumber: e.target.value })} style={{ height: 46 }} /></div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>ENGINE NUMBER</label><input className="input-light" value={form.engineNumber} onChange={e => setForm({ ...form, engineNumber: e.target.value })} style={{ height: 46 }} /></div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>COLOR</label><input className="input-light" placeholder="e.g. Pearl White" value={form.color} onChange={e => setForm({ ...form, color: e.target.value })} style={{ height: 46 }} /></div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>BODY TYPE</label>
+                <select className="input-light" value={form.bodyType} onChange={e => setForm({ ...form, bodyType: e.target.value })} style={{ height: 46 }}>
+                  {['hatchback','sedan','suv','muv','coupe','convertible','pickup','van','other'].map(b => <option key={b} value={b}>{b.toUpperCase()}</option>)}
+                </select>
+              </div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>DOORS</label><input type="number" min={2} max={6} className="input-light" value={form.doors} onChange={e => setForm({ ...form, doors: e.target.value })} style={{ height: 46 }} /></div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>AIRBAGS</label><input type="number" min={0} max={10} className="input-light" value={form.airbags} onChange={e => setForm({ ...form, airbags: e.target.value })} style={{ height: 46 }} /></div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>INSURANCE VALID TILL</label><input type="date" className="input-light" value={form.insuranceValidTill} onChange={e => setForm({ ...form, insuranceValidTill: e.target.value })} style={{ height: 46 }} /></div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>PUC VALID TILL</label><input type="date" className="input-light" value={form.pucValidTill} onChange={e => setForm({ ...form, pucValidTill: e.target.value })} style={{ height: 46 }} /></div>
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.8rem 1.5rem', marginTop: '1rem', padding: '0.8rem 1rem', background: '#FFF', border: '1px solid #E2E8F0', borderRadius: '10px' }}>
+              {[
+                ['airConditioning', 'Air Conditioning'],
+                ['gps', 'GPS / Navigation'],
+                ['bluetooth', 'Bluetooth'],
+                ['musicSystem', 'Music System'],
+                ['powerWindows', 'Power Windows'],
+                ['powerSteering', 'Power Steering'],
+              ].map(([k, lbl]) => (
+                <label key={k} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: '#0F172A', fontWeight: 700, cursor: 'pointer' }}>
+                  <input type="checkbox" checked={!!form[k]} onChange={e => setForm({ ...form, [k]: e.target.checked })} style={{ accentColor: '#1E3A8A', width: 16, height: 16 }} /> {lbl}
+                </label>
+              ))}
+            </div>
+          </div>
+
           <div style={{ background: '#F9F9F9', padding: '1.5rem', borderRadius: '16px', marginBottom: '1.2rem', border: '1px solid #EEE' }}>
             <h4 style={{ fontSize: '0.78rem', fontWeight: 900, marginBottom: '1rem', color: '#111', textTransform: 'uppercase', letterSpacing: '0.08em' }}>LOCATION & EXTRAS</h4>
             <div className="admin-form-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.9rem', marginBottom: '0.9rem' }}>
@@ -1668,7 +1750,8 @@ const RentalsTab = () => {
               <input className="input-light" placeholder="State" value={form.state} onChange={e => setForm({ ...form, state: e.target.value })} style={{ height: 46 }} />
               <input className="input-light" placeholder="Pincode" value={form.pincode} onChange={e => setForm({ ...form, pincode: e.target.value })} style={{ height: 46 }} />
             </div>
-            <input className="input-light" placeholder="Features (comma separated, e.g. AC, Bluetooth, GPS)" value={form.features} onChange={e => setForm({ ...form, features: e.target.value })} style={{ height: 46, marginBottom: '0.9rem' }} />
+            <input className="input-light" placeholder="Pickup address (optional)" value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} style={{ height: 46, marginBottom: '0.9rem' }} />
+            <input className="input-light" placeholder="Extra features (comma separated, e.g. Sunroof, Leather seats, Cruise control)" value={form.features} onChange={e => setForm({ ...form, features: e.target.value })} style={{ height: 46, marginBottom: '0.9rem' }} />
             <textarea className="input-light" placeholder="Description" rows={3} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} style={{ minHeight: 80, padding: '0.8rem', resize: 'vertical' }} />
           </div>
 
@@ -1739,9 +1822,18 @@ const RentalsTab = () => {
 };
 
 // ── RENTAL BOOKINGS TAB (Admin view + status update) ──
+const statusColorMap = {
+  requested: { bg: '#FEF3C7', fg: '#CA8A04' },
+  confirmed: { bg: '#DBEAFE', fg: '#1D4ED8' },
+  active: { bg: '#DCFCE7', fg: '#16A34A' },
+  completed: { bg: '#E0E7FF', fg: '#4338CA' },
+  cancelled: { bg: '#FEE2E2', fg: '#DC2626' },
+};
+
 const RentalBookingsTab = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState(null);
 
   useEffect(() => {
     rentalApi.getAllRentalBookings({ limit: 100 })
@@ -1753,7 +1845,8 @@ const RentalBookingsTab = () => {
   const handleStatus = async (id, status) => {
     try {
       const { data: res } = await rentalApi.updateRentalBookingStatus(id, { status });
-      setData(data.map(b => b._id === id ? { ...b, status: res.booking.status } : b));
+      setData(prev => prev.map(b => b._id === id ? (res.booking || { ...b, status }) : b));
+      if (selected && selected._id === id) setSelected(res.booking || { ...selected, status });
       toast.success('Status updated');
     } catch { toast.error('Failed to update'); }
   };
@@ -1761,50 +1854,201 @@ const RentalBookingsTab = () => {
   if (loading) return <div style={{ textAlign: 'center', padding: '3rem', color: '#888' }}><Loader style={{ animation: 'spin 1s linear infinite' }} size={24} /></div>;
 
   return (
-    <div className="admin-table-wrap" style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '1.5rem', overflowX: 'auto', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
+    <div style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '1.5rem', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
       <h3 style={{ color: '#111', fontWeight: 950, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.3rem', marginBottom: '1rem', textTransform: 'uppercase' }}>RENTAL <span style={{ color: '#1E3A8A' }}>BOOKINGS</span> ({data.length})</h3>
-      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem' }}>
-        <thead>
-          <tr>
-            <th style={{ padding: '0.75rem', textAlign: 'left', color: '#aaa', borderBottom: '1px solid #2A2A2A' }}>Customer</th>
-            <th style={{ padding: '0.75rem', textAlign: 'left', color: '#aaa', borderBottom: '1px solid #2A2A2A' }}>Car</th>
-            <th style={{ padding: '0.75rem', textAlign: 'left', color: '#aaa', borderBottom: '1px solid #2A2A2A' }}>Dates</th>
-            <th style={{ padding: '0.75rem', textAlign: 'left', color: '#aaa', borderBottom: '1px solid #2A2A2A' }}>Total</th>
-            <th style={{ padding: '0.75rem', textAlign: 'left', color: '#aaa', borderBottom: '1px solid #2A2A2A' }}>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.length > 0 ? data.map(b => (
-            <tr key={b._id} style={{ borderBottom: '1px solid #F5F5F5' }}>
-              <td style={{ padding: '1rem', fontWeight: 700, color: '#111' }}>
-                {b.user?.name}<br />
-                <span style={{ color: '#888', fontSize: '0.78rem', fontWeight: 600 }}>{b.contactPhone || b.user?.phone}</span>
-              </td>
-              <td style={{ padding: '1rem', fontWeight: 700, color: '#111' }}>
-                {b.carSnapshot?.brand || b.rentalCar?.brand} {b.carSnapshot?.model || b.rentalCar?.model}<br />
-                <span style={{ color: '#888', fontSize: '0.78rem', fontWeight: 600 }}>{b.carSnapshot?.year || b.rentalCar?.year}</span>
-              </td>
-              <td style={{ padding: '1rem', fontWeight: 700, color: '#111' }}>
-                {new Date(b.pickupDate).toLocaleDateString('en-IN')}<br />
-                <span style={{ color: '#888', fontSize: '0.78rem', fontWeight: 600 }}>→ {new Date(b.returnDate).toLocaleDateString('en-IN')} ({b.totalDays}d)</span>
-              </td>
-              <td style={{ padding: '1rem', fontWeight: 800, color: '#1E3A8A', fontFamily: 'Rajdhani, sans-serif', fontSize: '1.05rem' }}>₹{b.totalAmount?.toLocaleString('en-IN')}</td>
-              <td style={{ padding: '1rem' }}>
-                <select value={b.status} onChange={e => handleStatus(b._id, e.target.value)}
-                  className="input-light" style={{ padding: '0.4rem', fontSize: '0.82rem', height: 'auto', background: '#F9F9F9', fontWeight: 700, minWidth: 130 }}>
-                  <option value="requested">Requested</option>
-                  <option value="confirmed">Confirmed</option>
-                  <option value="active">Active</option>
-                  <option value="completed">Completed</option>
-                  <option value="cancelled">Cancelled</option>
-                </select>
-              </td>
-            </tr>
-          )) : (
-            <tr><td colSpan={5} style={{ textAlign: 'center', padding: '3rem', color: '#AAA', fontWeight: 600 }}>No rental bookings yet</td></tr>
+
+      {data.length === 0 ? (
+        <p style={{ textAlign: 'center', padding: '3rem', color: '#AAA', fontWeight: 600 }}>No rental bookings yet</p>
+      ) : (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))', gap: '1rem' }}>
+          {data.map(b => {
+            const sc = statusColorMap[b.status] || { bg: '#F1F5F9', fg: '#475569' };
+            const isHour = b.rentalUnit === 'hour';
+            const car = b.rentalCar || {};
+            const img = b.carSnapshot?.image || car.images?.[0];
+            return (
+              <div key={b._id} onClick={() => setSelected(b)}
+                style={{ background: '#FFF', border: '1px solid #EEE', borderRadius: '16px', padding: '1rem', cursor: 'pointer', transition: 'all 0.25s' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = '#1E3A8A'; e.currentTarget.style.boxShadow = '0 14px 35px rgba(30,58,138,0.1)'; e.currentTarget.style.transform = 'translateY(-3px)'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = '#EEE'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)'; }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
+                  <span style={{ background: '#0F172A', color: 'white', padding: '0.25rem 0.55rem', borderRadius: '6px', fontSize: '0.65rem', fontWeight: 900, fontFamily: 'monospace', letterSpacing: '0.05em' }}>#{b._id.slice(-8).toUpperCase()}</span>
+                  <span style={{ background: sc.bg, color: sc.fg, padding: '0.2rem 0.6rem', borderRadius: '999px', fontSize: '0.65rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{b.status}</span>
+                </div>
+                <div style={{ height: 110, background: '#F1F5F9', borderRadius: '10px', overflow: 'hidden', marginBottom: '0.6rem' }}>
+                  {img ? <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#CBD5E1' }}><Car size={32} /></div>}
+                </div>
+                <h4 style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 900, fontSize: '1rem', color: '#0F172A', margin: 0, lineHeight: 1.1 }}>
+                  {b.carSnapshot?.brand || car.brand} {b.carSnapshot?.model || car.model}
+                </h4>
+                <p style={{ color: '#64748B', fontSize: '0.72rem', fontWeight: 600, marginTop: '0.2rem' }}>
+                  {b.user?.name || 'Customer'} • {b.contactPhone || b.user?.phone || '-'}
+                </p>
+                <div style={{ marginTop: '0.6rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '0.7rem', color: '#475569', fontWeight: 700 }}>
+                    {new Date(b.pickupDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })} → {new Date(b.returnDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}
+                    <span style={{ color: '#94A3B8', marginLeft: '0.3rem' }}>({isHour ? `${b.totalHours}h` : `${b.totalDays}d`})</span>
+                  </span>
+                  <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 900, color: '#1E3A8A', fontSize: '1rem' }}>₹{b.totalAmount?.toLocaleString('en-IN')}</span>
+                </div>
+                <div style={{ marginTop: '0.5rem', fontSize: '0.65rem', fontWeight: 800, color: b.payment?.status === 'paid' ? '#16A34A' : '#CA8A04', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  {(b.payment?.method || 'cod').toUpperCase()} • {b.payment?.status === 'paid' ? '✓ PAID' : 'PAYMENT PENDING'}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {selected && (
+        <RentalBookingDetailModal booking={selected} onClose={() => setSelected(null)} onUpdateStatus={(s) => handleStatus(selected._id, s)} />
+      )}
+    </div>
+  );
+};
+
+const RentalBookingDetailModal = ({ booking, onClose, onUpdateStatus }) => {
+  const sc = statusColorMap[booking.status] || { bg: '#F1F5F9', fg: '#475569' };
+  const isHour = booking.rentalUnit === 'hour';
+  const car = booking.rentalCar || {};
+  const img = booking.carSnapshot?.image || car.images?.[0];
+  const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+  const fmtDateTime = (d, t) => `${fmtDate(d)} • ${t || '—'}`;
+
+  return (
+    <div onClick={onClose}
+      style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem', backdropFilter: 'blur(4px)' }}>
+      <div onClick={e => e.stopPropagation()}
+        style={{ background: 'white', borderRadius: '20px', maxWidth: 720, width: '100%', maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 30px 80px rgba(0,0,0,0.3)' }}>
+        {/* Header */}
+        <div style={{ padding: '1.5rem 1.8rem', borderBottom: '1px solid #EEE', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.6rem' }}>
+          <div>
+            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+              <span style={{ background: '#0F172A', color: 'white', padding: '0.3rem 0.7rem', borderRadius: '8px', fontSize: '0.78rem', fontWeight: 900, fontFamily: 'monospace' }}>#{booking._id.slice(-8).toUpperCase()}</span>
+              <span style={{ background: sc.bg, color: sc.fg, padding: '0.25rem 0.7rem', borderRadius: '999px', fontSize: '0.7rem', fontWeight: 900, textTransform: 'uppercase' }}>{booking.status}</span>
+            </div>
+            <p style={{ color: '#64748B', fontSize: '0.78rem', marginTop: '0.4rem', fontWeight: 600 }}>Booked on {new Date(booking.createdAt).toLocaleString('en-IN')}</p>
+          </div>
+          <button onClick={onClose} style={{ background: '#F1F5F9', border: 'none', borderRadius: '10px', padding: '0.5rem 0.7rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem', fontWeight: 800, color: '#475569' }}>
+            <X size={16} /> CLOSE
+          </button>
+        </div>
+
+        {/* Body */}
+        <div style={{ padding: '1.5rem 1.8rem' }}>
+          {/* Car summary */}
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1.2rem' }}>
+            {img ? <img src={img} alt="" style={{ width: 110, height: 80, objectFit: 'cover', borderRadius: '12px', border: '1px solid #EEE' }} /> : <div style={{ width: 110, height: 80, borderRadius: '12px', background: '#F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Car size={32} color="#CBD5E1" /></div>}
+            <div style={{ flex: 1 }}>
+              <h3 style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 900, fontSize: '1.4rem', color: '#0F172A', margin: 0, lineHeight: 1.1 }}>
+                {booking.carSnapshot?.brand || car.brand} {booking.carSnapshot?.model || car.model}
+              </h3>
+              <p style={{ color: '#64748B', fontSize: '0.85rem', marginTop: '0.2rem', fontWeight: 600 }}>
+                {booking.carSnapshot?.year || car.year}
+                {car.fuelType && ` • ${car.fuelType.toUpperCase()}`}
+                {car.transmission && ` • ${car.transmission.toUpperCase()}`}
+              </p>
+              {car.registrationNumber && (
+                <span style={{ display: 'inline-block', marginTop: '0.4rem', background: '#0F172A', color: 'white', padding: '3px 10px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.05em' }}>{car.registrationNumber}</span>
+              )}
+            </div>
+          </div>
+
+          {/* Customer */}
+          <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '1rem', marginBottom: '1rem' }}>
+            <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '0.4rem' }}>Customer</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '0.4rem 1rem', fontSize: '0.85rem', color: '#0F172A', fontWeight: 700 }}>
+              <div><strong style={{ color: '#475569', fontWeight: 600 }}>Name:</strong> {booking.user?.name || '-'}</div>
+              <div><strong style={{ color: '#475569', fontWeight: 600 }}>Phone:</strong> {booking.contactPhone || booking.user?.phone || '-'}</div>
+              <div><strong style={{ color: '#475569', fontWeight: 600 }}>Email:</strong> {booking.user?.email || '-'}</div>
+              {booking.driverLicense && <div><strong style={{ color: '#475569', fontWeight: 600 }}>License:</strong> {booking.driverLicense}</div>}
+            </div>
+          </div>
+
+          {/* Schedule */}
+          <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '1rem', marginBottom: '1rem' }}>
+            <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '0.4rem' }}>Schedule</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.4rem 1rem', fontSize: '0.85rem', color: '#0F172A', fontWeight: 700 }}>
+              <div><strong style={{ color: '#475569', fontWeight: 600 }}>Pickup:</strong> {fmtDateTime(booking.pickupDate, booking.pickupTime)}</div>
+              <div><strong style={{ color: '#475569', fontWeight: 600 }}>Return:</strong> {fmtDateTime(booking.returnDate, booking.returnTime)}</div>
+              <div><strong style={{ color: '#475569', fontWeight: 600 }}>Duration:</strong> {isHour ? `${booking.totalHours} hour(s)` : `${booking.totalDays} day(s)`}</div>
+              <div><strong style={{ color: '#475569', fontWeight: 600 }}>Mode:</strong> {(booking.rentalUnit || 'day').toUpperCase()}</div>
+            </div>
+            {booking.pickupAddress && (booking.pickupAddress.street || booking.pickupAddress.city) && (
+              <div style={{ marginTop: '0.6rem', fontSize: '0.82rem', color: '#475569', fontWeight: 600 }}>
+                <strong>Pickup Address:</strong> {[booking.pickupAddress.street, booking.pickupAddress.city, booking.pickupAddress.state, booking.pickupAddress.pincode].filter(Boolean).join(', ')}
+              </div>
+            )}
+          </div>
+
+          {/* Pricing */}
+          <div style={{ background: '#EFF6FF', border: '1px solid rgba(30,58,138,0.15)', borderRadius: '12px', padding: '1rem', marginBottom: '1rem' }}>
+            <div style={{ color: '#1E3A8A', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '0.4rem' }}>Pricing</div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: '#475569', fontWeight: 700, marginBottom: '0.3rem' }}>
+              <span>{isHour ? `₹${booking.pricePerHour?.toLocaleString('en-IN')} × ${booking.totalHours} hour(s)` : `₹${booking.pricePerDay?.toLocaleString('en-IN')} × ${booking.totalDays} day(s)`}</span>
+              <span>₹{booking.subtotal?.toLocaleString('en-IN')}</span>
+            </div>
+            {booking.securityDeposit > 0 && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: '#475569', fontWeight: 700, marginBottom: '0.3rem' }}>
+                <span>Security Deposit (refundable)</span><span>₹{booking.securityDeposit?.toLocaleString('en-IN')}</span>
+              </div>
+            )}
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(30,58,138,0.2)', paddingTop: '0.5rem', marginTop: '0.5rem' }}>
+              <span style={{ fontWeight: 900, color: '#0F172A' }}>TOTAL</span>
+              <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 950, fontSize: '1.3rem', color: '#1E3A8A' }}>₹{booking.totalAmount?.toLocaleString('en-IN')}</span>
+            </div>
+          </div>
+
+          {/* Payment */}
+          <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '1rem', marginBottom: '1rem' }}>
+            <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '0.4rem' }}>Payment</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '0.4rem 1rem', fontSize: '0.85rem', color: '#0F172A', fontWeight: 700 }}>
+              <div><strong style={{ color: '#475569', fontWeight: 600 }}>Method:</strong> {(booking.payment?.method || 'cod').toUpperCase()}</div>
+              <div><strong style={{ color: '#475569', fontWeight: 600 }}>Status:</strong> <span style={{ color: booking.payment?.status === 'paid' ? '#16A34A' : '#CA8A04' }}>{(booking.payment?.status || 'pending').toUpperCase()}</span></div>
+              {booking.payment?.razorpayOrderId && <div style={{ gridColumn: '1 / -1', wordBreak: 'break-all' }}><strong style={{ color: '#475569', fontWeight: 600 }}>Order ID:</strong> <span style={{ fontFamily: 'monospace', fontSize: '0.78rem' }}>{booking.payment.razorpayOrderId}</span></div>}
+              {booking.payment?.razorpayPaymentId && <div style={{ gridColumn: '1 / -1', wordBreak: 'break-all' }}><strong style={{ color: '#475569', fontWeight: 600 }}>Payment ID:</strong> <span style={{ fontFamily: 'monospace', fontSize: '0.78rem' }}>{booking.payment.razorpayPaymentId}</span></div>}
+              {booking.payment?.paidAt && <div><strong style={{ color: '#475569', fontWeight: 600 }}>Paid At:</strong> {new Date(booking.payment.paidAt).toLocaleString('en-IN')}</div>}
+            </div>
+          </div>
+
+          {booking.notes && (
+            <div style={{ background: '#FFFBEB', border: '1px solid #FDE68A', padding: '0.7rem 1rem', borderRadius: '12px', fontSize: '0.85rem', color: '#92400E', fontWeight: 600, marginBottom: '1rem' }}>
+              <strong>Customer Note:</strong> {booking.notes}
+            </div>
           )}
-        </tbody>
-      </table>
+
+          {/* Status timeline */}
+          {booking.statusHistory?.length > 0 && (
+            <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '1rem', marginBottom: '1rem' }}>
+              <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Status History</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                {booking.statusHistory.map((h, i) => (
+                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem', borderBottom: i < booking.statusHistory.length - 1 ? '1px dashed #E2E8F0' : 'none', paddingBottom: '0.3rem' }}>
+                    <div>
+                      <strong style={{ color: '#0F172A', textTransform: 'uppercase', fontWeight: 800, letterSpacing: '0.04em' }}>{h.status}</strong>
+                      {h.note && <span style={{ color: '#64748B', marginLeft: '0.5rem' }}>— {h.note}</span>}
+                    </div>
+                    <span style={{ color: '#94A3B8', fontWeight: 600, whiteSpace: 'nowrap' }}>{new Date(h.updatedAt).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Status update */}
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            <label style={{ fontSize: '0.78rem', color: '#475569', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Update Status:</label>
+            <select value={booking.status} onChange={e => onUpdateStatus(e.target.value)}
+              className="input-light" style={{ padding: '0.4rem 0.7rem', fontSize: '0.85rem', height: 'auto', background: '#F9F9F9', fontWeight: 700, minWidth: 140 }}>
+              <option value="requested">Requested</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="active">Active</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

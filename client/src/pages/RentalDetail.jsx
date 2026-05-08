@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { Calendar, Fuel, Users, Settings, MapPin, Shield, Clock, ArrowLeft, CheckCircle } from 'lucide-react';
+import { Calendar, Fuel, Users, Settings, MapPin, Shield, Clock, ArrowLeft, CheckCircle, Hash, Palette, Car as CarIcon, DoorOpen, Wind, Navigation, Bluetooth, Music, Gauge } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { PageLoader } from '../components/common/LoadingSpinner';
 import { getRentalCar, createRentalBooking, verifyRentalPayment } from '../api/rentalApi';
@@ -207,10 +207,24 @@ export default function RentalDetail() {
             </div>
 
             <div style={{ background: 'white', borderRadius: '20px', padding: '1.5rem', border: '1px solid #E2E8F0' }}>
-              <h1 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.1rem', fontWeight: 950, color: '#0F172A', lineHeight: 1, letterSpacing: '-0.01em' }}>
-                {car.brand} {car.model}
-              </h1>
-              <p style={{ color: '#64748B', fontSize: '0.9rem', fontWeight: 600, marginTop: '0.4rem' }}>{car.year} • {car.title}</p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.8rem' }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.3rem' }}>
+                    <h1 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.1rem', fontWeight: 950, color: '#0F172A', lineHeight: 1, letterSpacing: '-0.01em', margin: 0 }}>
+                      {car.brand} {car.model}
+                    </h1>
+                    {car.isFeatured && (
+                      <span style={{ background: '#F59E0B', color: 'white', padding: '3px 10px', borderRadius: '999px', fontSize: '0.65rem', fontWeight: 900, letterSpacing: '0.08em', textTransform: 'uppercase' }}>★ Featured</span>
+                    )}
+                  </div>
+                  <p style={{ color: '#64748B', fontSize: '0.9rem', fontWeight: 600 }}>{car.year} • {car.title}</p>
+                </div>
+                {car.registrationNumber && (
+                  <span style={{ background: '#0F172A', color: 'white', padding: '0.5rem 0.9rem', borderRadius: '10px', fontSize: '0.95rem', fontWeight: 900, letterSpacing: '0.1em', display: 'flex', alignItems: 'center', gap: '0.4rem', fontFamily: 'Rajdhani, sans-serif', boxShadow: '0 6px 18px rgba(15,23,42,0.18)' }}>
+                    <Hash size={14} /> {car.registrationNumber}
+                  </span>
+                )}
+              </div>
 
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.8rem', flexWrap: 'wrap', margin: '1.2rem 0' }}>
                 {allowedUnits.includes('day') && car.pricePerDay > 0 && (
@@ -235,13 +249,18 @@ export default function RentalDetail() {
                   { icon: Settings, label: 'Transmission', value: car.transmission?.toUpperCase() },
                   { icon: Fuel, label: 'Fuel', value: car.fuelType?.toUpperCase() },
                   { icon: Users, label: 'Seats', value: car.seats },
+                  car.doors && { icon: DoorOpen, label: 'Doors', value: car.doors },
+                  car.bodyType && { icon: CarIcon, label: 'Body', value: car.bodyType?.toUpperCase() },
+                  car.color && { icon: Palette, label: 'Color', value: car.color },
+                  car.mileage && { icon: Gauge, label: 'Mileage', value: car.mileage },
+                  car.airbags > 0 && { icon: Shield, label: 'Airbags', value: car.airbags },
                   {
                     icon: Shield,
                     label: 'Deposit',
                     value: `₹${(car.securityDeposit || 0).toLocaleString('en-IN')}`,
                     extra: car.securityDepositRefundable !== false ? 'REFUNDABLE' : 'NON-REFUNDABLE',
                   },
-                ].map(({ icon: Icon, label, value, extra }) => (
+                ].filter(Boolean).map(({ icon: Icon, label, value, extra }) => (
                   <div key={label} style={{ background: '#F8FAFC', padding: '1rem', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#64748B', fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       <Icon size={14} /> {label}
@@ -253,6 +272,97 @@ export default function RentalDetail() {
                   </div>
                 ))}
               </div>
+
+              {/* Vehicle Documents & Identity */}
+              {(car.registrationNumber || car.rcNumber || car.chassisNumber || car.engineNumber || car.insuranceValidTill || car.pucValidTill) && (
+                <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #F1F5F9' }}>
+                  <h3 style={{ fontWeight: 900, color: '#0F172A', marginBottom: '0.8rem', fontSize: '0.95rem' }}>Vehicle Documents & Identity</h3>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.6rem' }}>
+                    {car.registrationNumber && (
+                      <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.7rem 0.9rem', borderRadius: '10px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#64748B', fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                          <Hash size={12} /> Registration No.
+                        </div>
+                        <div style={{ marginTop: '0.3rem', fontWeight: 800, color: '#0F172A', fontSize: '0.9rem', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.05em' }}>{car.registrationNumber}</div>
+                      </div>
+                    )}
+                    {car.rcNumber && (
+                      <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.7rem 0.9rem', borderRadius: '10px' }}>
+                        <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>RC Number</div>
+                        <div style={{ marginTop: '0.3rem', fontWeight: 800, color: '#0F172A', fontSize: '0.85rem' }}>{car.rcNumber}</div>
+                      </div>
+                    )}
+                    {car.chassisNumber && (
+                      <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.7rem 0.9rem', borderRadius: '10px' }}>
+                        <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Chassis No.</div>
+                        <div style={{ marginTop: '0.3rem', fontWeight: 800, color: '#0F172A', fontSize: '0.85rem', wordBreak: 'break-all' }}>{car.chassisNumber}</div>
+                      </div>
+                    )}
+                    {car.engineNumber && (
+                      <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.7rem 0.9rem', borderRadius: '10px' }}>
+                        <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Engine No.</div>
+                        <div style={{ marginTop: '0.3rem', fontWeight: 800, color: '#0F172A', fontSize: '0.85rem', wordBreak: 'break-all' }}>{car.engineNumber}</div>
+                      </div>
+                    )}
+                    {car.insuranceValidTill && (
+                      <div style={{ background: '#EFF6FF', border: '1px solid rgba(30,58,138,0.15)', padding: '0.7rem 0.9rem', borderRadius: '10px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#1E3A8A', fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                          <Shield size={12} /> Insurance Valid Till
+                        </div>
+                        <div style={{ marginTop: '0.3rem', fontWeight: 800, color: '#0F172A', fontSize: '0.85rem' }}>{new Date(car.insuranceValidTill).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
+                      </div>
+                    )}
+                    {car.pucValidTill && (
+                      <div style={{ background: '#ECFDF5', border: '1px solid rgba(22,163,74,0.2)', padding: '0.7rem 0.9rem', borderRadius: '10px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#16A34A', fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                          <CheckCircle size={12} /> PUC Valid Till
+                        </div>
+                        <div style={{ marginTop: '0.3rem', fontWeight: 800, color: '#0F172A', fontSize: '0.85rem' }}>{new Date(car.pucValidTill).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Rental Policy */}
+              {(car.minRentalDays || car.maxRentalDays || car.minRentalHours || car.maxRentalHours) && (
+                <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #F1F5F9' }}>
+                  <h3 style={{ fontWeight: 900, color: '#0F172A', marginBottom: '0.8rem', fontSize: '0.95rem' }}>Rental Policy</h3>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                    {allowedUnits.includes('day') && (
+                      <span style={{ background: '#EFF6FF', color: '#1E3A8A', padding: '0.5rem 0.9rem', borderRadius: '8px', fontSize: '0.78rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                        <Calendar size={12} /> {car.minRentalDays || 1}–{car.maxRentalDays || 30} day(s)
+                      </span>
+                    )}
+                    {allowedUnits.includes('hour') && (
+                      <span style={{ background: '#EFF6FF', color: '#1E3A8A', padding: '0.5rem 0.9rem', borderRadius: '8px', fontSize: '0.78rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                        <Clock size={12} /> {car.minRentalHours || 1}–{car.maxRentalHours || 24} hour(s)
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Comfort & convenience */}
+              {(car.airConditioning || car.gps || car.bluetooth || car.musicSystem || car.powerWindows || car.powerSteering) && (
+                <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #F1F5F9' }}>
+                  <h3 style={{ fontWeight: 900, color: '#0F172A', marginBottom: '0.8rem', fontSize: '0.95rem' }}>Comfort & Convenience</h3>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                    {[
+                      [car.airConditioning, Wind, 'Air Conditioning'],
+                      [car.gps, Navigation, 'GPS / Navigation'],
+                      [car.bluetooth, Bluetooth, 'Bluetooth'],
+                      [car.musicSystem, Music, 'Music System'],
+                      [car.powerWindows, CheckCircle, 'Power Windows'],
+                      [car.powerSteering, CheckCircle, 'Power Steering'],
+                    ].filter(([on]) => on).map(([, Icon, lbl], i) => (
+                      <span key={i} style={{ background: '#EFF6FF', color: '#1E3A8A', padding: '0.4rem 0.8rem', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                        <Icon size={12} /> {lbl}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {car.description && (
                 <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #F1F5F9' }}>
@@ -275,9 +385,9 @@ export default function RentalDetail() {
               )}
 
               {car.location?.city && (
-                <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #F1F5F9', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#475569', fontWeight: 700 }}>
-                  <MapPin size={16} style={{ color: '#1E3A8A' }} />
-                  Pickup: {[car.location.city, car.location.state, car.location.pincode].filter(Boolean).join(', ')}
+                <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #F1F5F9', display: 'flex', alignItems: 'flex-start', gap: '0.5rem', color: '#475569', fontWeight: 700 }}>
+                  <MapPin size={16} style={{ color: '#1E3A8A', flexShrink: 0, marginTop: '2px' }} />
+                  <span>Pickup: {[car.location.address, car.location.city, car.location.state, car.location.pincode].filter(Boolean).join(', ')}</span>
                 </div>
               )}
             </div>

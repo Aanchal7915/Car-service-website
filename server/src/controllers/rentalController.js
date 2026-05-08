@@ -111,6 +111,13 @@ const normalizeRentalCarBody = (body) => {
     body.isFeatured = body.isFeatured === true || body.isFeatured === 'true';
   }
 
+  // Coerce other boolean rental-feature fields sent as form-data strings
+  ['airConditioning', 'gps', 'bluetooth', 'musicSystem', 'powerWindows', 'powerSteering'].forEach(k => {
+    if (body[k] !== undefined) {
+      body[k] = body[k] === true || body[k] === 'true';
+    }
+  });
+
   return body;
 };
 
@@ -313,7 +320,7 @@ const verifyRentalPayment = asyncHandler(async (req, res) => {
 // @route GET /api/rentals/bookings/my
 const getMyRentalBookings = asyncHandler(async (req, res) => {
   const bookings = await RentalBooking.find({ user: req.user._id })
-    .populate('rentalCar', 'title brand model year images pricePerDay')
+    .populate('rentalCar', 'title brand model year images pricePerDay pricePerHour registrationNumber color bodyType fuelType transmission seats location')
     .sort({ createdAt: -1 });
   res.json({ success: true, bookings });
 });
@@ -326,7 +333,7 @@ const getAllRentalBookings = asyncHandler(async (req, res) => {
   const total = await RentalBooking.countDocuments(query);
   const bookings = await RentalBooking.find(query)
     .populate('user', 'name phone email')
-    .populate('rentalCar', 'title brand model year images pricePerDay')
+    .populate('rentalCar', 'title brand model year images pricePerDay pricePerHour registrationNumber color bodyType fuelType transmission seats location')
     .sort({ createdAt: -1 })
     .skip((page - 1) * limit)
     .limit(Number(limit));

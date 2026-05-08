@@ -314,15 +314,36 @@ export default function MyBookings() {
                 <p style={{ color: '#888', fontSize: '1.1rem', fontWeight: 500, marginBottom: '2rem' }}>No rental bookings yet</p>
                 <button onClick={() => navigate('/rentals')} className="btn-primary" style={{ background: '#1E3A8A', padding: '0.8rem 2.5rem', fontWeight: 900, borderRadius: '14px' }}>Rent a Car</button>
               </div>
-            ) : rentals.map((booking) => (
+            ) : rentals.map((booking) => {
+              const isHour = booking.rentalUnit === 'hour';
+              const duration = isHour ? `${booking.totalHours} hour(s)` : `${booking.totalDays} day(s)`;
+              const unitPrice = isHour ? booking.pricePerHour : booking.pricePerDay;
+              const car = booking.rentalCar || {};
+              return (
               <div key={booking._id} style={{ background: '#FFF', border: '1px solid #EEE', borderRadius: '20px', padding: '1.8rem', marginBottom: '1.5rem', boxShadow: '0 4px 20px rgba(0,0,0,0.02)', transition: 'all 0.3s' }}
                 onMouseEnter={e => e.currentTarget.style.borderColor = '#1E3A8A'}
                 onMouseLeave={e => e.currentTarget.style.borderColor = '#EEE'}>
+                {/* Booking ID strip */}
+                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '0.6rem', paddingBottom: '0.8rem', borderBottom: '1px dashed #E2E8F0', marginBottom: '1rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
+                    <span style={{ background: '#0F172A', color: 'white', padding: '0.3rem 0.7rem', borderRadius: '8px', fontSize: '0.72rem', fontWeight: 900, fontFamily: 'monospace', letterSpacing: '0.05em' }}>
+                      #{booking._id.slice(-8).toUpperCase()}
+                    </span>
+                    {statusBadge(booking.status)}
+                    <span style={{ background: booking.payment?.status === 'paid' ? '#DCFCE7' : booking.payment?.status === 'refunded' ? '#FEF3C7' : '#FEE2E2', color: booking.payment?.status === 'paid' ? '#16A34A' : booking.payment?.status === 'refunded' ? '#CA8A04' : '#DC2626', padding: '0.25rem 0.7rem', borderRadius: '999px', fontSize: '0.68rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      {(booking.payment?.method || 'cod').toUpperCase()} • {(booking.payment?.status || 'pending').toUpperCase()}
+                    </span>
+                  </div>
+                  <span style={{ color: '#94A3B8', fontSize: '0.72rem', fontWeight: 600 }}>
+                    Booked on {new Date(booking.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  </span>
+                </div>
+
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
                   <div style={{ flex: 1, minWidth: '250px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.8rem' }}>
-                      {booking.carSnapshot?.image || booking.rentalCar?.images?.[0] ? (
-                        <img src={booking.carSnapshot?.image || booking.rentalCar?.images?.[0]} alt="" style={{ width: 80, height: 60, borderRadius: '12px', objectFit: 'cover', border: '1px solid #EEE' }} />
+                      {booking.carSnapshot?.image || car.images?.[0] ? (
+                        <img src={booking.carSnapshot?.image || car.images?.[0]} alt="" style={{ width: 80, height: 60, borderRadius: '12px', objectFit: 'cover', border: '1px solid #EEE' }} />
                       ) : (
                         <div style={{ background: '#EFF6FF', width: 80, height: 60, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid rgba(30, 58, 138, 0.15)' }}>
                           <Car size={24} style={{ color: '#1E3A8A' }} />
@@ -330,20 +351,22 @@ export default function MyBookings() {
                       )}
                       <div>
                         <h3 style={{ color: '#111', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.3rem', lineHeight: 1 }}>
-                          {booking.carSnapshot?.brand || booking.rentalCar?.brand} {booking.carSnapshot?.model || booking.rentalCar?.model}
+                          {booking.carSnapshot?.brand || car.brand} {booking.carSnapshot?.model || car.model}
                         </h3>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.4rem' }}>
-                          <span style={{ color: '#666', fontSize: '0.85rem', fontWeight: 600 }}>{booking.carSnapshot?.year || booking.rentalCar?.year} • {booking.totalDays} day(s)</span>
-                          {statusBadge(booking.status)}
+                          <span style={{ color: '#666', fontSize: '0.85rem', fontWeight: 600 }}>{booking.carSnapshot?.year || car.year} • {duration}</span>
+                          {car.registrationNumber && (
+                            <span style={{ background: '#0F172A', color: 'white', padding: '2px 8px', borderRadius: '6px', fontSize: '0.7rem', fontWeight: 800, fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.05em' }}>{car.registrationNumber}</span>
+                          )}
                         </div>
                       </div>
                     </div>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', marginTop: '0.8rem' }}>
-                      <div style={{ background: '#F5F5F5', padding: '0.3rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', color: '#555', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                        <Calendar size={13} /> Pickup: {new Date(booking.pickupDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} {booking.pickupTime}
+                      <div style={{ background: '#F5F5F5', padding: '0.3rem 0.8rem', borderRadius: '8px', fontSize: '0.82rem', color: '#555', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                        <Calendar size={13} /> Pickup: {new Date(booking.pickupDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} • {booking.pickupTime}
                       </div>
-                      <div style={{ background: '#F5F5F5', padding: '0.3rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', color: '#555', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                        <Calendar size={13} /> Return: {new Date(booking.returnDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} {booking.returnTime}
+                      <div style={{ background: '#F5F5F5', padding: '0.3rem 0.8rem', borderRadius: '8px', fontSize: '0.82rem', color: '#555', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                        <Calendar size={13} /> Return: {new Date(booking.returnDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} • {booking.returnTime}
                       </div>
                     </div>
                   </div>
@@ -359,6 +382,42 @@ export default function MyBookings() {
                     )}
                   </div>
                 </div>
+
+                {/* Price + identity breakdown */}
+                <div style={{ marginTop: '1.2rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.6rem' }}>
+                  <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.6rem 0.8rem', borderRadius: '10px' }}>
+                    <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Rate</div>
+                    <div style={{ color: '#0F172A', fontWeight: 800, fontSize: '0.9rem', marginTop: '2px' }}>₹{unitPrice?.toLocaleString('en-IN')} / {isHour ? 'hour' : 'day'} × {isHour ? booking.totalHours : booking.totalDays}</div>
+                  </div>
+                  {booking.securityDeposit > 0 && (
+                    <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.6rem 0.8rem', borderRadius: '10px' }}>
+                      <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Security Deposit</div>
+                      <div style={{ color: '#0F172A', fontWeight: 800, fontSize: '0.9rem', marginTop: '2px' }}>₹{booking.securityDeposit.toLocaleString('en-IN')} <span style={{ fontSize: '0.6rem', color: '#16A34A', fontWeight: 800 }}>REFUNDABLE</span></div>
+                    </div>
+                  )}
+                  <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.6rem 0.8rem', borderRadius: '10px' }}>
+                    <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Contact</div>
+                    <div style={{ color: '#0F172A', fontWeight: 800, fontSize: '0.85rem', marginTop: '2px' }}>📞 {booking.contactPhone || '-'}</div>
+                  </div>
+                  {booking.driverLicense && (
+                    <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.6rem 0.8rem', borderRadius: '10px' }}>
+                      <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Driver License</div>
+                      <div style={{ color: '#0F172A', fontWeight: 800, fontSize: '0.85rem', marginTop: '2px' }}>{booking.driverLicense}</div>
+                    </div>
+                  )}
+                  {booking.payment?.razorpayPaymentId && (
+                    <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.6rem 0.8rem', borderRadius: '10px' }}>
+                      <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Payment ID</div>
+                      <div style={{ color: '#0F172A', fontWeight: 700, fontSize: '0.78rem', marginTop: '2px', fontFamily: 'monospace', wordBreak: 'break-all' }}>{booking.payment.razorpayPaymentId}</div>
+                    </div>
+                  )}
+                </div>
+
+                {booking.notes && (
+                  <div style={{ marginTop: '1rem', background: '#FFFBEB', border: '1px solid #FDE68A', padding: '0.6rem 0.9rem', borderRadius: '10px', fontSize: '0.85rem', color: '#92400E', fontWeight: 600 }}>
+                    <strong>Note:</strong> {booking.notes}
+                  </div>
+                )}
 
                 {/* Status Timeline */}
                 <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #F5F5F5' }}>
@@ -384,7 +443,8 @@ export default function MyBookings() {
                   </div>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
