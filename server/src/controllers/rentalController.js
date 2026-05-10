@@ -447,7 +447,7 @@ const collectRentalBalance = asyncHandler(async (req, res) => {
 // @route GET /api/rentals/bookings/my
 const getMyRentalBookings = asyncHandler(async (req, res) => {
   const bookings = await RentalBooking.find({ user: req.user._id })
-    .populate('rentalCar', 'title brand model year images pricePerDay pricePerHour registrationNumber carNumber color bodyType fuelType transmission seats doors mileage airbags location dropLocation airConditioning gps bluetooth musicSystem powerWindows powerSteering securityDeposit securityDepositCompulsory')
+     .populate('rentalCar', 'title brand model year images pricePerDay pricePerHour registrationNumber rcNumber chassisNumber insuranceValidTill pucValidTill color bodyType fuelType transmission seats location airConditioning gps bluetooth musicSystem powerWindows powerSteering airbags mileage')
     .sort({ createdAt: -1 });
   res.json({ success: true, bookings });
 });
@@ -460,7 +460,7 @@ const getAllRentalBookings = asyncHandler(async (req, res) => {
   const total = await RentalBooking.countDocuments(query);
   const bookings = await RentalBooking.find(query)
     .populate('user', 'name phone email')
-    .populate('rentalCar', 'title brand model year images pricePerDay pricePerHour registrationNumber carNumber color bodyType fuelType transmission seats doors mileage airbags location dropLocation airConditioning gps bluetooth musicSystem powerWindows powerSteering securityDeposit securityDepositCompulsory')
+     .populate('rentalCar', 'title brand model year images pricePerDay pricePerHour registrationNumber rcNumber chassisNumber insuranceValidTill pucValidTill color bodyType fuelType transmission seats location airConditioning gps bluetooth musicSystem powerWindows powerSteering airbags mileage')
     .sort({ createdAt: -1 })
     .skip((page - 1) * limit)
     .limit(Number(limit));
