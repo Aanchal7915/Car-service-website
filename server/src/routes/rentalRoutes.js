@@ -4,11 +4,12 @@ const {
   getRentalCars, getRentalCar, createRentalCar, updateRentalCar, deleteRentalCar,
   createRentalBooking, getMyRentalBookings, getAllRentalBookings,
   updateRentalBookingStatus, cancelMyRentalBooking, verifyRentalPayment,
+  collectRentalBalance, createRentalBalanceOrder, verifyRentalBalancePayment,
   getBookingLocation, getActiveLocations
 } = require('../controllers/rentalController');
 const { protect } = require('../middleware/auth');
 const { adminOnly } = require('../middleware/admin');
-const { uploadBikeMedia } = require('../middleware/upload');
+const { uploadBikeMedia, uploadRentalKyc } = require('../middleware/upload');
 
 // Cars
 router.get('/cars', getRentalCars);
@@ -18,12 +19,15 @@ router.put('/cars/:id', protect, adminOnly, uploadBikeMedia.array('images', 10),
 router.delete('/cars/:id', protect, adminOnly, deleteRentalCar);
 
 // Bookings
-router.post('/bookings', protect, createRentalBooking);
+router.post('/bookings', protect, uploadRentalKyc, createRentalBooking);
 router.post('/bookings/verify', protect, verifyRentalPayment);
+router.post('/bookings/pay-balance/:id', protect, createRentalBalanceOrder);
+router.post('/bookings/verify-balance/:id', protect, verifyRentalBalancePayment);
 router.get('/bookings/my', protect, getMyRentalBookings);
 router.get('/bookings', protect, adminOnly, getAllRentalBookings);
 router.put('/bookings/:id/status', protect, adminOnly, updateRentalBookingStatus);
 router.put('/bookings/:id/cancel', protect, cancelMyRentalBooking);
+router.put('/bookings/:id/collect-balance', protect, adminOnly, collectRentalBalance);
 
 // Location tracking (static routes MUST come before :id routes)
 router.get('/bookings/active-locations', protect, adminOnly, getActiveLocations);

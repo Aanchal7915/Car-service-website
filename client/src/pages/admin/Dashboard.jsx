@@ -1511,14 +1511,15 @@ const RentalsTab = () => {
   const [imagePreviews, setImagePreviews] = useState([]);
   const [form, setForm] = useState({
     title: '', brand: '', model: '', year: '', pricePerDay: '', pricePerHour: '',
-    securityDeposit: '',
+    securityDeposit: '', securityDepositCompulsory: true,
     fuelType: 'petrol', transmission: 'manual', seats: 5, doors: 4,
     color: '', bodyType: 'sedan',
-    registrationNumber: '', rcNumber: '', chassisNumber: '', engineNumber: '',
+    registrationNumber: '', carNumber: '', rcNumber: '', chassisNumber: '', engineNumber: '',
     insuranceValidTill: '', pucValidTill: '',
     airConditioning: true, gps: false, bluetooth: false, musicSystem: true,
     powerWindows: true, powerSteering: true, airbags: 2,
     mileage: '', description: '', city: '', state: '', pincode: '', address: '',
+    dropCity: '', dropState: '', dropPincode: '', dropAddress: '',
     minRentalDays: 1, maxRentalDays: 30, minRentalHours: 1, maxRentalHours: 24,
     isFeatured: false, status: 'available',
     features: '',
@@ -1535,14 +1536,15 @@ const RentalsTab = () => {
     setShowForm(false); setEditId(null); setImages([]); setExistingImages([]); setImagePreviews([]);
     setForm({
       title: '', brand: '', model: '', year: '', pricePerDay: '', pricePerHour: '',
-      securityDeposit: '',
+      securityDeposit: '', securityDepositCompulsory: true,
       fuelType: 'petrol', transmission: 'manual', seats: 5, doors: 4,
       color: '', bodyType: 'sedan',
-      registrationNumber: '', rcNumber: '', chassisNumber: '', engineNumber: '',
+      registrationNumber: '', carNumber: '', rcNumber: '', chassisNumber: '', engineNumber: '',
       insuranceValidTill: '', pucValidTill: '',
       airConditioning: true, gps: false, bluetooth: false, musicSystem: true,
       powerWindows: true, powerSteering: true, airbags: 2,
       mileage: '', description: '', city: '', state: '', pincode: '', address: '',
+    dropCity: '', dropState: '', dropPincode: '', dropAddress: '',
       minRentalDays: 1, maxRentalDays: 30, minRentalHours: 1, maxRentalHours: 24,
       isFeatured: false, status: 'available',
       features: '',
@@ -1556,12 +1558,14 @@ const RentalsTab = () => {
       title: car.title || '', brand: car.brand || '', model: car.model || '', year: car.year || '',
       pricePerDay: car.pricePerDay || '', pricePerHour: car.pricePerHour || '',
       securityDeposit: car.securityDeposit || '',
+      securityDepositCompulsory: car.securityDepositCompulsory !== false,
       fuelType: car.fuelType || 'petrol',
       transmission: car.transmission || 'manual', seats: car.seats || 5,
       doors: car.doors || 4,
       color: car.color || '',
       bodyType: car.bodyType || 'sedan',
       registrationNumber: car.registrationNumber || '',
+      carNumber: car.carNumber || '',
       rcNumber: car.rcNumber || '',
       chassisNumber: car.chassisNumber || '',
       engineNumber: car.engineNumber || '',
@@ -1577,6 +1581,8 @@ const RentalsTab = () => {
       mileage: car.mileage || '', description: car.description || '',
       city: car.location?.city || '', state: car.location?.state || '', pincode: car.location?.pincode || '',
       address: car.location?.address || '',
+      dropCity: car.dropLocation?.city || '', dropState: car.dropLocation?.state || '', dropPincode: car.dropLocation?.pincode || '',
+      dropAddress: car.dropLocation?.address || '',
       minRentalDays: car.minRentalDays || 1, maxRentalDays: car.maxRentalDays || 30,
       minRentalHours: car.minRentalHours || 1, maxRentalHours: car.maxRentalHours || 24,
       isFeatured: car.isFeatured || false, status: car.status || 'available',
@@ -1613,11 +1619,14 @@ const RentalsTab = () => {
       fd.append('brand', form.brand); fd.append('model', form.model); fd.append('year', form.year);
       fd.append('pricePerDay', form.pricePerDay); fd.append('pricePerHour', form.pricePerHour || 0);
       fd.append('securityDeposit', form.securityDeposit || 0);
+      // Explicit string so FormData sends a deterministic value the backend can coerce
+      fd.append('securityDepositCompulsory', form.securityDepositCompulsory ? 'true' : 'false');
       fd.append('fuelType', form.fuelType); fd.append('transmission', form.transmission);
       fd.append('seats', form.seats); fd.append('doors', form.doors || 4);
       fd.append('color', form.color || '');
       fd.append('bodyType', form.bodyType || 'sedan');
       fd.append('registrationNumber', form.registrationNumber.trim().toUpperCase());
+      fd.append('carNumber', form.carNumber || '');
       fd.append('rcNumber', form.rcNumber || '');
       fd.append('chassisNumber', form.chassisNumber || '');
       fd.append('engineNumber', form.engineNumber || '');
@@ -1636,6 +1645,7 @@ const RentalsTab = () => {
       fd.append('minRentalDays', form.minRentalDays); fd.append('maxRentalDays', form.maxRentalDays);
       fd.append('minRentalHours', form.minRentalHours); fd.append('maxRentalHours', form.maxRentalHours);
       fd.append('location', JSON.stringify({ city: form.city, state: form.state, pincode: form.pincode, address: form.address }));
+      fd.append('dropLocation', JSON.stringify({ city: form.dropCity, state: form.dropState, pincode: form.dropPincode, address: form.dropAddress }));
       fd.append('features', JSON.stringify(form.features.split(',').map(f => f.trim()).filter(Boolean)));
       for (const img of images) fd.append('images', img);
       for (const url of existingImages) fd.append('existingImages', url);
@@ -1680,7 +1690,47 @@ const RentalsTab = () => {
               <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>YEAR *</label><input type="number" className="input-light" required min={2000} max={new Date().getFullYear() + 1} value={form.year} onChange={e => setForm({ ...form, year: e.target.value })} style={{ height: 46 }} /></div>
               <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>PRICE / DAY (₹) *</label><input type="number" className="input-light" required value={form.pricePerDay} onChange={e => setForm({ ...form, pricePerDay: e.target.value })} style={{ height: 46 }} /></div>
               <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>PRICE / HOUR (₹)</label><input type="number" className="input-light" value={form.pricePerHour} onChange={e => setForm({ ...form, pricePerHour: e.target.value })} style={{ height: 46 }} /></div>
-              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>SECURITY DEPOSIT (REFUNDABLE) (₹)</label><input type="number" className="input-light" value={form.securityDeposit} onChange={e => setForm({ ...form, securityDeposit: e.target.value })} style={{ height: 46 }} /></div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>SECURITY DEPOSIT (₹)</label><input type="number" className="input-light" value={form.securityDeposit} onChange={e => setForm({ ...form, securityDeposit: e.target.value })} style={{ height: 46 }} /></div>
+              <div>
+                <label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.6rem', display: 'block' }}>COMPULSORY DEPOSIT?</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', height: 46 }}>
+                  <div 
+                    onClick={() => setForm({ ...form, securityDepositCompulsory: !form.securityDepositCompulsory })}
+                    style={{
+                      width: '50px',
+                      height: '26px',
+                      background: form.securityDepositCompulsory ? '#1E3A8A' : '#E2E8F0',
+                      borderRadius: '30px',
+                      padding: '3px',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      position: 'relative',
+                      display: 'flex',
+                      alignItems: 'center',
+                      flexShrink: 0
+                    }}
+                  >
+                    <div style={{
+                      width: '20px',
+                      height: '20px',
+                      background: 'white',
+                      borderRadius: '50%',
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                      transition: 'all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+                      transform: form.securityDepositCompulsory ? 'translateX(24px)' : 'translateX(0px)'
+                    }} />
+                  </div>
+                  <span style={{ 
+                    fontSize: '0.75rem',
+                    fontWeight: 900,
+                    color: form.securityDepositCompulsory ? '#1E3A8A' : '#64748B',
+                    whiteSpace: 'nowrap',
+                    letterSpacing: '0.02em'
+                  }}>
+                    {form.securityDepositCompulsory ? 'COMPULSORY' : 'OPTIONAL'}
+                  </span>
+                </div>
+              </div>
               <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>SEATS</label><input type="number" className="input-light" min={2} max={12} value={form.seats} onChange={e => setForm({ ...form, seats: e.target.value })} style={{ height: 46 }} /></div>
               <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>FUEL TYPE</label>
                 <select className="input-light" value={form.fuelType} onChange={e => setForm({ ...form, fuelType: e.target.value })} style={{ height: 46 }}>
@@ -1713,6 +1763,7 @@ const RentalsTab = () => {
             <h4 style={{ fontSize: '0.78rem', fontWeight: 900, marginBottom: '1rem', color: '#111', textTransform: 'uppercase', letterSpacing: '0.08em' }}>VEHICLE IDENTITY</h4>
             <div className="admin-form-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.9rem' }}>
               <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>REGISTRATION NUMBER *</label><input className="input-light" required placeholder="e.g. DL01AB1234" value={form.registrationNumber} onChange={e => setForm({ ...form, registrationNumber: e.target.value.toUpperCase() })} style={{ height: 46, textTransform: 'uppercase' }} /></div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>CAR NUMBER</label><input className="input-light" placeholder="e.g. DL-07-BC-7324" value={form.carNumber} onChange={e => setForm({ ...form, carNumber: e.target.value })} style={{ height: 46 }} /></div>
               <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>RC NUMBER</label><input className="input-light" placeholder="RC book number" value={form.rcNumber} onChange={e => setForm({ ...form, rcNumber: e.target.value })} style={{ height: 46 }} /></div>
               <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>CHASSIS NUMBER</label><input className="input-light" placeholder="VIN" value={form.chassisNumber} onChange={e => setForm({ ...form, chassisNumber: e.target.value })} style={{ height: 46 }} /></div>
               <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>ENGINE NUMBER</label><input className="input-light" value={form.engineNumber} onChange={e => setForm({ ...form, engineNumber: e.target.value })} style={{ height: 46 }} /></div>
@@ -1744,13 +1795,23 @@ const RentalsTab = () => {
           </div>
 
           <div style={{ background: '#F9F9F9', padding: '1.5rem', borderRadius: '16px', marginBottom: '1.2rem', border: '1px solid #EEE' }}>
-            <h4 style={{ fontSize: '0.78rem', fontWeight: 900, marginBottom: '1rem', color: '#111', textTransform: 'uppercase', letterSpacing: '0.08em' }}>LOCATION & EXTRAS</h4>
+            <h4 style={{ fontSize: '0.78rem', fontWeight: 900, marginBottom: '1rem', color: '#111', textTransform: 'uppercase', letterSpacing: '0.08em' }}>PICKUP LOCATION</h4>
             <div className="admin-form-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.9rem', marginBottom: '0.9rem' }}>
               <input className="input-light" placeholder="City" value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} style={{ height: 46 }} />
               <input className="input-light" placeholder="State" value={form.state} onChange={e => setForm({ ...form, state: e.target.value })} style={{ height: 46 }} />
               <input className="input-light" placeholder="Pincode" value={form.pincode} onChange={e => setForm({ ...form, pincode: e.target.value })} style={{ height: 46 }} />
             </div>
             <input className="input-light" placeholder="Pickup address (optional)" value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} style={{ height: 46, marginBottom: '0.9rem' }} />
+
+            <h4 style={{ fontSize: '0.78rem', fontWeight: 900, marginBottom: '1rem', marginTop: '0.4rem', color: '#111', textTransform: 'uppercase', letterSpacing: '0.08em' }}>DROP LOCATION</h4>
+            <div className="admin-form-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.9rem', marginBottom: '0.9rem' }}>
+              <input className="input-light" placeholder="Drop City" value={form.dropCity} onChange={e => setForm({ ...form, dropCity: e.target.value })} style={{ height: 46 }} />
+              <input className="input-light" placeholder="Drop State" value={form.dropState} onChange={e => setForm({ ...form, dropState: e.target.value })} style={{ height: 46 }} />
+              <input className="input-light" placeholder="Drop Pincode" value={form.dropPincode} onChange={e => setForm({ ...form, dropPincode: e.target.value })} style={{ height: 46 }} />
+            </div>
+            <input className="input-light" placeholder="Drop address (optional)" value={form.dropAddress} onChange={e => setForm({ ...form, dropAddress: e.target.value })} style={{ height: 46, marginBottom: '0.9rem' }} />
+
+            <h4 style={{ fontSize: '0.78rem', fontWeight: 900, marginBottom: '1rem', marginTop: '0.4rem', color: '#111', textTransform: 'uppercase', letterSpacing: '0.08em' }}>EXTRAS</h4>
             <input className="input-light" placeholder="Extra features (comma separated, e.g. Sunroof, Leather seats, Cruise control)" value={form.features} onChange={e => setForm({ ...form, features: e.target.value })} style={{ height: 46, marginBottom: '0.9rem' }} />
             <textarea className="input-light" placeholder="Description" rows={3} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} style={{ minHeight: 80, padding: '0.8rem', resize: 'vertical' }} />
           </div>
@@ -1834,13 +1895,44 @@ const RentalBookingsTab = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
+  const [filterMode, setFilterMode] = useState('all'); // all | day | month | year | custom
+  const [filterDay, setFilterDay] = useState(() => new Date().toISOString().split('T')[0]);
+  const [filterMonth, setFilterMonth] = useState(() => new Date().toISOString().slice(0, 7));
+  const [filterYear, setFilterYear] = useState(() => String(new Date().getFullYear()));
+  const [filterFrom, setFilterFrom] = useState('');
+  const [filterTo, setFilterTo] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
 
   useEffect(() => {
-    rentalApi.getAllRentalBookings({ limit: 100 })
+    rentalApi.getAllRentalBookings({ limit: 200 })
       .then(({ data }) => setData(data.bookings || []))
       .catch(() => toast.error('Failed to load rental bookings'))
       .finally(() => setLoading(false));
   }, []);
+
+  const filtered = data.filter(b => {
+    if (statusFilter !== 'all' && b.status !== statusFilter) return false;
+    if (filterMode === 'all') return true;
+    const created = new Date(b.createdAt);
+    if (filterMode === 'day') {
+      return created.toISOString().split('T')[0] === filterDay;
+    }
+    if (filterMode === 'month') {
+      return created.toISOString().slice(0, 7) === filterMonth;
+    }
+    if (filterMode === 'year') {
+      return String(created.getFullYear()) === filterYear;
+    }
+    if (filterMode === 'custom') {
+      if (filterFrom && created < new Date(filterFrom)) return false;
+      if (filterTo) {
+        const end = new Date(filterTo); end.setHours(23, 59, 59, 999);
+        if (created > end) return false;
+      }
+      return true;
+    }
+    return true;
+  });
 
   const handleStatus = async (id, status) => {
     try {
@@ -1848,20 +1940,85 @@ const RentalBookingsTab = () => {
       setData(prev => prev.map(b => b._id === id ? (res.booking || { ...b, status }) : b));
       if (selected && selected._id === id) setSelected(res.booking || { ...selected, status });
       toast.success('Status updated');
-    } catch { toast.error('Failed to update'); }
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to update status');
+    }
   };
 
   if (loading) return <div style={{ textAlign: 'center', padding: '3rem', color: '#888' }}><Loader style={{ animation: 'spin 1s linear infinite' }} size={24} /></div>;
 
   return (
     <div style={{ background: '#FFFFFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '1.5rem', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
-      <h3 style={{ color: '#111', fontWeight: 950, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.3rem', marginBottom: '1rem', textTransform: 'uppercase' }}>RENTAL <span style={{ color: '#1E3A8A' }}>BOOKINGS</span> ({data.length})</h3>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.6rem' }}>
+        <h3 style={{ color: '#111', fontWeight: 950, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.3rem', margin: 0, textTransform: 'uppercase' }}>
+          RENTAL <span style={{ color: '#1E3A8A' }}>BOOKINGS</span>
+          <span style={{ fontSize: '0.8rem', color: '#94A3B8', marginLeft: '0.5rem', fontWeight: 700 }}>
+            ({filtered.length}{filtered.length !== data.length ? ` of ${data.length}` : ''})
+          </span>
+        </h3>
+      </div>
 
-      {data.length === 0 ? (
-        <p style={{ textAlign: 'center', padding: '3rem', color: '#AAA', fontWeight: 600 }}>No rental bookings yet</p>
+      {/* Filter bar */}
+      <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '14px', padding: '0.8rem 1rem', marginBottom: '1.2rem', display: 'flex', flexWrap: 'wrap', gap: '0.6rem', alignItems: 'center' }}>
+        <span style={{ fontSize: '0.7rem', color: '#475569', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Filter:</span>
+        {[
+          ['all', 'All'],
+          ['day', 'Day'],
+          ['month', 'Month'],
+          ['year', 'Year'],
+          ['custom', 'Custom'],
+        ].map(([k, lbl]) => (
+          <button key={k} type="button" onClick={() => setFilterMode(k)}
+            style={{
+              padding: '0.35rem 0.8rem', borderRadius: '8px', border: 'none', cursor: 'pointer',
+              background: filterMode === k ? '#1E3A8A' : 'white',
+              color: filterMode === k ? 'white' : '#475569',
+              fontWeight: 800, fontSize: '0.75rem',
+              boxShadow: filterMode === k ? '0 4px 10px rgba(30,58,138,0.2)' : '0 1px 2px rgba(0,0,0,0.04)',
+              textTransform: 'uppercase', letterSpacing: '0.04em',
+            }}>{lbl}</button>
+        ))}
+
+        {filterMode === 'day' && (
+          <input type="date" value={filterDay} onChange={e => setFilterDay(e.target.value)}
+            className="input-light" style={{ height: 36, padding: '0 0.6rem', fontSize: '0.8rem', fontWeight: 700 }} />
+        )}
+        {filterMode === 'month' && (
+          <input type="month" value={filterMonth} onChange={e => setFilterMonth(e.target.value)}
+            className="input-light" style={{ height: 36, padding: '0 0.6rem', fontSize: '0.8rem', fontWeight: 700 }} />
+        )}
+        {filterMode === 'year' && (
+          <input type="number" min="2020" max="2099" value={filterYear} onChange={e => setFilterYear(e.target.value)}
+            className="input-light" style={{ height: 36, padding: '0 0.6rem', fontSize: '0.8rem', fontWeight: 700, width: 100 }} />
+        )}
+        {filterMode === 'custom' && (
+          <>
+            <input type="date" value={filterFrom} onChange={e => setFilterFrom(e.target.value)}
+              className="input-light" style={{ height: 36, padding: '0 0.6rem', fontSize: '0.8rem', fontWeight: 700 }} />
+            <span style={{ color: '#94A3B8', fontWeight: 700 }}>→</span>
+            <input type="date" value={filterTo} onChange={e => setFilterTo(e.target.value)}
+              className="input-light" style={{ height: 36, padding: '0 0.6rem', fontSize: '0.8rem', fontWeight: 700 }} />
+          </>
+        )}
+
+        <span style={{ width: 1, height: 24, background: '#E2E8F0', margin: '0 0.4rem' }} />
+
+        <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
+          className="input-light" style={{ height: 36, padding: '0 0.6rem', fontSize: '0.8rem', fontWeight: 700 }}>
+          <option value="all">All Statuses</option>
+          <option value="requested">Requested</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="active">Active</option>
+          <option value="completed">Completed</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
+
+      {filtered.length === 0 ? (
+        <p style={{ textAlign: 'center', padding: '3rem', color: '#AAA', fontWeight: 600 }}>{data.length === 0 ? 'No rental bookings yet' : 'No bookings match the current filter'}</p>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))', gap: '1rem' }}>
-          {data.map(b => {
+          {filtered.map(b => {
             const sc = statusColorMap[b.status] || { bg: '#F1F5F9', fg: '#475569' };
             const isHour = b.rentalUnit === 'hour';
             const car = b.rentalCar || {};
@@ -1979,6 +2136,16 @@ const RentalBookingDetailModal = ({ booking, onClose, onUpdateStatus }) => {
                 <strong>Pickup Address:</strong> {[booking.pickupAddress.street, booking.pickupAddress.city, booking.pickupAddress.state, booking.pickupAddress.pincode].filter(Boolean).join(', ')}
               </div>
             )}
+            {car.location?.city && (
+              <div style={{ marginTop: '0.4rem', fontSize: '0.82rem', color: '#475569', fontWeight: 600 }}>
+                <strong style={{ color: '#1E3A8A' }}>📍 Pickup (car):</strong> {[car.location.address, car.location.city, car.location.state, car.location.pincode].filter(Boolean).join(', ')}
+              </div>
+            )}
+            {car.dropLocation?.city && (
+              <div style={{ marginTop: '0.3rem', fontSize: '0.82rem', color: '#475569', fontWeight: 600 }}>
+                <strong style={{ color: '#16A34A' }}>📍 Drop (car):</strong> {[car.dropLocation.address, car.dropLocation.city, car.dropLocation.state, car.dropLocation.pincode].filter(Boolean).join(', ')}
+              </div>
+            )}
           </div>
 
           {/* Pricing */}
@@ -2010,6 +2177,40 @@ const RentalBookingDetailModal = ({ booking, onClose, onUpdateStatus }) => {
               {booking.payment?.paidAt && <div><strong style={{ color: '#475569', fontWeight: 600 }}>Paid At:</strong> {new Date(booking.payment.paidAt).toLocaleString('en-IN')}</div>}
             </div>
           </div>
+
+          {/* KYC Documents */}
+          {(booking.kyc?.aadharNumber || booking.kyc?.panNumber || booking.kyc?.aadharImage || booking.kyc?.panImage || booking.kyc?.licenseImage) && (
+            <div style={{ background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: '12px', padding: '1rem', marginBottom: '1rem' }}>
+              <div style={{ color: '#92400E', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>KYC Documents</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.4rem 1rem', fontSize: '0.85rem', color: '#0F172A', fontWeight: 700, marginBottom: '0.7rem' }}>
+                {booking.kyc?.aadharNumber && (
+                  <div><strong style={{ color: '#475569', fontWeight: 600 }}>Aadhar:</strong> <span style={{ fontFamily: 'monospace' }}>{booking.kyc.aadharNumber.replace(/(\d{4})(\d{4})(\d{4})/, '$1 $2 $3')}</span></div>
+                )}
+                {booking.kyc?.panNumber && (
+                  <div><strong style={{ color: '#475569', fontWeight: 600 }}>PAN:</strong> <span style={{ fontFamily: 'monospace' }}>{booking.kyc.panNumber}</span></div>
+                )}
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem' }}>
+                {[
+                  ['Aadhar', booking.kyc?.aadharImage],
+                  ['PAN', booking.kyc?.panImage],
+                  ['License', booking.kyc?.licenseImage],
+                ].filter(([, url]) => url).map(([label, url]) => (
+                  <a key={label} href={url} target="_blank" rel="noopener noreferrer"
+                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.3rem', textDecoration: 'none' }}>
+                    <div style={{ width: 110, height: 80, borderRadius: '10px', overflow: 'hidden', border: '2px solid #FDE68A', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {/\.pdf$/i.test(url) ? (
+                        <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#B45309' }}>📄 PDF</span>
+                      ) : (
+                        <img src={url} alt={label} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      )}
+                    </div>
+                    <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#92400E', letterSpacing: '0.05em', textTransform: 'uppercase' }}>{label}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
 
           {booking.notes && (
             <div style={{ background: '#FFFBEB', border: '1px solid #FDE68A', padding: '0.7rem 1rem', borderRadius: '12px', fontSize: '0.85rem', color: '#92400E', fontWeight: 600, marginBottom: '1rem' }}>
@@ -2357,7 +2558,7 @@ export default function AdminDashboard() {
       {/* Mobile top bar */}
       <div className="admin-mobile-topbar" style={{ display: 'none', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 60, background: '#111', borderBottom: '1px solid #2A2A2A', padding: '0.7rem 1rem', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 950, color: 'white', fontSize: '1.3rem', letterSpacing: '-0.02em' }}>
-          <span style={{ color: '#E53935' }}>MOTO</span>XPRESS
+          <span style={{ color: '#E53935' }}>AUTO</span>XPRESS
         </div>
         <button onClick={() => setSidebarOpen(!sidebarOpen)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', padding: '0.3rem' }}>
           {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
@@ -2369,7 +2570,7 @@ export default function AdminDashboard() {
       <div className={`admin-sidebar${sidebarOpen ? ' open' : ''}`} style={{ width: 280, background: '#111', borderRight: '1px solid #2A2A2A', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
         <div style={{ padding: '2rem 1.5rem', borderBottom: '1px solid #2A2A2A' }}>
           <div style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 950, color: 'white', fontSize: '1.8rem', letterSpacing: '-0.02em', lineHeight: 1 }}>
-            <span style={{ color: '#E53935' }}>MOTO</span>XPRESS
+            <span style={{ color: '#E53935' }}>AUTO</span>XPRESS
           </div>
           <div style={{ color: '#555', fontSize: '0.8rem', marginTop: '0.4rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>ADMIN PORTAL</div>
         </div>

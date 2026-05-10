@@ -10,13 +10,17 @@ export const updateRentalCar = (id, data) =>
 export const deleteRentalCar = (id) => API.delete(`/rentals/cars/${id}`);
 
 // Bookings
-export const createRentalBooking = (data) => API.post('/rentals/bookings', data);
+export const createRentalBooking = (data) =>
+  API.post('/rentals/bookings', data, { headers: { 'Content-Type': 'multipart/form-data' } });
 export const verifyRentalPayment = (data) => API.post('/rentals/bookings/verify', data);
 export const getMyRentalBookings = () => API.get('/rentals/bookings/my');
 export const getAllRentalBookings = (params) => API.get('/rentals/bookings', { params });
 export const updateRentalBookingStatus = (id, data) =>
   API.put(`/rentals/bookings/${id}/status`, data);
 export const cancelMyRentalBooking = (id) => API.put(`/rentals/bookings/${id}/cancel`);
+export const collectRentalBalance = (id, data) => API.put(`/rentals/bookings/${id}/collect-balance`, data);
+export const createRentalBalanceOrder = (id) => API.post(`/rentals/bookings/pay-balance/${id}`);
+export const verifyRentalBalancePayment = (id, data) => API.post(`/rentals/bookings/verify-balance/${id}`, data);
 
 
 // Location tracking

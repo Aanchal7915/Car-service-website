@@ -15,6 +15,7 @@ const rentalCarSchema = new mongoose.Schema(
     },
     securityDeposit: { type: Number, default: 0 },
     securityDepositRefundable: { type: Boolean, default: true },
+    securityDepositCompulsory: { type: Boolean, default: true },
     fuelType: {
       type: String,
       enum: ['petrol', 'diesel', 'electric', 'hybrid', 'cng'],
@@ -34,6 +35,7 @@ const rentalCarSchema = new mongoose.Schema(
       default: 'sedan',
     },
     registrationNumber: { type: String, trim: true, uppercase: true },
+    carNumber: { type: String, trim: true },
     rcNumber: { type: String, trim: true },
     chassisNumber: { type: String, trim: true },
     engineNumber: { type: String, trim: true },
@@ -51,6 +53,12 @@ const rentalCarSchema = new mongoose.Schema(
     images: [{ type: String }],
     features: [{ type: String }],
     location: {
+      city: String,
+      state: String,
+      pincode: String,
+      address: String,
+    },
+    dropLocation: {
       city: String,
       state: String,
       pincode: String,

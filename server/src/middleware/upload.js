@@ -69,11 +69,35 @@ exports.uploadAvatar = multer({ storage: avatarStorage, fileFilter, limits: { fi
 exports.uploadPartMedia = partMulter.array('images', 10);
 
 // Added for category/brand images
-exports.uploadCategoryMedia = multer({ 
-  storage: isCloudinaryConfigured 
-    ? new CloudinaryStorage({ cloudinary, params: { folder: 'bikeservice/categories', allowed_formats: ['jpg', 'jpeg', 'png', 'webp'] } }) 
+exports.uploadCategoryMedia = multer({
+  storage: isCloudinaryConfigured
+    ? new CloudinaryStorage({ cloudinary, params: { folder: 'bikeservice/categories', allowed_formats: ['jpg', 'jpeg', 'png', 'webp'] } })
     : getLocalStorage('categories'),
   fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 } 
+  limits: { fileSize: 5 * 1024 * 1024 }
 });
+
+// KYC documents (Aadhar, PAN, License) for rental bookings
+const kycStorage = isCloudinaryConfigured
+  ? new CloudinaryStorage({
+      cloudinary,
+      params: {
+        folder: 'bikeservice/rental-kyc',
+        allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'pdf'],
+      },
+    })
+  : getLocalStorage('rental-kyc');
+
+exports.uploadRentalKyc = multer({
+  storage: kycStorage,
+  fileFilter: (req, file, cb) => {
+    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
+    cb(null, allowed.includes(file.mimetype));
+  },
+  limits: { fileSize: 10 * 1024 * 1024 },
+}).fields([
+  { name: 'aadharImage', maxCount: 1 },
+  { name: 'panImage', maxCount: 1 },
+  { name: 'licenseImage', maxCount: 1 },
+]);
 

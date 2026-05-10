@@ -37,9 +37,16 @@ export default function RentalDetail() {
     driverLicense: '',
     notes: '',
     paymentMethod: 'online',
+    paymentPlan: 'full', // 'full' | 'advance' | 'on_drop'
     rentalUnit: 'day',
     pickupAddress: { street: '', city: '', state: '', pincode: '' },
+    aadharNumber: '',
+    panNumber: '',
   });
+  const [aadharImage, setAadharImage] = useState(null);
+  const [panImage, setPanImage] = useState(null);
+  const [licenseImage, setLicenseImage] = useState(null);
+  const [includeSecurityDeposit, setIncludeSecurityDeposit] = useState(true);
 
   // Auto-derive allowed rental units from prices + any explicit rentalUnits flag.
   // If pricePerHour > 0, hour mode is enabled automatically (same for day).
@@ -53,11 +60,20 @@ export default function RentalDetail() {
   };
 
   useEffect(() => {
+    if (user && user.phone) {
+      setForm(prev => ({ ...prev, contactPhone: user.phone }));
+    }
+  }, [user]);
+
+  useEffect(() => {
     getRentalCar(id)
       .then(({ data }) => {
         setCar(data.car);
         const allowedUnits = computeAllowedUnits(data.car);
         setForm(prev => ({ ...prev, rentalUnit: allowedUnits[0] }));
+        // If deposit is optional, default to NOT including; if compulsory, force include.
+        const compulsory = data.car?.securityDepositCompulsory !== false;
+        setIncludeSecurityDeposit(compulsory);
       })
       .catch(() => toast.error('Failed to load rental details'))
       .finally(() => setLoading(false));
@@ -79,10 +95,25 @@ export default function RentalDetail() {
     return Math.max(1, Math.ceil((e.getTime() - s.getTime()) / (1000 * 60 * 60)));
   }, [form.pickupDate, form.returnDate, form.pickupTime, form.returnTime]);
 
+  const pickupFull = useMemo(() => car ? [car.location?.address, car.location?.city, car.location?.state, car.location?.pincode].filter(Boolean).join(', ') : '', [car]);
+  const dropFull = useMemo(() => car ? [car.dropLocation?.address, car.dropLocation?.city, car.dropLocation?.state, car.dropLocation?.pincode].filter(Boolean).join(', ') : '', [car]);
+  const isSameLocation = pickupFull && dropFull && pickupFull === dropFull;
+
   const subtotal = unit === 'hour'
     ? (car?.pricePerHour || 0) * totalHours
     : (car?.pricePerDay || 0) * totalDays;
-  const totalAmount = subtotal + (car?.securityDeposit || 0);
+  const depositCompulsory = car?.securityDepositCompulsory !== false;
+  const effectiveDeposit = (depositCompulsory || includeSecurityDeposit) ? (car?.securityDeposit || 0) : 0;
+  const totalAmount = subtotal + effectiveDeposit;
+
+  // Derive what gets charged now vs later based on payment plan.
+  const advanceDefault = car?.securityDeposit > 0
+    ? car.securityDeposit
+    : Math.round(totalAmount * 0.25);
+  const payNow = form.paymentPlan === 'full' ? totalAmount
+              : form.paymentPlan === 'advance' ? advanceDefault
+              : 0;
+  const dueAtDrop = Math.max(0, totalAmount - payNow);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -91,6 +122,15 @@ export default function RentalDetail() {
       return;
     }
     if (!form.contactPhone) return toast.error('Contact phone is required');
+
+    // KYC validation
+    const aadhar = (form.aadharNumber || '').replace(/\s/g, '');
+    if (!/^\d{12}$/.test(aadhar)) return toast.error('Enter a valid 12-digit Aadhar number');
+    const pan = (form.panNumber || '').toUpperCase().trim();
+    if (!/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(pan)) return toast.error('Enter a valid PAN (e.g. ABCDE1234F)');
+    if (!aadharImage) return toast.error('Please upload Aadhar card image');
+    if (!panImage) return toast.error('Please upload PAN card image');
+    if (!licenseImage) return toast.error('Please upload Driving License image');
 
     if (unit === 'hour') {
       const start = new Date(`${form.pickupDate}T${form.pickupTime || '00:00'}:00`);
@@ -104,7 +144,26 @@ export default function RentalDetail() {
 
     setSubmitting(true);
     try {
-      const { data: res } = await createRentalBooking({ rentalCar: id, ...form, rentalUnit: unit });
+      const fd = new FormData();
+      fd.append('rentalCar', id);
+      fd.append('pickupDate', form.pickupDate);
+      fd.append('returnDate', form.returnDate);
+      fd.append('pickupTime', form.pickupTime);
+      fd.append('returnTime', form.returnTime);
+      fd.append('contactPhone', form.contactPhone);
+      fd.append('driverLicense', form.driverLicense || '');
+      fd.append('notes', form.notes || '');
+      fd.append('paymentMethod', form.paymentMethod);
+      fd.append('paymentPlan', form.paymentPlan);
+      fd.append('includeSecurityDeposit', includeSecurityDeposit);
+      fd.append('rentalUnit', unit);
+      fd.append('aadharNumber', aadhar);
+      fd.append('panNumber', pan);
+      fd.append('pickupAddress', JSON.stringify(form.pickupAddress));
+      fd.append('aadharImage', aadharImage);
+      fd.append('panImage', panImage);
+      fd.append('licenseImage', licenseImage);
+      const { data: res } = await createRentalBooking(fd);
 
       if (!res.order) {
         toast.success('Booking created!');
@@ -131,7 +190,7 @@ export default function RentalDetail() {
         key: razorpayKey,
         amount: order.amount,
         currency: order.currency,
-        name: 'AutoXpress Rental',
+        name: 'AutoExpress',
         description: `${car.brand} ${car.model} Booking`,
         order_id: order.id,
         handler: async (response) => {
@@ -152,6 +211,10 @@ export default function RentalDetail() {
           contact: form.contactPhone
         },
         theme: { color: '#1E3A8A' },
+        readonly: {
+          contact: true,
+          email: true,
+        },
         modal: {
           ondismiss: () => {
             toast.error('Payment cancelled');
@@ -256,19 +319,25 @@ export default function RentalDetail() {
                   car.airbags > 0 && { icon: Shield, label: 'Airbags', value: car.airbags },
                   {
                     icon: Shield,
-                    label: 'Deposit',
+                    label: 'Security Deposit',
                     value: `₹${(car.securityDeposit || 0).toLocaleString('en-IN')}`,
                     extra: car.securityDepositRefundable !== false ? 'REFUNDABLE' : 'NON-REFUNDABLE',
+                    compulsory: car.securityDepositCompulsory !== false
                   },
-                ].filter(Boolean).map(({ icon: Icon, label, value, extra }) => (
+                ].filter(Boolean).map(({ icon: Icon, label, value, extra, compulsory }) => (
                   <div key={label} style={{ background: '#F8FAFC', padding: '1rem', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#64748B', fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       <Icon size={14} /> {label}
                     </div>
                     <div style={{ marginTop: '0.4rem', fontWeight: 800, color: '#0F172A', fontSize: '0.9rem' }}>{value}</div>
-                    {extra && (
-                      <div style={{ marginTop: '0.3rem', display: 'inline-block', fontSize: '0.6rem', fontWeight: 800, color: extra === 'REFUNDABLE' ? '#16A34A' : '#DC2626', background: extra === 'REFUNDABLE' ? '#DCFCE7' : '#FEE2E2', padding: '2px 8px', borderRadius: '999px', letterSpacing: '0.05em' }}>{extra}</div>
-                    )}
+                    <div style={{ display: 'flex', gap: '0.3rem', marginTop: '0.3rem', flexWrap: 'wrap' }}>
+                      {extra && (
+                        <div style={{ fontSize: '0.6rem', fontWeight: 800, color: extra === 'REFUNDABLE' ? '#16A34A' : '#DC2626', background: extra === 'REFUNDABLE' ? '#DCFCE7' : '#FEE2E2', padding: '2px 8px', borderRadius: '999px', letterSpacing: '0.05em' }}>{extra}</div>
+                      )}
+                      {label === 'Security Deposit' && (
+                        <div style={{ fontSize: '0.6rem', fontWeight: 800, color: compulsory ? '#DC2626' : '#16A34A', background: compulsory ? '#FEE2E2' : '#DCFCE7', padding: '2px 8px', borderRadius: '999px', letterSpacing: '0.05em' }}>{compulsory ? 'COMPULSORY' : 'OPTIONAL'}</div>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -284,6 +353,14 @@ export default function RentalDetail() {
                           <Hash size={12} /> Registration No.
                         </div>
                         <div style={{ marginTop: '0.3rem', fontWeight: 800, color: '#0F172A', fontSize: '0.9rem', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.05em' }}>{car.registrationNumber}</div>
+                      </div>
+                    )}
+                    {car.carNumber && (
+                      <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.7rem 0.9rem', borderRadius: '10px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#64748B', fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                          <CarIcon size={12} /> Car Number
+                        </div>
+                        <div style={{ marginTop: '0.3rem', fontWeight: 800, color: '#0F172A', fontSize: '0.9rem', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.05em' }}>{car.carNumber}</div>
                       </div>
                     )}
                     {car.rcNumber && (
@@ -384,11 +461,32 @@ export default function RentalDetail() {
                 </div>
               )}
 
-              {car.location?.city && (
-                <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #F1F5F9', display: 'flex', alignItems: 'flex-start', gap: '0.5rem', color: '#475569', fontWeight: 700 }}>
-                  <MapPin size={16} style={{ color: '#1E3A8A', flexShrink: 0, marginTop: '2px' }} />
-                  <span>Pickup: {[car.location.address, car.location.city, car.location.state, car.location.pincode].filter(Boolean).join(', ')}</span>
+              {isSameLocation ? (
+                <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #F1F5F9' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', color: '#475569', fontWeight: 700 }}>
+                    <MapPin size={16} style={{ color: '#1E3A8A', flexShrink: 0, marginTop: '2px' }} />
+                    <span><strong style={{ color: '#0F172A' }}>Pickup & Drop:</strong> {pickupFull}</span>
+                  </div>
                 </div>
+              ) : (
+                (car.location?.city || car.dropLocation?.city) && (
+                  <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #F1F5F9', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                      {car.location?.city && (
+                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', color: '#475569', fontWeight: 700 }}>
+                          <MapPin size={16} style={{ color: '#1E3A8A', flexShrink: 0, marginTop: '2px' }} />
+                          <span><strong style={{ color: '#0F172A' }}>Pickup:</strong> {pickupFull}</span>
+                        </div>
+                      )}
+                      {car.dropLocation?.city && (
+                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', color: '#475569', fontWeight: 700 }}>
+                          <MapPin size={16} style={{ color: '#16A34A', flexShrink: 0, marginTop: '2px' }} />
+                          <span><strong style={{ color: '#0F172A' }}>Drop:</strong> {dropFull}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )
               )}
             </div>
           </div>
@@ -448,16 +546,96 @@ export default function RentalDetail() {
               onChange={e => setForm({ ...form, contactPhone: e.target.value })}
               className="input-light" style={{ height: '42px', marginBottom: '0.8rem' }} />
 
-            <label style={{ fontSize: '0.65rem', color: '#64748B', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>DRIVING LICENSE NUMBER</label>
-            <input placeholder="e.g. DL01-20211234567" value={form.driverLicense}
-              onChange={e => setForm({ ...form, driverLicense: e.target.value })}
-              className="input-light" style={{ height: '42px', marginBottom: '0.8rem' }} />
 
-            <div style={{ background: '#F8FAFC', borderRadius: '12px', padding: '0.8rem', border: '1px solid #E2E8F0', marginBottom: '1rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#1E3A8A', fontWeight: 800, fontSize: '0.75rem' }}>
-                <Shield size={14} /> SECURE ONLINE PAYMENT
+            {/* KYC Section */}
+            <div style={{ background: '#FFFBEB', borderRadius: '12px', padding: '0.9rem', border: '1px solid #FDE68A', marginBottom: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.7rem' }}>
+                <Shield size={14} style={{ color: '#B45309' }} />
+                <span style={{ fontSize: '0.78rem', fontWeight: 900, color: '#92400E', letterSpacing: '0.04em' }}>KYC VERIFICATION (REQUIRED)</span>
               </div>
-              <p style={{ fontSize: '0.65rem', color: '#64748B', marginTop: '0.2rem', fontWeight: 600 }}>Razorpay encrypted checkout</p>
+
+              <label style={{ fontSize: '0.65rem', color: '#64748B', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>DRIVING LICENSE NUMBER *</label>
+              <input required placeholder="e.g. DL01-20211234567" value={form.driverLicense}
+                onChange={e => setForm({ ...form, driverLicense: e.target.value })}
+                className="input-light" style={{ height: '40px', marginBottom: '0.6rem' }} />
+
+              <label style={{ fontSize: '0.65rem', color: '#64748B', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>AADHAR NUMBER *</label>
+              <input required placeholder="12-digit Aadhar" maxLength={14}
+                value={form.aadharNumber}
+                onChange={e => setForm({ ...form, aadharNumber: e.target.value.replace(/[^0-9 ]/g, '') })}
+                className="input-light" style={{ height: '40px', marginBottom: '0.6rem' }} />
+
+              <label style={{ fontSize: '0.65rem', color: '#64748B', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>PAN NUMBER *</label>
+              <input required placeholder="ABCDE1234F" maxLength={10}
+                value={form.panNumber}
+                onChange={e => setForm({ ...form, panNumber: e.target.value.toUpperCase() })}
+                className="input-light" style={{ height: '40px', marginBottom: '0.7rem', textTransform: 'uppercase' }} />
+
+              {[
+                ['AADHAR CARD IMAGE *', aadharImage, setAadharImage],
+                ['PAN CARD IMAGE *', panImage, setPanImage],
+                ['LICENSE IMAGE *', licenseImage, setLicenseImage],
+              ].map(([label, file, setter], i) => (
+                <div key={i} style={{ marginBottom: '0.5rem' }}>
+                  <label style={{ fontSize: '0.62rem', color: '#64748B', fontWeight: 800, marginBottom: '0.25rem', display: 'block' }}>{label}</label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <input type="file" accept="image/*,application/pdf"
+                      onChange={e => setter(e.target.files?.[0] || null)}
+                      style={{ flex: 1, fontSize: '0.7rem', padding: '0.3rem', background: 'white', border: '1px dashed #FCD34D', borderRadius: '8px' }} />
+                    {file && (
+                      <span style={{ fontSize: '0.65rem', color: '#16A34A', fontWeight: 800, whiteSpace: 'nowrap' }}>✓ {file.name.length > 14 ? file.name.slice(0, 12) + '…' : file.name}</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Payment Plan picker */}
+            <div style={{ background: '#F8FAFC', borderRadius: '12px', padding: '0.85rem', border: '1px solid #E2E8F0', marginBottom: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.6rem' }}>
+                <Shield size={14} style={{ color: '#1E3A8A' }} />
+                <span style={{ fontSize: '0.75rem', fontWeight: 900, color: '#0F172A', letterSpacing: '0.04em' }}>PAYMENT PLAN</span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                {[
+                  {
+                    key: 'full',
+                    title: 'Pay Full Amount Now',
+                    sub: `₹${totalAmount.toLocaleString('en-IN')} via Razorpay`,
+                  },
+                  {
+                    key: 'advance',
+                    title: 'Pay Advance Now, Balance at Drop',
+                    sub: `₹${advanceDefault.toLocaleString('en-IN')} now • ₹${Math.max(0, totalAmount - advanceDefault).toLocaleString('en-IN')} at drop`,
+                  },
+                ].map(opt => {
+                  const active = form.paymentPlan === opt.key;
+                  return (
+                    <label key={opt.key}
+                      style={{
+                        display: 'flex', alignItems: 'flex-start', gap: '0.5rem', cursor: 'pointer',
+                        padding: '0.55rem 0.7rem', borderRadius: '10px',
+                        background: active ? '#EFF6FF' : 'white',
+                        border: active ? '1.5px solid #1E3A8A' : '1px solid #E2E8F0',
+                        transition: 'all 0.15s',
+                      }}>
+                      <input type="radio" name="paymentPlan" value={opt.key}
+                        checked={active}
+                        onChange={() => setForm({ ...form, paymentPlan: opt.key })}
+                        style={{ marginTop: 3, accentColor: '#1E3A8A' }} />
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontWeight: 800, color: active ? '#1E3A8A' : '#0F172A', fontSize: '0.82rem' }}>{opt.title}</div>
+                        <div style={{ fontSize: '0.7rem', color: '#64748B', fontWeight: 600, marginTop: '2px' }}>{opt.sub}</div>
+                      </div>
+                    </label>
+                  );
+                })}
+              </div>
+              {form.paymentPlan !== 'on_drop' && (
+                <p style={{ fontSize: '0.65rem', color: '#64748B', marginTop: '0.6rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                  <Shield size={11} style={{ color: '#1E3A8A' }} /> Razorpay encrypted checkout
+                </p>
+              )}
             </div>
 
             <label style={{ fontSize: '0.65rem', color: '#64748B', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>NOTES (OPTIONAL)</label>
@@ -467,6 +645,12 @@ export default function RentalDetail() {
 
             {/* Price Summary */}
             <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '14px', padding: '1rem', marginBottom: '1rem' }}>
+              {car.carNumber && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 800, color: '#1E3A8A', marginBottom: '0.8rem', borderBottom: '1px dashed #E2E8F0', paddingBottom: '0.6rem' }}>
+                  <span>CAR NUMBER</span>
+                  <span>{car.carNumber}</span>
+                </div>
+              )}
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 700, color: '#475569', marginBottom: '0.4rem' }}>
                 <span>
                   {unit === 'hour'
@@ -476,25 +660,62 @@ export default function RentalDetail() {
                 <span>₹{subtotal.toLocaleString('en-IN')}</span>
               </div>
               {car.securityDeposit > 0 && (
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem', fontWeight: 700, color: '#475569', marginBottom: '0.4rem' }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                    Security deposit
-                    {car.securityDepositRefundable !== false && (
-                      <span style={{ fontSize: '0.6rem', fontWeight: 800, color: '#16A34A', background: '#DCFCE7', padding: '2px 6px', borderRadius: '999px', letterSpacing: '0.04em' }}>REFUNDABLE</span>
-                    )}
-                  </span>
-                  <span>₹{car.securityDeposit.toLocaleString('en-IN')}</span>
-                </div>
+                <>
+                  {/* Opt-in toggle when deposit is optional */}
+                  {!depositCompulsory && (
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 0.7rem', marginBottom: '0.4rem', background: includeSecurityDeposit ? '#EFF6FF' : '#F8FAFC', border: '1.5px solid', borderColor: includeSecurityDeposit ? '#1E3A8A' : '#E2E8F0', borderRadius: '10px', cursor: 'pointer' }}>
+                      <input type="checkbox" checked={includeSecurityDeposit}
+                        onChange={e => setIncludeSecurityDeposit(e.target.checked)}
+                        style={{ accentColor: '#1E3A8A', width: 16, height: 16 }} />
+                      <span style={{ flex: 1, fontSize: '0.78rem', fontWeight: 800, color: '#0F172A' }}>
+                        Add security deposit
+                        <span style={{ fontSize: '0.6rem', fontWeight: 800, color: '#16A34A', background: '#DCFCE7', padding: '2px 6px', borderRadius: '999px', letterSpacing: '0.04em', marginLeft: '0.4rem' }}>OPTIONAL</span>
+                      </span>
+                      <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#475569' }}>+₹{car.securityDeposit.toLocaleString('en-IN')}</span>
+                    </label>
+                  )}
+                  {(depositCompulsory || includeSecurityDeposit) && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem', fontWeight: 700, color: '#475569', marginBottom: '0.4rem' }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                        Security Deposit
+                        {depositCompulsory && (
+                          <span style={{ fontSize: '0.6rem', fontWeight: 800, color: '#DC2626', background: '#FEE2E2', padding: '2px 6px', borderRadius: '999px', letterSpacing: '0.04em' }}>COMPULSORY</span>
+                        )}
+                        {car.securityDepositRefundable !== false && (
+                          <span style={{ fontSize: '0.6rem', fontWeight: 800, color: '#16A34A', background: '#DCFCE7', padding: '2px 6px', borderRadius: '999px', letterSpacing: '0.04em' }}>REFUNDABLE</span>
+                        )}
+                      </span>
+                      <span>₹{car.securityDeposit.toLocaleString('en-IN')}</span>
+                    </div>
+                  )}
+                </>
               )}
               <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #E2E8F0', paddingTop: '0.6rem', marginTop: '0.4rem' }}>
                 <span style={{ fontWeight: 900, color: '#0F172A', fontSize: '0.85rem' }}>TOTAL</span>
                 <span style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.3rem', fontWeight: 950, color: '#1E3A8A' }}>₹{totalAmount.toLocaleString('en-IN')}</span>
               </div>
+              {form.paymentPlan !== 'full' && (
+                <div style={{ marginTop: '0.6rem', paddingTop: '0.6rem', borderTop: '1px dashed #E2E8F0' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', fontWeight: 800, color: '#1E3A8A' }}>
+                    <span>You pay now</span>
+                    <span>₹{payNow.toLocaleString('en-IN')}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', fontWeight: 800, color: '#16A34A', marginTop: '0.2rem' }}>
+                    <span>Due at drop</span>
+                    <span>₹{dueAtDrop.toLocaleString('en-IN')}</span>
+                  </div>
+                </div>
+              )}
             </div>
 
-            <button type="submit" disabled={submitting || car.status !== 'available'}
-              style={{ width: '100%', background: car.status === 'available' ? '#1E3A8A' : '#94A3B8', color: 'white', border: 'none', borderRadius: '12px', padding: '0.8rem', fontWeight: 900, fontSize: '0.9rem', cursor: car.status === 'available' && !submitting ? 'pointer' : 'not-allowed', letterSpacing: '0.1em', fontFamily: 'Rajdhani, sans-serif' }}>
-              {car.status !== 'available' ? 'CURRENTLY UNAVAILABLE' : submitting ? 'PROVISING PAYMENT...' : 'CONFIRM & PAY NOW'}
+            <button type="submit" disabled={submitting || (car.status && car.status !== 'available')}
+              style={{ width: '100%', background: (!car.status || car.status === 'available') ? '#1E3A8A' : '#94A3B8', color: 'white', border: 'none', borderRadius: '12px', padding: '0.8rem', fontWeight: 900, fontSize: '0.9rem', cursor: (!car.status || car.status === 'available') && !submitting ? 'pointer' : 'not-allowed', letterSpacing: '0.1em', fontFamily: 'Rajdhani, sans-serif' }}>
+              {(car.status && car.status !== 'available')
+                ? 'CURRENTLY UNAVAILABLE'
+                : submitting ? 'PROCESSING...'
+                : form.paymentPlan === 'on_drop' ? 'CONFIRM BOOKING'
+                : form.paymentPlan === 'advance' ? `PAY ₹${payNow.toLocaleString('en-IN')} ADVANCE`
+                : `PAY ₹${payNow.toLocaleString('en-IN')} NOW`}
             </button>
 
             <p style={{ fontSize: '0.72rem', color: '#94A3B8', textAlign: 'center', marginTop: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.3rem', justifyContent: 'center' }}>

@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { getMyBookings } from '../api/serviceApi';
 import { getMySellRequests, getMyOrders } from '../api/storeApi';
 import { getMyEnquiries } from '../api/bikeApi';
-import { getMyRentalBookings, cancelMyRentalBooking } from '../api/rentalApi';
+import { getMyRentalBookings, cancelMyRentalBooking, createRentalBalanceOrder, verifyRentalBalancePayment } from '../api/rentalApi';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { PageLoader } from '../components/common/LoadingSpinner';
@@ -30,6 +30,7 @@ export default function MyBookings() {
   const [enquiries, setEnquiries] = useState([]);
   const [rentals, setRentals] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [expandedRental, setExpandedRental] = useState(null);
 
   useEffect(() => {
     if (!user) { navigate('/login'); return; }
@@ -53,6 +54,39 @@ export default function MyBookings() {
       toast.success('Rental cancelled');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to cancel');
+    }
+  };
+
+  const handlePayBalance = async (booking) => {
+    try {
+      const { data: { order, key } } = await createRentalBalanceOrder(booking._id);
+      const options = {
+        key,
+        amount: order.amount,
+        currency: order.currency,
+        name: 'AutoExpress',
+        description: `Balance Payment for ${booking.carSnapshot?.brand} ${booking.carSnapshot?.model}`,
+        order_id: order.id,
+        handler: async (response) => {
+          try {
+            const { data } = await verifyRentalBalancePayment(booking._id, response);
+            setRentals(prev => prev.map(r => r._id === booking._id ? data.booking : r));
+            toast.success('Balance paid successfully!');
+          } catch (err) {
+            toast.error(err.response?.data?.message || 'Verification failed');
+          }
+        },
+        prefill: {
+          name: user.name,
+          email: user.email,
+          contact: booking.contactPhone || user.phone,
+        },
+        theme: { color: '#1E3A8A' },
+      };
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to initialize payment');
     }
   };
 
@@ -320,9 +354,10 @@ export default function MyBookings() {
               const unitPrice = isHour ? booking.pricePerHour : booking.pricePerDay;
               const car = booking.rentalCar || {};
               return (
-              <div key={booking._id} style={{ background: '#FFF', border: '1px solid #EEE', borderRadius: '20px', padding: '1.8rem', marginBottom: '1.5rem', boxShadow: '0 4px 20px rgba(0,0,0,0.02)', transition: 'all 0.3s' }}
+              <div key={booking._id} style={{ background: '#FFF', border: '1px solid #EEE', borderRadius: '24px', padding: '1.8rem', marginBottom: '1.5rem', boxShadow: expandedRental === booking._id ? '0 20px 40px rgba(0,0,0,0.08)' : '0 4px 20px rgba(0,0,0,0.02)', transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)', cursor: 'pointer', overflow: 'hidden', position: 'relative' }}
+                onClick={() => setExpandedRental(expandedRental === booking._id ? null : booking._id)}
                 onMouseEnter={e => e.currentTarget.style.borderColor = '#1E3A8A'}
-                onMouseLeave={e => e.currentTarget.style.borderColor = '#EEE'}>
+                onMouseLeave={e => e.currentTarget.style.borderColor = expandedRental === booking._id ? '#1E3A8A' : '#EEE'}>
                 {/* Booking ID strip */}
                 <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '0.6rem', paddingBottom: '0.8rem', borderBottom: '1px dashed #E2E8F0', marginBottom: '1rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
@@ -334,8 +369,9 @@ export default function MyBookings() {
                       {(booking.payment?.method || 'cod').toUpperCase()} • {(booking.payment?.status || 'pending').toUpperCase()}
                     </span>
                   </div>
-                  <span style={{ color: '#94A3B8', fontSize: '0.72rem', fontWeight: 600 }}>
-                    Booked on {new Date(booking.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  <span style={{ color: '#94A3B8', fontSize: '0.72rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    {expandedRental === booking._id ? 'Click to collapse' : 'Click to view details'}
+                    <div style={{ transform: expandedRental === booking._id ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'all 0.3s' }}>▼</div>
                   </span>
                 </div>
 
@@ -383,63 +419,187 @@ export default function MyBookings() {
                   </div>
                 </div>
 
-                {/* Price + identity breakdown */}
-                <div style={{ marginTop: '1.2rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.6rem' }}>
+                {/* Collapsible Content */}
+                <div style={{ maxHeight: expandedRental === booking._id ? '2000px' : '0', opacity: expandedRental === booking._id ? 1 : 0, transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)', visibility: expandedRental === booking._id ? 'visible' : 'hidden' }}>
+                  {/* Price + identity breakdown */}
+                  <div style={{ marginTop: '1.2rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.6rem' }}>
+                    <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.6rem 0.8rem', borderRadius: '10px' }}>
+                      <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Rate</div>
+                      <div style={{ color: '#0F172A', fontWeight: 800, fontSize: '0.9rem', marginTop: '2px' }}>₹{unitPrice?.toLocaleString('en-IN')} / {isHour ? 'hour' : 'day'} × {isHour ? booking.totalHours : booking.totalDays}</div>
+                    </div>
+                    {booking.securityDeposit > 0 && (
+                      <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.6rem 0.8rem', borderRadius: '10px' }}>
+                        <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Security Deposit</div>
+                        <div style={{ color: '#0F172A', fontWeight: 800, fontSize: '0.9rem', marginTop: '2px' }}>₹{booking.securityDeposit.toLocaleString('en-IN')} <span style={{ fontSize: '0.6rem', color: '#16A34A', fontWeight: 800 }}>REFUNDABLE</span></div>
+                      </div>
+                    )}
+                    <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.6rem 0.8rem', borderRadius: '10px' }}>
+                      <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Contact</div>
+                      <div style={{ color: '#0F172A', fontWeight: 800, fontSize: '0.85rem', marginTop: '2px' }}>📞 {booking.contactPhone || '-'}</div>
+                    </div>
+                    {booking.driverLicense && (
+                      <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.6rem 0.8rem', borderRadius: '10px' }}>
+                        <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Driver License</div>
+                        <div style={{ color: '#0F172A', fontWeight: 800, fontSize: '0.85rem', marginTop: '2px' }}>{booking.driverLicense}</div>
+                      </div>
+                    )}
+                    {booking.payment?.razorpayPaymentId && (
                   <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.6rem 0.8rem', borderRadius: '10px' }}>
-                    <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Rate</div>
-                    <div style={{ color: '#0F172A', fontWeight: 800, fontSize: '0.9rem', marginTop: '2px' }}>₹{unitPrice?.toLocaleString('en-IN')} / {isHour ? 'hour' : 'day'} × {isHour ? booking.totalHours : booking.totalDays}</div>
-                  </div>
-                  {booking.securityDeposit > 0 && (
-                    <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.6rem 0.8rem', borderRadius: '10px' }}>
-                      <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Security Deposit</div>
-                      <div style={{ color: '#0F172A', fontWeight: 800, fontSize: '0.9rem', marginTop: '2px' }}>₹{booking.securityDeposit.toLocaleString('en-IN')} <span style={{ fontSize: '0.6rem', color: '#16A34A', fontWeight: 800 }}>REFUNDABLE</span></div>
-                    </div>
-                  )}
-                  <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.6rem 0.8rem', borderRadius: '10px' }}>
-                    <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Contact</div>
-                    <div style={{ color: '#0F172A', fontWeight: 800, fontSize: '0.85rem', marginTop: '2px' }}>📞 {booking.contactPhone || '-'}</div>
-                  </div>
-                  {booking.driverLicense && (
-                    <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.6rem 0.8rem', borderRadius: '10px' }}>
-                      <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Driver License</div>
-                      <div style={{ color: '#0F172A', fontWeight: 800, fontSize: '0.85rem', marginTop: '2px' }}>{booking.driverLicense}</div>
-                    </div>
-                  )}
-                  {booking.payment?.razorpayPaymentId && (
-                    <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.6rem 0.8rem', borderRadius: '10px' }}>
-                      <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Payment ID</div>
-                      <div style={{ color: '#0F172A', fontWeight: 700, fontSize: '0.78rem', marginTop: '2px', fontFamily: 'monospace', wordBreak: 'break-all' }}>{booking.payment.razorpayPaymentId}</div>
-                    </div>
-                  )}
-                </div>
-
-                {booking.notes && (
-                  <div style={{ marginTop: '1rem', background: '#FFFBEB', border: '1px solid #FDE68A', padding: '0.6rem 0.9rem', borderRadius: '10px', fontSize: '0.85rem', color: '#92400E', fontWeight: 600 }}>
-                    <strong>Note:</strong> {booking.notes}
-                  </div>
-                )}
-
-                {/* Status Timeline */}
-                <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #F5F5F5' }}>
-                  <div style={{ display: 'flex', gap: '0' }}>
-                    {['requested', 'confirmed', 'active', 'completed'].map((s, i) => {
-                      const order = ['requested', 'confirmed', 'active', 'completed'];
-                      const currentIdx = order.indexOf(booking.status);
-                      const stepIdx = order.indexOf(s);
-                      const isComplete = stepIdx <= currentIdx;
-                      return (
-                        <div key={s} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                            {i > 0 && <div style={{ flex: 1, height: 3, background: isComplete ? '#1E3A8A' : '#F1F5F9' }} />}
-                            <div style={{ width: 22, height: 22, borderRadius: '50%', background: isComplete ? '#1E3A8A' : '#F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                              {isComplete ? <CheckCircle size={14} color="white" /> : <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#CBD5E1' }} />}
-                            </div>
-                            {i < 3 && <div style={{ flex: 1, height: 3, background: stepIdx < currentIdx ? '#1E3A8A' : '#F1F5F9' }} />}
-                          </div>
-                          <span style={{ color: isComplete ? '#111' : '#AAA', fontSize: '0.72rem', marginTop: '0.4rem', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'Rajdhani, sans-serif' }}>{s}</span>
+                        <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Payment ID</div>
+                        <div style={{ color: '#0F172A', fontWeight: 700, fontSize: '0.78rem', marginTop: '2px', fontFamily: 'monospace', wordBreak: 'break-all' }}>{booking.payment.razorpayPaymentId}</div>
+                      </div>
+                    )}
+                    <div style={{ background: (booking.payment?.balanceDue > 0 || booking.payment?.status === 'pending') ? '#FFF7ED' : '#F0FDF4', border: (booking.payment?.balanceDue > 0 || booking.payment?.status === 'pending') ? '1px solid #FFEDD5' : '1px solid #DCFCE7', padding: '0.6rem 0.8rem', borderRadius: '10px' }}>
+                      <div style={{ color: (booking.payment?.balanceDue > 0 || booking.payment?.status === 'pending') ? '#C2410C' : '#16A34A', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Payment Status</div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginTop: '2px' }}>
+                        <div style={{ color: '#0F172A', fontWeight: 800, fontSize: '0.85rem' }}>
+                          {booking.payment?.balanceDue > 0 ? `Balance: ₹${booking.payment.balanceDue.toLocaleString('en-IN')}` : booking.payment?.status === 'paid' ? 'FULLY PAID' : 'PENDING'}
                         </div>
-                      );
-                    })}
+                        {booking.payment?.balanceDue > 0 && (
+                          <button onClick={(e) => { e.stopPropagation(); handlePayBalance(booking); }} 
+                            style={{ background: '#1E3A8A', color: 'white', border: 'none', borderRadius: '6px', padding: '0.3rem 0.6rem', fontSize: '0.65rem', fontWeight: 900, cursor: 'pointer', fontFamily: 'Rajdhani, sans-serif', textTransform: 'uppercase' }}>
+                            PAY NOW
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {booking.notes && (
+                    <div style={{ marginTop: '1rem', background: '#FFFBEB', border: '1px solid #FDE68A', padding: '0.6rem 0.9rem', borderRadius: '10px', fontSize: '0.85rem', color: '#92400E', fontWeight: 600 }}>
+                      <strong>Note:</strong> {booking.notes}
+                    </div>
+                  )}
+
+                  {/* Car Specifications */}
+                  <div style={{ marginTop: '1.2rem', paddingTop: '1.2rem', borderTop: '1px solid #F5F5F5' }}>
+                    <h4 style={{ color: '#0F172A', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif', fontSize: '0.95rem', marginBottom: '0.6rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Car Specifications</h4>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.5rem' }}>
+                      {[
+                        ['Transmission', car.transmission?.toUpperCase()],
+                        ['Fuel', car.fuelType?.toUpperCase()],
+                        ['Seats', car.seats],
+                        ['Doors', car.doors],
+                        ['Body', car.bodyType?.toUpperCase()],
+                        ['Color', car.color],
+                        ['Mileage', car.mileage],
+                        ['Airbags', car.airbags],
+                      ].filter(([, v]) => v != null && v !== '').map(([k, v]) => (
+                        <div key={k} style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.5rem 0.7rem', borderRadius: '8px' }}>
+                          <div style={{ color: '#64748B', fontSize: '0.6rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>{k}</div>
+                          <div style={{ color: '#0F172A', fontWeight: 800, fontSize: '0.82rem', marginTop: '2px' }}>{v}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Pickup & Drop Locations */}
+                  {(car.location?.city || car.dropLocation?.city) && (
+                    <div style={{ marginTop: '1rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.6rem' }}>
+                      {car.location?.city && (
+                        <div style={{ background: '#EFF6FF', border: '1px solid rgba(30,58,138,0.15)', padding: '0.7rem 0.9rem', borderRadius: '10px' }}>
+                          <div style={{ color: '#1E3A8A', fontSize: '0.65rem', fontWeight: 900, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '0.2rem' }}>📍 Pickup</div>
+                          <div style={{ color: '#0F172A', fontWeight: 700, fontSize: '0.82rem' }}>{[car.location.address, car.location.city, car.location.state, car.location.pincode].filter(Boolean).join(', ')}</div>
+                        </div>
+                      )}
+                      {car.dropLocation?.city && (
+                        <div style={{ background: '#ECFDF5', border: '1px solid rgba(22,163,74,0.2)', padding: '0.7rem 0.9rem', borderRadius: '10px' }}>
+                          <div style={{ color: '#16A34A', fontSize: '0.65rem', fontWeight: 900, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '0.2rem' }}>📍 Drop</div>
+                          <div style={{ color: '#0F172A', fontWeight: 700, fontSize: '0.82rem' }}>{[car.dropLocation.address, car.dropLocation.city, car.dropLocation.state, car.dropLocation.pincode].filter(Boolean).join(', ')}</div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Timing Details */}
+                  <div style={{ marginTop: '1rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '0.5rem' }}>
+                    <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.55rem 0.8rem', borderRadius: '10px' }}>
+                      <div style={{ color: '#64748B', fontSize: '0.62rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Booked At</div>
+                      <div style={{ color: '#0F172A', fontWeight: 700, fontSize: '0.78rem', marginTop: '2px' }}>{new Date(booking.createdAt).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
+                    </div>
+                    {booking.statusHistory?.slice().reverse().find(h => h.status === 'active') && (
+                      <div style={{ background: '#EFF6FF', border: '1px solid #DBEAFE', padding: '0.55rem 0.8rem', borderRadius: '10px' }}>
+                        <div style={{ color: '#1E3A8A', fontSize: '0.62rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Actual Pickup</div>
+                        <div style={{ color: '#1E3A8A', fontWeight: 700, fontSize: '0.78rem', marginTop: '2px' }}>{new Date(booking.statusHistory.slice().reverse().find(h => h.status === 'active').updatedAt).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
+                      </div>
+                    )}
+                    {booking.statusHistory?.slice().reverse().find(h => h.status === 'completed') && (
+                      <div style={{ background: '#F0FDF4', border: '1px solid #DCFCE7', padding: '0.55rem 0.8rem', borderRadius: '10px' }}>
+                        <div style={{ color: '#16A34A', fontSize: '0.62rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Actual Drop</div>
+                        <div style={{ color: '#16A34A', fontWeight: 700, fontSize: '0.78rem', marginTop: '2px' }}>{new Date(booking.statusHistory.slice().reverse().find(h => h.status === 'completed').updatedAt).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
+                      </div>
+                    )}
+                    {booking.payment?.paidAt && (
+                      <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.55rem 0.8rem', borderRadius: '10px' }}>
+                        <div style={{ color: '#64748B', fontSize: '0.62rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Paid At</div>
+                        <div style={{ color: '#0F172A', fontWeight: 700, fontSize: '0.78rem', marginTop: '2px' }}>{new Date(booking.payment.paidAt).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* KYC Documents */}
+                  {(booking.kyc?.aadharNumber || booking.kyc?.panNumber || booking.kyc?.aadharImage || booking.kyc?.panImage || booking.kyc?.licenseImage) && (
+                    <div style={{ marginTop: '1.2rem', paddingTop: '1.2rem', borderTop: '1px solid #F5F5F5' }}>
+                      <h4 style={{ color: '#0F172A', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif', fontSize: '0.95rem', marginBottom: '0.6rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>KYC Documents</h4>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.5rem', marginBottom: '0.7rem' }}>
+                        {booking.kyc?.aadharNumber && (
+                          <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.55rem 0.8rem', borderRadius: '10px' }}>
+                            <div style={{ color: '#64748B', fontSize: '0.62rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Aadhar No.</div>
+                            <div style={{ color: '#0F172A', fontWeight: 800, fontSize: '0.82rem', marginTop: '2px', fontFamily: 'monospace' }}>{booking.kyc.aadharNumber.replace(/(\d{4})(\d{4})(\d{4})/, '$1 $2 $3')}</div>
+                          </div>
+                        )}
+                        {booking.kyc?.panNumber && (
+                          <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.55rem 0.8rem', borderRadius: '10px' }}>
+                            <div style={{ color: '#64748B', fontSize: '0.62rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>PAN No.</div>
+                            <div style={{ color: '#0F172A', fontWeight: 800, fontSize: '0.82rem', marginTop: '2px', fontFamily: 'monospace' }}>{booking.kyc.panNumber}</div>
+                          </div>
+                        )}
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                        {[
+                          ['Aadhar', booking.kyc?.aadharImage],
+                          ['PAN', booking.kyc?.panImage],
+                          ['License', booking.kyc?.licenseImage],
+                        ].filter(([, url]) => url).map(([label, url]) => (
+                          <a key={label} href={url} target="_blank" rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.3rem', textDecoration: 'none' }}>
+                            <div style={{ width: 90, height: 65, borderRadius: '8px', overflow: 'hidden', border: '1.5px solid #E2E8F0', background: '#F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              {/\.pdf$/i.test(url) ? (
+                                <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#475569' }}>PDF</span>
+                              ) : (
+                                <img src={url} alt={label} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                              )}
+                            </div>
+                            <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#475569', letterSpacing: '0.05em', textTransform: 'uppercase' }}>{label}</span>
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Status Timeline */}
+                  <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #F5F5F5' }}>
+                    <div style={{ display: 'flex', gap: '0' }}>
+                      {['requested', 'confirmed', 'active', 'completed'].map((s, i) => {
+                        const order = ['requested', 'confirmed', 'active', 'completed'];
+                        const currentIdx = order.indexOf(booking.status);
+                        const stepIdx = order.indexOf(s);
+                        const isComplete = stepIdx <= currentIdx;
+                        return (
+                          <div key={s} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                              {i > 0 && <div style={{ flex: 1, height: 3, background: isComplete ? '#1E3A8A' : '#F1F5F9' }} />}
+                              <div style={{ width: 22, height: 22, borderRadius: '50%', background: isComplete ? '#1E3A8A' : '#F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                {isComplete ? <CheckCircle size={14} color="white" /> : <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#CBD5E1' }} />}
+                              </div>
+                              {i < 3 && <div style={{ flex: 1, height: 3, background: stepIdx < currentIdx ? '#1E3A8A' : '#F1F5F9' }} />}
+                            </div>
+                            <span style={{ color: isComplete ? '#111' : '#AAA', fontSize: '0.72rem', marginTop: '0.4rem', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'Rajdhani, sans-serif' }}>{s}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
               </div>
