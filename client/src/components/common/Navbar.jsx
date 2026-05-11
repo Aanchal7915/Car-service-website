@@ -89,12 +89,10 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <div style={{ background: '#1E3A8A', borderRadius: '8px', padding: '6px 12px' }}>
-              <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 800, color: 'white', fontSize: '1.2rem', letterSpacing: '0.05em' }}>AUTO</span>
-            </div>
-            <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 900, color: '#0F172A', fontSize: '1.35rem', letterSpacing: '0.03em' }}>
-              XPRESS
+          <Link to="/" className="flex items-center gap-1 sm:gap-2">
+            <img src="/logo.jpg" alt="Auto Xpress" style={{ objectFit: 'contain' }} className="h-8 sm:h-10" />
+            <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 900, color: '#0F172A', letterSpacing: '0.03em' }} className="text-[1rem] sm:text-[1.35rem]">
+              Auto Xpress
             </span>
           </Link>
 
@@ -209,7 +207,7 @@ export default function Navbar() {
                           {user.name?.charAt(0).toUpperCase()}
                         </div>
                       )}
-                      <span className="hidden sm:block">{user.name?.split(' ')[0]}</span>
+                      <span className="hidden sm:block">{user.name}</span>
                       <ChevronDown size={14} />
                     </>
                   )}

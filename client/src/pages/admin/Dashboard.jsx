@@ -5,7 +5,7 @@ import API from '../../api/axios';
 import * as adminApi from '../../api/adminApi';
 import * as rentalApi from '../../api/rentalApi';
 import toast from 'react-hot-toast';
-import { Users, Car, Wrench, TrendingUp, Package, Clock, Check, CheckCircle, AlertCircle, BarChart3, Settings, LogOut, Home, ShoppingBag, List, Loader, Plus, Edit2, Trash2, Menu, X, Calendar, MapPin } from 'lucide-react';
+import { Users, Car, Wrench, TrendingUp, Package, Clock, Check, CheckCircle, AlertCircle, BarChart3, Settings, LogOut, Home, ShoppingBag, List, Loader, Plus, Edit2, Trash2, Menu, X, Calendar, MapPin, Search, ChevronUp, ChevronDown } from 'lucide-react';
 import { io } from 'socket.io-client';
 
 const StatCard = ({ icon: Icon, label, value, color }) => (
@@ -1762,11 +1762,11 @@ const RentalsTab = () => {
           <div style={{ background: '#F9F9F9', padding: '1.5rem', borderRadius: '16px', marginBottom: '1.2rem', border: '1px solid #EEE' }}>
             <h4 style={{ fontSize: '0.78rem', fontWeight: 900, marginBottom: '1rem', color: '#111', textTransform: 'uppercase', letterSpacing: '0.08em' }}>VEHICLE IDENTITY</h4>
             <div className="admin-form-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.9rem' }}>
-              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>REGISTRATION NUMBER *</label><input className="input-light" required placeholder="e.g. DL01AB1234" value={form.registrationNumber} onChange={e => setForm({ ...form, registrationNumber: e.target.value.toUpperCase() })} style={{ height: 46, textTransform: 'uppercase' }} /></div>
-              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>CAR NUMBER</label><input className="input-light" placeholder="e.g. DL-07-BC-7324" value={form.carNumber} onChange={e => setForm({ ...form, carNumber: e.target.value })} style={{ height: 46 }} /></div>
-              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>RC NUMBER</label><input className="input-light" placeholder="RC book number" value={form.rcNumber} onChange={e => setForm({ ...form, rcNumber: e.target.value })} style={{ height: 46 }} /></div>
-              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>CHASSIS NUMBER</label><input className="input-light" placeholder="VIN" value={form.chassisNumber} onChange={e => setForm({ ...form, chassisNumber: e.target.value })} style={{ height: 46 }} /></div>
-              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>ENGINE NUMBER</label><input className="input-light" value={form.engineNumber} onChange={e => setForm({ ...form, engineNumber: e.target.value })} style={{ height: 46 }} /></div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>REGISTRATION NUMBER *</label><input className="input-light" required placeholder="e.g. DL01AB1234" maxLength={12} value={form.registrationNumber} onChange={e => setForm({ ...form, registrationNumber: e.target.value.toUpperCase() })} style={{ height: 46, textTransform: 'uppercase' }} /></div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>CAR NUMBER</label><input className="input-light" placeholder="e.g. DL-07-BC-7324" maxLength={15} value={form.carNumber} onChange={e => setForm({ ...form, carNumber: e.target.value.toUpperCase() })} style={{ height: 46, textTransform: 'uppercase' }} /></div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>RC NUMBER</label><input className="input-light" placeholder="RC book number" maxLength={15} value={form.rcNumber} onChange={e => setForm({ ...form, rcNumber: e.target.value.toUpperCase() })} style={{ height: 46, textTransform: 'uppercase' }} /></div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>CHASSIS NUMBER</label><input className="input-light" placeholder="VIN" maxLength={17} value={form.chassisNumber} onChange={e => setForm({ ...form, chassisNumber: e.target.value.toUpperCase() })} style={{ height: 46, textTransform: 'uppercase' }} /></div>
+              <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>ENGINE NUMBER</label><input className="input-light" maxLength={15} value={form.engineNumber} onChange={e => setForm({ ...form, engineNumber: e.target.value.toUpperCase() })} style={{ height: 46, textTransform: 'uppercase' }} /></div>
               <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>COLOR</label><input className="input-light" placeholder="e.g. Pearl White" value={form.color} onChange={e => setForm({ ...form, color: e.target.value })} style={{ height: 46 }} /></div>
               <div><label style={{ fontSize: '0.75rem', color: '#666', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>BODY TYPE</label>
                 <select className="input-light" value={form.bodyType} onChange={e => setForm({ ...form, bodyType: e.target.value })} style={{ height: 46 }}>
@@ -1891,7 +1891,7 @@ const statusColorMap = {
   cancelled: { bg: '#FEE2E2', fg: '#DC2626' },
 };
 
-const RentalBookingsTab = () => {
+const RentalBookingsTab = ({ setActiveTab, setTrackingBookingId }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
@@ -2030,7 +2030,15 @@ const RentalBookingsTab = () => {
                 onMouseLeave={e => { e.currentTarget.style.borderColor = '#EEE'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)'; }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
                   <span style={{ background: '#0F172A', color: 'white', padding: '0.25rem 0.55rem', borderRadius: '6px', fontSize: '0.65rem', fontWeight: 900, fontFamily: 'monospace', letterSpacing: '0.05em' }}>#{b._id.slice(-8).toUpperCase()}</span>
-                  <span style={{ background: sc.bg, color: sc.fg, padding: '0.2rem 0.6rem', borderRadius: '999px', fontSize: '0.65rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{b.status}</span>
+                  <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                    {['active', 'confirmed'].includes(b.status) && (
+                      <button onClick={(e) => { e.stopPropagation(); setTrackingBookingId(b._id); setActiveTab('live-tracking'); }}
+                        style={{ background: 'rgba(30,58,138,0.1)', color: '#1E3A8A', border: 'none', padding: '0.2rem 0.6rem', borderRadius: '999px', fontSize: '0.6rem', fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                        <MapPin size={10} /> TRACK
+                      </button>
+                    )}
+                    <span style={{ background: sc.bg, color: sc.fg, padding: '0.2rem 0.6rem', borderRadius: '999px', fontSize: '0.65rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{b.status}</span>
+                  </div>
                 </div>
                 <div style={{ height: 110, background: '#F1F5F9', borderRadius: '10px', overflow: 'hidden', marginBottom: '0.6rem' }}>
                   {img ? <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#CBD5E1' }}><Car size={32} /></div>}
@@ -2039,7 +2047,7 @@ const RentalBookingsTab = () => {
                   {b.carSnapshot?.brand || car.brand} {b.carSnapshot?.model || car.model}
                 </h4>
                 <p style={{ color: '#64748B', fontSize: '0.72rem', fontWeight: 600, marginTop: '0.2rem' }}>
-                  {b.user?.name || 'Customer'} • {b.contactPhone || b.user?.phone || '-'}
+                  {b.fullName || b.user?.name || 'Customer'} • {b.contactPhone || b.user?.phone || '-'}
                 </p>
                 <div style={{ marginTop: '0.6rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: '0.7rem', color: '#475569', fontWeight: 700 }}>
@@ -2058,13 +2066,13 @@ const RentalBookingsTab = () => {
       )}
 
       {selected && (
-        <RentalBookingDetailModal booking={selected} onClose={() => setSelected(null)} onUpdateStatus={(s) => handleStatus(selected._id, s)} />
+        <RentalBookingDetailModal booking={selected} onClose={() => setSelected(null)} onUpdateStatus={(s) => handleStatus(selected._id, s)} setActiveTab={setActiveTab} />
       )}
     </div>
   );
 };
 
-const RentalBookingDetailModal = ({ booking, onClose, onUpdateStatus }) => {
+const RentalBookingDetailModal = ({ booking, onClose, onUpdateStatus, setActiveTab, setTrackingBookingId }) => {
   const sc = statusColorMap[booking.status] || { bg: '#F1F5F9', fg: '#475569' };
   const isHour = booking.rentalUnit === 'hour';
   const car = booking.rentalCar || {};
@@ -2093,6 +2101,18 @@ const RentalBookingDetailModal = ({ booking, onClose, onUpdateStatus }) => {
 
         {/* Body */}
         <div style={{ padding: '1.5rem 1.8rem' }}>
+          {/* Status update at top */}
+          <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center', flexWrap: 'wrap', marginBottom: '1.5rem', padding: '1rem', background: '#F1F5F9', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+            <label style={{ fontSize: '0.85rem', color: '#0F172A', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Update Current Status:</label>
+            <select value={booking.status} onChange={e => onUpdateStatus(e.target.value)}
+              className="input-light" style={{ padding: '0.5rem 0.8rem', fontSize: '0.9rem', height: 'auto', background: 'white', fontWeight: 800, minWidth: 160, border: '1px solid #CBD5E1' }}>
+              <option value="requested">Requested</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="active">Active</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
           {/* Car summary */}
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1.2rem' }}>
             {img ? <img src={img} alt="" style={{ width: 110, height: 80, objectFit: 'cover', borderRadius: '12px', border: '1px solid #EEE' }} /> : <div style={{ width: 110, height: 80, borderRadius: '12px', background: '#F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Car size={32} color="#CBD5E1" /></div>}
@@ -2110,15 +2130,26 @@ const RentalBookingDetailModal = ({ booking, onClose, onUpdateStatus }) => {
               )}
             </div>
           </div>
+          
+          {/* Vehicle Identity */}
+          <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '1rem', marginBottom: '1rem' }}>
+            <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '0.4rem' }}>Vehicle Identity</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.4rem 1rem', fontSize: '0.85rem', color: '#0F172A', fontWeight: 700 }}>
+              <div><strong style={{ color: '#475569', fontWeight: 600 }}>Reg No:</strong> <span style={{ fontFamily: 'monospace' }}>{car.registrationNumber || '-'}</span></div>
+              <div><strong style={{ color: '#475569', fontWeight: 600 }}>Car No:</strong> {car.carNumber || '-'}</div>
+              <div><strong style={{ color: '#475569', fontWeight: 600 }}>RC No:</strong> {car.rcNumber || '-'}</div>
+              <div><strong style={{ color: '#475569', fontWeight: 600 }}>Chassis:</strong> {car.chassisNumber || '-'}</div>
+              <div><strong style={{ color: '#475569', fontWeight: 600 }}>Engine:</strong> {car.engineNumber || '-'}</div>
+            </div>
+          </div>
 
           {/* Customer */}
           <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '1rem', marginBottom: '1rem' }}>
             <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '0.4rem' }}>Customer</div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '0.4rem 1rem', fontSize: '0.85rem', color: '#0F172A', fontWeight: 700 }}>
-              <div><strong style={{ color: '#475569', fontWeight: 600 }}>Name:</strong> {booking.user?.name || '-'}</div>
+              <div><strong style={{ color: '#475569', fontWeight: 600 }}>Name:</strong> {booking.fullName || booking.user?.name || '-'}</div>
               <div><strong style={{ color: '#475569', fontWeight: 600 }}>Phone:</strong> {booking.contactPhone || booking.user?.phone || '-'}</div>
               <div><strong style={{ color: '#475569', fontWeight: 600 }}>Email:</strong> {booking.user?.email || '-'}</div>
-              {booking.driverLicense && <div><strong style={{ color: '#475569', fontWeight: 600 }}>License:</strong> {booking.driverLicense}</div>}
             </div>
           </div>
 
@@ -2189,6 +2220,9 @@ const RentalBookingDetailModal = ({ booking, onClose, onUpdateStatus }) => {
                 {booking.kyc?.panNumber && (
                   <div><strong style={{ color: '#475569', fontWeight: 600 }}>PAN:</strong> <span style={{ fontFamily: 'monospace' }}>{booking.kyc.panNumber}</span></div>
                 )}
+                {booking.driverLicense && (
+                  <div><strong style={{ color: '#475569', fontWeight: 600 }}>License:</strong> <span style={{ fontFamily: 'monospace' }}>{booking.driverLicense}</span></div>
+                )}
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem' }}>
                 {[
@@ -2236,18 +2270,6 @@ const RentalBookingDetailModal = ({ booking, onClose, onUpdateStatus }) => {
             </div>
           )}
 
-          {/* Status update */}
-          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
-            <label style={{ fontSize: '0.78rem', color: '#475569', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Update Status:</label>
-            <select value={booking.status} onChange={e => onUpdateStatus(e.target.value)}
-              className="input-light" style={{ padding: '0.4rem 0.7rem', fontSize: '0.85rem', height: 'auto', background: '#F9F9F9', fontWeight: 700, minWidth: 140 }}>
-              <option value="requested">Requested</option>
-              <option value="confirmed">Confirmed</option>
-              <option value="active">Active</option>
-              <option value="completed">Completed</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
-          </div>
         </div>
       </div>
     </div>
@@ -2256,11 +2278,20 @@ const RentalBookingDetailModal = ({ booking, onClose, onUpdateStatus }) => {
 
 
 // ── LIVE TRACKING TAB ──────────────────────────────────────────
-const LiveTrackingTab = () => {
+const LiveTrackingTab = ({ targetId, onClearTarget }) => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [selectedBooking, setSelectedBooking] = useState(targetId || null);
   const [socketConnected, setSocketConnected] = useState(false);
+  const [filterText, setFilterText] = useState('');
+  const [expandedCard, setExpandedCard] = useState(targetId || null);
+
+  useEffect(() => {
+    if (targetId) {
+      setSelectedBooking(targetId);
+      setExpandedCard(targetId);
+    }
+  }, [targetId]);
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersRef = useRef({});
@@ -2368,7 +2399,16 @@ const LiveTrackingTab = () => {
           });
 
           const marker = L.marker([b.currentLocation.lat, b.currentLocation.lng], { icon: carIcon })
-            .bindPopup(`<strong>${b.carSnapshot?.brand} ${b.carSnapshot?.model}</strong><br/>Renter: ${b.user?.name || 'N/A'}<br/>Phone: ${b.user?.phone || 'N/A'}`)
+            .bindPopup(`
+              <div style="font-family: Rajdhani, sans-serif;">
+                <strong style="font-size: 1.1rem; color: #1E3A8A;">${b.carSnapshot?.brand || b.rentalCar?.brand} ${b.carSnapshot?.model || b.rentalCar?.model}</strong><br/>
+                <div style="margin-top: 5px; font-size: 0.85rem; color: #475569; font-weight: 700;">
+                  👤 Renter: ${b.user?.name || 'N/A'}<br/>
+                  📞 Phone: ${b.user?.phone || 'N/A'}<br/>
+                  🆔 Reg: ${b.rentalCar?.registrationNumber || b.carSnapshot?.registrationNumber || 'N/A'}
+                </div>
+              </div>
+            `)
             .addTo(map);
 
           markersRef.current[b._id] = marker;
@@ -2404,6 +2444,7 @@ const LiveTrackingTab = () => {
 
   const focusBooking = (booking) => {
     setSelectedBooking(booking._id);
+    if (onClearTarget) onClearTarget(); // Clear the global tracking ID once focused
     if (mapInstanceRef.current && booking.currentLocation?.lat) {
       mapInstanceRef.current.setView([booking.currentLocation.lat, booking.currentLocation.lng], 15, { animate: true });
       if (markersRef.current[booking._id]) {
@@ -2412,66 +2453,127 @@ const LiveTrackingTab = () => {
     }
   };
 
+  const filteredBookings = bookings.filter(b => {
+    const searchStr = filterText.toLowerCase();
+    const renterName = (b.user?.name || '').toLowerCase();
+    const carBrand = (b.carSnapshot?.brand || b.rentalCar?.brand || '').toLowerCase();
+    const carModel = (b.carSnapshot?.model || b.rentalCar?.model || '').toLowerCase();
+    return renterName.includes(searchStr) || carBrand.includes(searchStr) || carModel.includes(searchStr);
+  });
+
   if (loading) return <div style={{textAlign:'center', padding:'3rem', color:'#888'}}><Loader style={{ animation: 'spin 1s linear infinite' }} size={24} /></div>;
 
   return (
     <div style={{ display: 'flex', gap: '1.5rem', height: 'calc(100vh - 120px)' }}>
       {/* Sidebar - Active Bookings List */}
-      <div style={{ width: 340, flexShrink: 0, background: '#FFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '1.5rem', overflowY: 'auto', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
-          <h3 style={{ color: '#111', fontWeight: 950, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.3rem', margin: 0 }}>
-            ACTIVE <span style={{ color: '#1E3A8A' }}>RENTALS</span>
-          </h3>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: socketConnected ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', padding: '0.3rem 0.8rem', borderRadius: '999px' }}>
-            <div style={{ width: 8, height: 8, borderRadius: '50%', background: socketConnected ? '#10B981' : '#EF4444', animation: socketConnected ? 'pulse 2s infinite' : 'none' }} />
-            <span style={{ fontSize: '0.7rem', fontWeight: 800, color: socketConnected ? '#10B981' : '#EF4444' }}>
-              {socketConnected ? 'LIVE' : 'OFFLINE'}
-            </span>
+      <div style={{ width: 340, flexShrink: 0, background: '#FFF', border: '1.5px solid #EEE', borderRadius: '24px', padding: '1.5rem', display: 'flex', flexDirection: 'column', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
+        <div style={{ marginBottom: '1.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+            <h3 style={{ color: '#111', fontWeight: 950, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.3rem', margin: 0 }}>
+              ACTIVE <span style={{ color: '#1E3A8A' }}>RENTALS</span>
+            </h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: socketConnected ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', padding: '0.2rem 0.6rem', borderRadius: '999px' }}>
+              <div style={{ width: 6, height: 6, borderRadius: '50%', background: socketConnected ? '#10B981' : '#EF4444', animation: socketConnected ? 'pulse 2s infinite' : 'none' }} />
+              <span style={{ fontSize: '0.62rem', fontWeight: 800, color: socketConnected ? '#10B981' : '#EF4444' }}>
+                {socketConnected ? 'LIVE' : 'OFFLINE'}
+              </span>
+            </div>
+          </div>
+          
+          <div style={{ position: 'relative' }}>
+            <Search size={14} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#94A3B8' }} />
+            <input 
+              type="text" 
+              placeholder="Filter by renter or car..." 
+              value={filterText}
+              onChange={(e) => setFilterText(e.target.value)}
+              style={{ width: '100%', background: '#F8FAFC', border: '1.5px solid #E2E8F0', borderRadius: '12px', padding: '0.6rem 0.8rem 0.6rem 2rem', fontSize: '0.8rem', fontWeight: 600, outline: 'none', transition: 'all 0.2s' }}
+              onFocus={(e) => e.target.style.borderColor = '#1E3A8A'}
+              onBlur={(e) => e.target.style.borderColor = '#E2E8F0'}
+            />
           </div>
         </div>
 
-        {bookings.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#AAA' }}>
-            <MapPin size={40} style={{ marginBottom: '1rem', color: '#DDD' }} />
-            <p style={{ fontWeight: 600 }}>No active rentals at the moment</p>
-          </div>
-        ) : bookings.map(b => (
-          <div key={b._id} onClick={() => focusBooking(b)}
-            style={{
-              background: selectedBooking === b._id ? '#EFF6FF' : '#F9F9F9',
-              border: `1.5px solid ${selectedBooking === b._id ? '#1E3A8A' : '#EEE'}`,
-              borderRadius: '16px', padding: '1rem', marginBottom: '0.8rem', cursor: 'pointer',
-              transition: 'all 0.2s'
-            }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <div>
-                <h4 style={{ color: '#111', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.1rem', margin: 0 }}>
-                  {b.carSnapshot?.brand} {b.carSnapshot?.model}
-                </h4>
-                <p style={{ color: '#666', fontSize: '0.8rem', fontWeight: 600, margin: '0.3rem 0' }}>
-                  Renter: {b.user?.name || 'N/A'}
-                </p>
-                <p style={{ color: '#888', fontSize: '0.75rem', fontWeight: 600, margin: 0 }}>
-                  {b.user?.phone || 'No phone'}
-                </p>
-              </div>
-              {b.currentLocation?.lat ? (
-                <div style={{ background: 'rgba(16,185,129,0.1)', padding: '0.3rem 0.6rem', borderRadius: '8px' }}>
-                  <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#10B981' }}>TRACKING</span>
-                </div>
-              ) : (
-                <div style={{ background: 'rgba(245,158,11,0.1)', padding: '0.3rem 0.6rem', borderRadius: '8px' }}>
-                  <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#F59E0B' }}>WAITING</span>
-                </div>
-              )}
+        <div style={{ flex: 1, overflowY: 'auto', paddingRight: '0.2rem' }}>
+          {filteredBookings.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#AAA' }}>
+              <MapPin size={40} style={{ marginBottom: '1rem', color: '#DDD' }} />
+              <p style={{ fontWeight: 600, fontSize: '0.9rem' }}>No matching rentals</p>
             </div>
-            {b.currentLocation?.updatedAt && (
-              <p style={{ color: '#94A3B8', fontSize: '0.7rem', fontWeight: 700, margin: '0.5rem 0 0', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                <Clock size={11} /> Last update: {new Date(b.currentLocation.updatedAt).toLocaleTimeString('en-IN')}
-              </p>
-            )}
-          </div>
-        ))}
+          ) : filteredBookings.map(b => {
+            const car = {
+              ...(b.carSnapshot || {}),
+              ...(typeof b.rentalCar === 'object' ? b.rentalCar : {})
+            };
+            const isExpanded = expandedCard === b._id;
+            
+            return (
+              <div key={b._id} onClick={() => focusBooking(b)}
+                style={{
+                  background: selectedBooking === b._id ? '#EFF6FF' : '#F9F9F9',
+                  border: `1.5px solid ${selectedBooking === b._id ? '#1E3A8A' : '#EEE'}`,
+                  borderRadius: '16px', padding: '1rem', marginBottom: '0.8rem', cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <div style={{ flex: 1 }}>
+                    <h4 style={{ color: '#111', fontWeight: 900, fontFamily: 'Rajdhani, sans-serif', fontSize: '1.1rem', margin: 0 }}>
+                      {car.brand} {car.model}
+                    </h4>
+                    <p style={{ color: '#666', fontSize: '0.8rem', fontWeight: 600, margin: '0.3rem 0' }}>
+                      Renter: {b.user?.name || 'N/A'}
+                    </p>
+                    <p style={{ color: '#888', fontSize: '0.75rem', fontWeight: 600, margin: 0 }}>
+                      {b.user?.phone || 'No phone'}
+                    </p>
+                    
+                    {isExpanded && (
+                      <div style={{ marginTop: '0.8rem', padding: '0.55rem 0.7rem', background: '#FFF', borderRadius: '10px', border: '1px solid #E2E8F0', boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.02)' }}>
+                        <div style={{ fontSize: '0.62rem', fontWeight: 800, color: '#94A3B8', textTransform: 'uppercase', marginBottom: '0.45rem', letterSpacing: '0.05em' }}>Vehicle Identity</div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '52px 1fr', rowGap: '0.35rem', columnGap: '0.4rem' }}>
+                          {[
+                            ['REG', car.registrationNumber],
+                            ['CAR NO', car.carNumber],
+                            ['CHASSIS', car.chassisNumber],
+                            ['ENGINE', car.engineNumber],
+                            ['RC NO', car.rcNumber],
+                          ].flatMap(([label, value]) => [
+                            <span key={`${label}-l`} style={{ fontSize: '0.58rem', color: '#475569', fontWeight: 700 }}>{label}:</span>,
+                            <span key={`${label}-v`} style={{ fontSize: '0.58rem', color: '#475569', fontWeight: 700, fontFamily: 'monospace', wordBreak: 'break-all' }}>{value || '-'}</span>,
+                          ])}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
+                    {b.currentLocation?.lat ? (
+                      <div style={{ background: 'rgba(16,185,129,0.1)', padding: '0.3rem 0.6rem', borderRadius: '8px' }}>
+                        <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#10B981' }}>TRACKING</span>
+                      </div>
+                    ) : (
+                      <div style={{ background: 'rgba(245,158,11,0.1)', padding: '0.3rem 0.6rem', borderRadius: '8px' }}>
+                        <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#F59E0B' }}>WAITING</span>
+                      </div>
+                    )}
+                    
+                    <div onClick={(e) => { e.stopPropagation(); setExpandedCard(isExpanded ? null : b._id); }}
+                      style={{ padding: '0.4rem', color: '#94A3B8', transition: 'color 0.2s' }}
+                      onMouseEnter={(e) => e.currentTarget.style.color = '#1E3A8A'}
+                      onMouseLeave={(e) => e.currentTarget.style.color = '#94A3B8'}>
+                      {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                    </div>
+                  </div>
+                </div>
+                
+                {b.currentLocation?.updatedAt && (
+                  <p style={{ color: '#94A3B8', fontSize: '0.7rem', fontWeight: 700, margin: '0.5rem 0 0', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                    <Clock size={11} /> Last update: {new Date(b.currentLocation.updatedAt).toLocaleTimeString('en-IN')}
+                  </p>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* Map Container */}
@@ -2496,6 +2598,7 @@ export default function AdminDashboard() {
   const [recentServices, setRecentServices] = useState([]);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [trackingBookingId, setTrackingBookingId] = useState(null);
 
   useEffect(() => {
     if (!user || user.role !== 'admin') { navigate('/'); return; }
@@ -2557,8 +2660,13 @@ export default function AdminDashboard() {
       `}</style>
       {/* Mobile top bar */}
       <div className="admin-mobile-topbar" style={{ display: 'none', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 60, background: '#111', borderBottom: '1px solid #2A2A2A', padding: '0.7rem 1rem', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 950, color: 'white', fontSize: '1.3rem', letterSpacing: '-0.02em' }}>
-          <span style={{ color: '#E53935' }}>AUTO</span>XPRESS
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+          <div style={{ width: 36, height: 36, background: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', border: '2px solid #2A2A2A' }}>
+            <img src="/logo.jpg" alt="Auto Xpress" style={{ width: '85%', height: '85%', objectFit: 'contain' }} />
+          </div>
+          <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 950, color: 'white', fontSize: '1.2rem', letterSpacing: '-0.02em' }}>
+            Auto Xpress
+          </span>
         </div>
         <button onClick={() => setSidebarOpen(!sidebarOpen)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', padding: '0.3rem' }}>
           {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
@@ -2569,8 +2677,13 @@ export default function AdminDashboard() {
       {/* Sidebar */}
       <div className={`admin-sidebar${sidebarOpen ? ' open' : ''}`} style={{ width: 280, background: '#111', borderRight: '1px solid #2A2A2A', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
         <div style={{ padding: '2rem 1.5rem', borderBottom: '1px solid #2A2A2A' }}>
-          <div style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 950, color: 'white', fontSize: '1.8rem', letterSpacing: '-0.02em', lineHeight: 1 }}>
-            <span style={{ color: '#E53935' }}>AUTO</span>XPRESS
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
+            <div style={{ width: 50, height: 50, background: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', border: '3px solid #2A2A2A' }}>
+              <img src="/logo.jpg" alt="Auto Xpress" style={{ width: '85%', height: '85%', objectFit: 'contain' }} />
+            </div>
+            <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 950, color: 'white', fontSize: '1.5rem', letterSpacing: '-0.02em' }}>
+              Auto Xpress
+            </span>
           </div>
           <div style={{ color: '#555', fontSize: '0.8rem', marginTop: '0.4rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>ADMIN PORTAL</div>
         </div>
@@ -2665,11 +2778,11 @@ export default function AdminDashboard() {
           {activeTab === 'parts' && <PartsTab />}
           {activeTab === 'bikes' && <BikesTab />}
           {activeTab === 'rentals' && <RentalsTab />}
-          {activeTab === 'rental-bookings' && <RentalBookingsTab />}
+          {activeTab === 'rental-bookings' && <RentalBookingsTab setActiveTab={setActiveTab} setTrackingBookingId={setTrackingBookingId} />}
           {activeTab === 'sells' && <SellsTab />}
           {activeTab === 'orders' && <OrdersTab />}
           {activeTab === 'leads' && <LeadsTab />}
-           {activeTab === 'live-tracking' && <LiveTrackingTab />}
+          {activeTab === 'live-tracking' && <LiveTrackingTab targetId={trackingBookingId} onClearTarget={() => setTrackingBookingId(null)} />}
         </div>
       </div>
     </div>

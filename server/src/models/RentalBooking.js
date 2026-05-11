@@ -12,6 +12,10 @@ const rentalBookingSchema = new mongoose.Schema(
       image: String,
       pricePerDay: Number,
       carNumber: String,
+      registrationNumber: String,
+      rcNumber: String,
+      chassisNumber: String,
+      engineNumber: String,
     },
     pickupDate: { type: Date, required: true },
     returnDate: { type: Date, required: true },
@@ -33,6 +37,7 @@ const rentalBookingSchema = new mongoose.Schema(
     },
     driverLicense: { type: String },
     contactPhone: { type: String, required: true },
+    fullName: { type: String },
     notes: { type: String },
     kyc: {
       aadharNumber: { type: String, trim: true },

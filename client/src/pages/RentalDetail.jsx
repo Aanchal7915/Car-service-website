@@ -40,6 +40,7 @@ export default function RentalDetail() {
     paymentPlan: 'full', // 'full' | 'advance' | 'on_drop'
     rentalUnit: 'day',
     pickupAddress: { street: '', city: '', state: '', pincode: '' },
+    fullName: '',
     aadharNumber: '',
     panNumber: '',
   });
@@ -60,8 +61,12 @@ export default function RentalDetail() {
   };
 
   useEffect(() => {
-    if (user && user.phone) {
-      setForm(prev => ({ ...prev, contactPhone: user.phone }));
+    if (user) {
+      setForm(prev => ({ 
+        ...prev, 
+        contactPhone: user.phone || prev.contactPhone,
+        fullName: user.name || prev.fullName
+      }));
     }
   }, [user]);
 
@@ -151,6 +156,7 @@ export default function RentalDetail() {
       fd.append('pickupTime', form.pickupTime);
       fd.append('returnTime', form.returnTime);
       fd.append('contactPhone', form.contactPhone);
+      fd.append('fullName', form.fullName);
       fd.append('driverLicense', form.driverLicense || '');
       fd.append('notes', form.notes || '');
       fd.append('paymentMethod', form.paymentMethod);
@@ -167,7 +173,7 @@ export default function RentalDetail() {
 
       if (!res.order) {
         toast.success('Booking created!');
-        navigate('/my-bookings');
+        navigate('/my-bookings?tab=rentals');
         return;
       }
 
@@ -190,7 +196,7 @@ export default function RentalDetail() {
         key: razorpayKey,
         amount: order.amount,
         currency: order.currency,
-        name: 'AutoExpress',
+        name: 'Auto Xpress',
         description: `${car.brand} ${car.model} Booking`,
         order_id: order.id,
         handler: async (response) => {
@@ -200,7 +206,7 @@ export default function RentalDetail() {
               bookingId: res.booking._id
             });
             toast.success('Rental booked and paid successfully!');
-            navigate('/my-bookings');
+            navigate('/my-bookings?tab=rentals');
           } catch (err) {
             toast.error('Payment verification failed');
           }
@@ -240,6 +246,30 @@ export default function RentalDetail() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#F8FAFC' }}>
+      <style>{`
+        @media (max-width: 992px) {
+          .rental-detail-grid { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
+          .rental-main-image { height: 300px !important; }
+        }
+        @media (max-width: 480px) {
+          .rental-main-image { height: 160px !important; }
+          .rental-detail-card, .rental-form-card { padding: 0.6rem !important; border-radius: 10px !important; }
+          .rental-detail-grid { gap: 0.6rem !important; }
+          input, select, .input-light { font-size: 0.62rem !important; height: 30px !important; padding: 0.2rem 0.5rem !important; }
+          label { font-size: 0.45rem !important; margin-bottom: 0.1rem !important; letter-spacing: 0.01em !important; }
+          h1 { font-size: 1.1rem !important; }
+          h2 { font-size: 0.9rem !important; }
+          h3 { font-size: 0.8rem !important; }
+          .rental-price-value { font-size: 1.3rem !important; }
+          .rental-price-unit { font-size: 0.65rem !important; }
+          .rental-stat-grid { grid-template-columns: 1fr 1fr !important; gap: 0.4rem !important; }
+          .rental-stat-grid > div { padding: 0.5rem !important; }
+          .rental-stat-grid > div div { font-size: 0.7rem !important; }
+          .rental-stat-grid > div span { font-size: 0.45rem !important; }
+          button { font-size: 0.68rem !important; padding: 0.4rem 0.6rem !important; }
+          p { font-size: 0.72rem !important; line-height: 1.4 !important; }
+        }
+      `}</style>
       <div className="max-w-6xl mx-auto px-4 py-6">
         <button onClick={() => navigate('/rentals')}
           style={{ background: 'none', border: 'none', color: '#1E3A8A', display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer', fontWeight: 700, marginBottom: '1.2rem' }}>
@@ -250,7 +280,7 @@ export default function RentalDetail() {
           {/* LEFT: car details */}
           <div>
             <div style={{ background: 'white', borderRadius: '20px', overflow: 'hidden', border: '1px solid #E2E8F0', marginBottom: '1.5rem' }}>
-              <div style={{ height: '380px', background: '#F1F5F9' }}>
+              <div className="rental-main-image" style={{ height: '380px', background: '#F1F5F9' }}>
                 {car.images?.[activeImage] ? (
                   <img src={car.images[activeImage]} alt={car.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 ) : (
@@ -269,7 +299,7 @@ export default function RentalDetail() {
               )}
             </div>
 
-            <div style={{ background: 'white', borderRadius: '20px', padding: '1.5rem', border: '1px solid #E2E8F0' }}>
+            <div className="rental-detail-card" style={{ background: 'white', borderRadius: '20px', padding: '1.5rem', border: '1px solid #E2E8F0' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.8rem' }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.3rem' }}>
@@ -292,8 +322,8 @@ export default function RentalDetail() {
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.8rem', flexWrap: 'wrap', margin: '1.2rem 0' }}>
                 {allowedUnits.includes('day') && car.pricePerDay > 0 && (
                   <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.3rem' }}>
-                    <span style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.1rem', fontWeight: 950, color: '#1E3A8A' }}>₹{car.pricePerDay?.toLocaleString('en-IN')}</span>
-                    <span style={{ color: '#64748B', fontWeight: 700, fontSize: '0.9rem' }}>/ day</span>
+                    <span className="rental-price-value" style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.1rem', fontWeight: 950, color: '#1E3A8A' }}>₹{car.pricePerDay?.toLocaleString('en-IN')}</span>
+                    <span className="rental-price-unit" style={{ color: '#64748B', fontWeight: 700, fontSize: '0.9rem' }}>/ day</span>
                   </div>
                 )}
                 {allowedUnits.includes('day') && allowedUnits.includes('hour') && car.pricePerDay > 0 && car.pricePerHour > 0 && (
@@ -301,13 +331,13 @@ export default function RentalDetail() {
                 )}
                 {allowedUnits.includes('hour') && car.pricePerHour > 0 && (
                   <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.3rem' }}>
-                    <span style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.1rem', fontWeight: 950, color: '#1E3A8A' }}>₹{car.pricePerHour?.toLocaleString('en-IN')}</span>
-                    <span style={{ color: '#64748B', fontWeight: 700, fontSize: '0.9rem' }}>/ hour</span>
+                    <span className="rental-price-value" style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2.1rem', fontWeight: 950, color: '#1E3A8A' }}>₹{car.pricePerHour?.toLocaleString('en-IN')}</span>
+                    <span className="rental-price-unit" style={{ color: '#64748B', fontWeight: 700, fontSize: '0.9rem' }}>/ hour</span>
                   </div>
                 )}
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.8rem', marginTop: '1.5rem' }}>
+              <div className="rental-stat-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.8rem', marginTop: '1.5rem' }}>
                 {[
                   { icon: Settings, label: 'Transmission', value: car.transmission?.toUpperCase() },
                   { icon: Fuel, label: 'Fuel', value: car.fuelType?.toUpperCase() },
@@ -492,7 +522,7 @@ export default function RentalDetail() {
           </div>
 
           {/* RIGHT: Booking form */}
-          <form onSubmit={handleSubmit} style={{ background: 'white', borderRadius: '20px', padding: '1.5rem', border: '1px solid #E2E8F0', height: 'fit-content' }}>
+          <form onSubmit={handleSubmit} className="rental-form-card" style={{ background: 'white', borderRadius: '20px', padding: '1.5rem', border: '1px solid #E2E8F0', height: 'fit-content' }}>
             <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.3rem', fontWeight: 950, color: '#0F172A', marginBottom: '1rem', letterSpacing: '0.01em' }}>
               BOOK THIS CAR
             </h2>
@@ -541,6 +571,11 @@ export default function RentalDetail() {
               </div>
             </div>
 
+            <label style={{ fontSize: '0.65rem', color: '#64748B', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>FULL NAME *</label>
+            <input required placeholder="Your Full Name" value={form.fullName}
+              onChange={e => setForm({ ...form, fullName: e.target.value })}
+              className="input-light" style={{ height: '42px', marginBottom: '0.8rem' }} />
+
             <label style={{ fontSize: '0.65rem', color: '#64748B', fontWeight: 800, marginTop: '0.4rem', marginBottom: '0.3rem', display: 'block' }}>CONTACT PHONE *</label>
             <input required type="tel" placeholder="10-digit mobile" value={form.contactPhone}
               onChange={e => setForm({ ...form, contactPhone: e.target.value })}
@@ -556,8 +591,9 @@ export default function RentalDetail() {
 
               <label style={{ fontSize: '0.65rem', color: '#64748B', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>DRIVING LICENSE NUMBER *</label>
               <input required placeholder="e.g. DL01-20211234567" value={form.driverLicense}
-                onChange={e => setForm({ ...form, driverLicense: e.target.value })}
-                className="input-light" style={{ height: '40px', marginBottom: '0.6rem' }} />
+                maxLength={16}
+                onChange={e => setForm({ ...form, driverLicense: e.target.value.toUpperCase() })}
+                className="input-light" style={{ height: '40px', marginBottom: '0.6rem', textTransform: 'uppercase' }} />
 
               <label style={{ fontSize: '0.65rem', color: '#64748B', fontWeight: 800, marginBottom: '0.3rem', display: 'block' }}>AADHAR NUMBER *</label>
               <input required placeholder="12-digit Aadhar" maxLength={14}
@@ -605,8 +641,8 @@ export default function RentalDetail() {
                   },
                   {
                     key: 'advance',
-                    title: 'Pay Advance Now, Balance at Drop',
-                    sub: `₹${advanceDefault.toLocaleString('en-IN')} now • ₹${Math.max(0, totalAmount - advanceDefault).toLocaleString('en-IN')} at drop`,
+                    title: 'Pay Advance Now, Balance at Pickup',
+                    sub: `₹${advanceDefault.toLocaleString('en-IN')} now • ₹${Math.max(0, totalAmount - advanceDefault).toLocaleString('en-IN')} at pickup`,
                   },
                 ].map(opt => {
                   const active = form.paymentPlan === opt.key;

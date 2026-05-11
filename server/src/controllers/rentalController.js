@@ -183,7 +183,7 @@ const createRentalBooking = asyncHandler(async (req, res) => {
 
   const {
     rentalCar, pickupDate, returnDate, pickupTime, returnTime,
-    pickupAddress, driverLicense, contactPhone, notes, paymentMethod,
+    pickupAddress, driverLicense, contactPhone, fullName, notes, paymentMethod,
     rentalUnit, aadharNumber, panNumber, paymentPlan: rawPlan,
     includeSecurityDeposit: rawInclude,
   } = body;
@@ -297,6 +297,10 @@ const createRentalBooking = asyncHandler(async (req, res) => {
       image: car.images?.[0],
       pricePerDay: car.pricePerDay,
       carNumber: car.carNumber,
+      registrationNumber: car.registrationNumber,
+      rcNumber: car.rcNumber,
+      chassisNumber: car.chassisNumber,
+      engineNumber: car.engineNumber,
     },
     pickupDate, returnDate, pickupTime, returnTime,
     rentalUnit: unit,
@@ -305,7 +309,7 @@ const createRentalBooking = asyncHandler(async (req, res) => {
     pricePerHour: car.pricePerHour || 0,
     securityDeposit: effectiveDeposit,
     subtotal, totalAmount,
-    pickupAddress, driverLicense, contactPhone, notes,
+    pickupAddress, driverLicense, contactPhone, fullName, notes,
     kyc: {
       aadharNumber: String(aadharNumber).replace(/\s/g, ''),
       panNumber: String(panNumber).toUpperCase(),
@@ -447,7 +451,7 @@ const collectRentalBalance = asyncHandler(async (req, res) => {
 // @route GET /api/rentals/bookings/my
 const getMyRentalBookings = asyncHandler(async (req, res) => {
   const bookings = await RentalBooking.find({ user: req.user._id })
-     .populate('rentalCar', 'title brand model year images pricePerDay pricePerHour registrationNumber rcNumber chassisNumber insuranceValidTill pucValidTill color bodyType fuelType transmission seats location airConditioning gps bluetooth musicSystem powerWindows powerSteering airbags mileage')
+     .populate('rentalCar')
     .sort({ createdAt: -1 });
   res.json({ success: true, bookings });
 });
@@ -456,11 +460,11 @@ const getMyRentalBookings = asyncHandler(async (req, res) => {
 // @route GET /api/rentals/bookings
 const getAllRentalBookings = asyncHandler(async (req, res) => {
   const { status, page = 1, limit = 20 } = req.query;
-  const query = status ? { status } : {};
+  const query = status ? { status: { $in: status.split(',') } } : {};
   const total = await RentalBooking.countDocuments(query);
   const bookings = await RentalBooking.find(query)
     .populate('user', 'name phone email')
-     .populate('rentalCar', 'title brand model year images pricePerDay pricePerHour registrationNumber rcNumber chassisNumber insuranceValidTill pucValidTill color bodyType fuelType transmission seats location airConditioning gps bluetooth musicSystem powerWindows powerSteering airbags mileage')
+     .populate('rentalCar')
     .sort({ createdAt: -1 })
     .skip((page - 1) * limit)
     .limit(Number(limit));
@@ -514,12 +518,15 @@ const cancelMyRentalBooking = asyncHandler(async (req, res) => {
 
 // ── LOCATION TRACKING ─────────────────────────────────────────
 
+const LIVE_TRACK_CAR_FIELDS = 'title brand model year images registrationNumber carNumber rcNumber chassisNumber engineNumber color bodyType fuelType transmission seats doors location dropLocation';
+
 // @desc  Get a single booking's last known location
 // @route GET /api/rentals/bookings/:id/location
 const getBookingLocation = asyncHandler(async (req, res) => {
   const booking = await RentalBooking.findById(req.params.id)
-    .select('currentLocation carSnapshot status user')
-    .populate('user', 'name phone');
+    .select('currentLocation carSnapshot status user rentalCar pickupDate returnDate pickupTime returnTime contactPhone fullName payment')
+    .populate('user', 'name phone email')
+    .populate('rentalCar', LIVE_TRACK_CAR_FIELDS);
   if (!booking) { res.status(404); throw new Error('Booking not found'); }
   res.json({ success: true, location: booking.currentLocation, booking });
 });
@@ -527,8 +534,9 @@ const getBookingLocation = asyncHandler(async (req, res) => {
 // @route GET /api/rentals/bookings/active-locations
 const getActiveLocations = asyncHandler(async (req, res) => {
   const bookings = await RentalBooking.find({ status: 'active' })
-    .select('currentLocation carSnapshot user status')
-    .populate('user', 'name phone');
+    .select('currentLocation carSnapshot user status rentalCar pickupDate returnDate pickupTime returnTime contactPhone fullName payment')
+    .populate('user', 'name phone email')
+    .populate('rentalCar', LIVE_TRACK_CAR_FIELDS);
   res.json({ success: true, bookings });
 });
 

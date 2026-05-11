@@ -9,11 +9,9 @@ export default function Footer() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '2.5rem' }}>
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-2 mb-6">
-              <div style={{ background: 'linear-gradient(135deg, #1E3A8A, #172554)', borderRadius: '10px', padding: '8px 14px' }}>
-                <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 950, color: 'white', fontSize: '1.2rem', letterSpacing: '0.05em' }}>AUTO</span>
-              </div>
-              <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 950, color: 'white', fontSize: '1.4rem', letterSpacing: '0.1em' }}>XPRESS</span>
+            <div className="flex items-center gap-3 mb-6">
+              <img src="/logo.jpg" alt="Auto Xpress" style={{ height: '40px', objectFit: 'contain' }} />
+              <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 950, color: 'white', fontSize: '1.4rem', letterSpacing: '0.05em' }}>Auto Xpress</span>
             </div>
             <p style={{ fontSize: '0.95rem', lineHeight: 1.8, color: '#94A3B8', fontWeight: 500 }}>The ultimate destination for premium car enthusiasts. Buy, sell, and service elite vehicles with India's most trusted automotive platform.</p>
             <div className="flex items-center gap-3 mt-4">

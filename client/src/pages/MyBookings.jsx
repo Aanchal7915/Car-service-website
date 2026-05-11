@@ -23,7 +23,10 @@ const statusBadge = (status) => {
 export default function MyBookings() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('services');
+  const [activeTab, setActiveTab] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('tab') || 'services';
+  });
   const [services, setServices] = useState([]);
   const [sells, setSells] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -64,7 +67,7 @@ export default function MyBookings() {
         key,
         amount: order.amount,
         currency: order.currency,
-        name: 'AutoExpress',
+        name: 'Auto Xpress',
         description: `Balance Payment for ${booking.carSnapshot?.brand} ${booking.carSnapshot?.model}`,
         order_id: order.id,
         handler: async (response) => {
@@ -435,14 +438,11 @@ export default function MyBookings() {
                     )}
                     <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.6rem 0.8rem', borderRadius: '10px' }}>
                       <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Contact</div>
-                      <div style={{ color: '#0F172A', fontWeight: 800, fontSize: '0.85rem', marginTop: '2px' }}>📞 {booking.contactPhone || '-'}</div>
-                    </div>
-                    {booking.driverLicense && (
-                      <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.6rem 0.8rem', borderRadius: '10px' }}>
-                        <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Driver License</div>
-                        <div style={{ color: '#0F172A', fontWeight: 800, fontSize: '0.85rem', marginTop: '2px' }}>{booking.driverLicense}</div>
+                      <div style={{ color: '#0F172A', fontWeight: 800, fontSize: '0.85rem', marginTop: '2px', display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+                        <span>👤 {booking.fullName || user.name}</span>
+                        <span>📞 {booking.contactPhone || '-'}</span>
                       </div>
-                    )}
+                    </div>
                     {booking.payment?.razorpayPaymentId && (
                   <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.6rem 0.8rem', borderRadius: '10px' }}>
                         <div style={{ color: '#64748B', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Payment ID</div>
@@ -552,6 +552,12 @@ export default function MyBookings() {
                           <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.55rem 0.8rem', borderRadius: '10px' }}>
                             <div style={{ color: '#64748B', fontSize: '0.62rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>PAN No.</div>
                             <div style={{ color: '#0F172A', fontWeight: 800, fontSize: '0.82rem', marginTop: '2px', fontFamily: 'monospace' }}>{booking.kyc.panNumber}</div>
+                          </div>
+                        )}
+                        {booking.driverLicense && (
+                          <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.55rem 0.8rem', borderRadius: '10px' }}>
+                            <div style={{ color: '#64748B', fontSize: '0.62rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Driving License No.</div>
+                            <div style={{ color: '#0F172A', fontWeight: 800, fontSize: '0.82rem', marginTop: '2px', fontFamily: 'monospace' }}>{booking.driverLicense}</div>
                           </div>
                         )}
                       </div>
