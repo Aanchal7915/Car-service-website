@@ -2049,13 +2049,18 @@ const RentalBookingsTab = ({ setActiveTab, setTrackingBookingId }) => {
                 <p style={{ color: '#64748B', fontSize: '0.72rem', fontWeight: 600, marginTop: '0.2rem' }}>
                   {b.fullName || b.user?.name || 'Customer'} • {b.contactPhone || b.user?.phone || '-'}
                 </p>
-                <div style={{ marginTop: '0.6rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ marginTop: '0.6rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.4rem' }}>
                   <span style={{ fontSize: '0.7rem', color: '#475569', fontWeight: 700 }}>
                     {new Date(b.pickupDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })} → {new Date(b.returnDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}
                     <span style={{ color: '#94A3B8', marginLeft: '0.3rem' }}>({isHour ? `${b.totalHours}h` : `${b.totalDays}d`})</span>
                   </span>
                   <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 900, color: '#1E3A8A', fontSize: '1rem' }}>₹{b.totalAmount?.toLocaleString('en-IN')}</span>
                 </div>
+                {car.dropLocation?.city && (
+                  <div style={{ marginTop: '0.4rem', color: '#16A34A', fontSize: '0.68rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                    <MapPin size={11} /> DROP: {car.dropLocation.address}, {car.dropLocation.city}
+                  </div>
+                )}
                 <div style={{ marginTop: '0.5rem', fontSize: '0.65rem', fontWeight: 800, color: b.payment?.status === 'paid' ? '#16A34A' : '#CA8A04', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                   {(b.payment?.method || 'cod').toUpperCase()} • {b.payment?.status === 'paid' ? '✓ PAID' : 'PAYMENT PENDING'}
                 </div>

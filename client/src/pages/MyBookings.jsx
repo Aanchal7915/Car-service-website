@@ -407,6 +407,11 @@ export default function MyBookings() {
                       <div style={{ background: '#F5F5F5', padding: '0.3rem 0.8rem', borderRadius: '8px', fontSize: '0.82rem', color: '#555', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                         <Calendar size={13} /> Return: {new Date(booking.returnDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} • {booking.returnTime}
                       </div>
+                      {car.dropLocation?.city && (
+                        <div style={{ background: 'rgba(22, 163, 74, 0.05)', padding: '0.3rem 0.8rem', borderRadius: '8px', fontSize: '0.82rem', color: '#16A34A', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.3rem', border: '1px solid rgba(22, 163, 74, 0.1)' }}>
+                          <MapPin size={13} /> Drop: {car.dropLocation.address}, {car.dropLocation.city}
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
