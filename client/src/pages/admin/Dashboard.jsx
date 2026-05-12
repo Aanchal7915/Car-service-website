@@ -2661,8 +2661,8 @@ export default function AdminDashboard() {
       {/* Mobile top bar */}
       <div className="admin-mobile-topbar" style={{ display: 'none', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 60, background: '#111', borderBottom: '1px solid #2A2A2A', padding: '0.7rem 1rem', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-          <div style={{ width: 36, height: 36, background: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', border: '2px solid #2A2A2A' }}>
-            <img src="/logo.jpg" alt="Auto Xpress" style={{ width: '85%', height: '85%', objectFit: 'contain' }} />
+          <div style={{ width: 54, height: 54, background: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', border: '2px solid #2A2A2A' }}>
+            <img src="/logo.png" alt="Auto Xpress" style={{ width: '85%', height: '85%', objectFit: 'contain' }} />
           </div>
           <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 950, color: 'white', fontSize: '1.2rem', letterSpacing: '-0.02em' }}>
             Auto Xpress
@@ -2678,8 +2678,8 @@ export default function AdminDashboard() {
       <div className={`admin-sidebar${sidebarOpen ? ' open' : ''}`} style={{ width: 280, background: '#111', borderRight: '1px solid #2A2A2A', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
         <div style={{ padding: '2rem 1.5rem', borderBottom: '1px solid #2A2A2A' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
-            <div style={{ width: 50, height: 50, background: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', border: '3px solid #2A2A2A' }}>
-              <img src="/logo.jpg" alt="Auto Xpress" style={{ width: '85%', height: '85%', objectFit: 'contain' }} />
+            <div style={{ width: 85, height: 85, background: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', border: '3px solid #2A2A2A' }}>
+              <img src="/logo.png" alt="Auto Xpress" style={{ width: '85%', height: '85%', objectFit: 'contain' }} />
             </div>
             <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 950, color: 'white', fontSize: '1.5rem', letterSpacing: '-0.02em' }}>
               Auto Xpress

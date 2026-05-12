@@ -90,7 +90,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-1 sm:gap-2">
-            <img src="/logo.jpg" alt="Auto Xpress" style={{ objectFit: 'contain' }} className="h-8 sm:h-10" />
+            <img src="/logo.png" alt="Auto Xpress" style={{ objectFit: 'contain' }} className="h-12 sm:h-16" />
             <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 900, color: '#0F172A', letterSpacing: '0.03em' }} className="text-[1rem] sm:text-[1.35rem]">
               Auto Xpress
             </span>
