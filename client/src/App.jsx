@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
@@ -30,6 +31,14 @@ import About from './pages/About';
 import Rentals from './pages/Rentals';
 import RentalDetail from './pages/RentalDetail';
 
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+};
+
 const Layout = ({ children, hideNav = false }) => (
   <>
     {!hideNav && <Navbar />}
@@ -41,6 +50,7 @@ const Layout = ({ children, hideNav = false }) => (
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <AuthProvider>
         <CartProvider>
           <PincodeModal />
