@@ -89,7 +89,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-0.5 sm:gap-2">
+          <Link to="/" className="flex items-center gap-1 sm:gap-2 mr-4 sm:mr-0">
             <img src="/logo.png" alt="Auto Xpress" style={{ objectFit: 'contain' }} className="h-12 sm:h-16" />
             <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 900, color: '#0F172A', letterSpacing: '0.03em' }} className="text-[1rem] sm:text-[1.35rem] whitespace-nowrap">
               Auto Xpress
@@ -122,7 +122,7 @@ export default function Navbar() {
           </div>
 
           {/* Right side */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-shrink-0">
             {/* Search Toggle */}
             <div style={{ position: 'relative' }}>
               {!searchOpen ? (
@@ -256,7 +256,7 @@ export default function Navbar() {
             ) : (
               <div className="flex items-center gap-1 sm:gap-1.5 whitespace-nowrap">
                 <Link to="/login" className="btn-outline-dark !px-2 !py-1 !text-[10px] sm:!px-[0.8rem] sm:!py-[0.4rem] sm:!text-[0.7rem]" style={{ fontWeight: 700 }}>Login</Link>
-                <Link to="/register" className="btn-primary hidden sm:inline-flex !px-2 !py-1 !text-[10px] sm:!px-[0.8rem] sm:!py-[0.4rem] sm:!text-[0.7rem]" style={{ fontWeight: 700 }}>Sign Up</Link>
+                <Link to="/register" className="btn-primary !hidden sm:!inline-flex !px-2 !py-1 !text-[10px] sm:!px-[0.8rem] sm:!py-[0.4rem] sm:!text-[0.7rem]" style={{ fontWeight: 700 }}>Sign Up</Link>
               </div>
             )}
 
