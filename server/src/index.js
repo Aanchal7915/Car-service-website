@@ -30,7 +30,8 @@ app.use(helmet({ crossOriginResourcePolicy: false }));
 const allowedOrigins = [
   process.env.CLIENT_URL,
   'http://localhost:5173',
-  'http://localhost:5174'
+  'http://localhost:5174',
+  'https://autoexpress.avanienterprises.in'
 ];
 
 app.use(cors({
