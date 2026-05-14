@@ -51,39 +51,42 @@ export default function Contact() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.8rem' }}>
                 <div style={{ display: 'flex', gap: '1.2rem', alignItems: 'flex-start' }}>
                   <div style={{ background: 'rgba(229,57,53,0.05)', padding: '0.75rem', borderRadius: '12px' }}>
-                    <MapPin size={22} style={{ color: '#E53935' }} />
+                    <span style={{ fontSize: '1.4rem' }}>📍</span>
                   </div>
                   <div>
-                    <p style={{ color: '#111', fontWeight: 700, marginBottom: '0.3rem', fontSize: '1.05rem' }}>Visit Our Showroom</p>
-                    <p style={{ color: '#666', fontSize: '0.92rem', lineHeight: 1.6 }}>123 Bike Avenue, Auto Hub, SEZ<br/>Mumbai, Maharashtra 400001</p>
+                    <p style={{ color: '#111', fontWeight: 700, marginBottom: '0.3rem', fontSize: '1.05rem' }}>Our Locations</p>
+                    <p style={{ color: '#666', fontSize: '0.92rem', lineHeight: 1.6 }}>
+                      <b>Gurgaon:</b> Tower B, 3rd Floor, Unitech Cyber Park, Sector 39, 122002<br/>
+                      <b>Mumbai:</b> Third Floor, Vasudev Chamber, Teli Galli Cross Rd, Andheri East, 400069<br/>
+                      <b>Rohtak:</b> 106, First Floor, Agro Mall, Rohtak<br/>
+                      <b>Australia:</b> Australia
+                    </p>
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', gap: '1.2rem', alignItems: 'flex-start' }}>
                   <div style={{ background: 'rgba(30,58,138,0.05)', padding: '0.75rem', borderRadius: '12px' }}>
-                    <Phone size={22} style={{ color: '#1E3A8A' }} />
+                    <span style={{ fontSize: '1.4rem' }}>📞</span>
                   </div>
                   <div>
                     <p style={{ color: '#111', fontWeight: 700, marginBottom: '0.3rem', fontSize: '1.05rem' }}>Call Us</p>
-                    <p style={{ color: '#666', fontSize: '0.92rem' }}>+91 98765 43210</p>
-                    <p style={{ color: '#666', fontSize: '0.92rem' }}>+91 12345 67890</p>
+                    <p style={{ color: '#666', fontSize: '0.92rem' }}>+91 9253625099</p>
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', gap: '1.2rem', alignItems: 'flex-start' }}>
                   <div style={{ background: 'rgba(229,57,53,0.05)', padding: '0.75rem', borderRadius: '12px' }}>
-                    <Mail size={22} style={{ color: '#E53935' }} />
+                    <span style={{ fontSize: '1.4rem' }}>✉️</span>
                   </div>
                   <div>
                     <p style={{ color: '#111', fontWeight: 700, marginBottom: '0.3rem', fontSize: '1.05rem' }}>Email Us</p>
-                    <p style={{ color: '#666', fontSize: '0.92rem' }}>support@motoxpress.com</p>
-                    <p style={{ color: '#666', fontSize: '0.92rem' }}>sales@motoxpress.com</p>
+                    <p style={{ color: '#666', fontSize: '0.92rem' }}>kp@avanienterprises.in</p>
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', gap: '1.2rem', alignItems: 'flex-start' }}>
                   <div style={{ background: 'rgba(229,57,53,0.05)', padding: '0.75rem', borderRadius: '12px' }}>
-                    <Clock size={22} style={{ color: '#E53935' }} />
+                    <span style={{ fontSize: '1.4rem' }}>⏰</span>
                   </div>
                   <div>
                     <p style={{ color: '#111', fontWeight: 700, marginBottom: '0.3rem', fontSize: '1.05rem' }}>Working Hours</p>
@@ -172,7 +175,7 @@ export default function Contact() {
         <h3 style={{ textAlign: 'center', padding: '2.5rem 0', fontFamily: 'Rajdhani, sans-serif', color: '#888', letterSpacing: '0.3em', fontSize: '0.85rem', background: '#F9F9F9' }}>FIND US ON MAP</h3>
         <div style={{ width: '100%', height: '480px', background: '#FAFAFA', position: 'relative' }}>
           <iframe 
-            title="MotoXpress Showroom Location"
+            title="Avani Enterprises Showroom Location"
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d120638.16345638!2d72.8258!3d19.076!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c6306644edc1%3A0x5da4ed8f8d646c1e!2sMumbai%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1649160000000!5m2!1sen!2sin" 
             width="100%" 
             height="100%" 

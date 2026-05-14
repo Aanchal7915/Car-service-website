@@ -10,8 +10,8 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-3 mb-6">
-              <img src="/logo.png" alt="Auto Xpress" style={{ height: '75px', objectFit: 'contain' }} />
-              <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 950, color: 'white', fontSize: '1.4rem', letterSpacing: '0.05em' }}>Auto Xpress</span>
+              <img src="/logo.png" alt="Avani Enterprises" style={{ height: '75px', objectFit: 'contain' }} />
+              <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 950, color: 'white', fontSize: '1.4rem', letterSpacing: '0.05em' }}>Avani Enterprises</span>
             </div>
             <p style={{ fontSize: '0.95rem', lineHeight: 1.8, color: '#94A3B8', fontWeight: 500 }}>The ultimate destination for premium car enthusiasts. Buy, sell, and service elite vehicles with India's most trusted automotive platform.</p>
             <div className="flex items-center gap-3 mt-4">
@@ -53,26 +53,29 @@ export default function Footer() {
           <div>
             <h4 style={{ color: 'white', fontWeight: 600, marginBottom: '1rem', fontSize: '1rem', fontFamily: 'Rajdhani, sans-serif', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Contact Us</h4>
             {[
-              { Icon: Phone, text: '+91 800-AUTO-XPRESS' },
-              { Icon: Mail, text: 'concierge@autoxpress.in' },
-              { Icon: MapPin, text: 'Innovation District, Mumbai, India' },
-            ].map(({ Icon, text }) => (
-              <div key={text} className="flex items-center gap-2" style={{ marginBottom: '0.75rem', fontSize: '0.9rem', fontWeight: 500 }}>
-                <Icon size={16} style={{ color: '#1E3A8A', flexShrink: 0 }} />
+              { icon: '📍', text: 'GURGAON: Tower B, 3rd Floor, Unitech Cyber Park, Sector 39, 122002' },
+              { icon: '📍', text: 'MUMBAI: Third Floor, Vasudev Chamber, Teli Galli Cross Rd, Andheri East, 400069' },
+              { icon: '📍', text: 'ROHTAK: 106, First Floor, Agro Mall, Rohtak' },
+              { icon: '📍', text: 'AUSTRALIA: Australia' },
+              { icon: '📞', text: '+91 9253625099' },
+              { icon: '✉️', text: 'kp@avanienterprises.in' },
+            ].map(({ icon, text }, idx) => (
+              <div key={idx} className="flex items-center gap-2" style={{ marginBottom: '0.75rem', fontSize: '0.9rem', fontWeight: 500 }}>
+                <span style={{ fontSize: '1.1rem', flexShrink: 0 }}>{icon}</span>
                 <span>{text}</span>
               </div>
             ))}
             <div style={{ marginTop: '2rem', padding: '1.2rem', background: '#1E293B', borderRadius: '12px', border: '1px solid #334155' }}>
               <p style={{ fontSize: '0.75rem', color: '#64748B', marginBottom: '0.6rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em' }}>24/7 ROADSIDE ASSISTANCE</p>
-              <a href="tel:+918002886977" style={{ color: '#1E3A8A', fontWeight: 950, fontSize: '1.25rem', textDecoration: 'none', fontFamily: 'Rajdhani, sans-serif' }}>
-                📞 800-AUTO-MVP
+              <a href="tel:+919253625099" style={{ color: 'white', fontWeight: 950, fontSize: '1.25rem', textDecoration: 'none', fontFamily: 'Rajdhani, sans-serif' }}>
+                📞 +91 9253625099
               </a>
             </div>
           </div>
         </div>
 
         <div style={{ borderTop: '1px solid #1E293B', marginTop: '2.5rem', paddingTop: '1.5rem', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
-          <p style={{ fontSize: '0.85rem', fontWeight: 600 }}>© {new Date().getFullYear()} AutoXpress. All rights reserved.</p>
+          <p style={{ fontSize: '0.85rem', fontWeight: 600 }}>© {new Date().getFullYear()} Avani Enterprises. All rights reserved.</p>
           <div className="flex items-center gap-4" style={{ fontSize: '0.83rem' }}>
             <Link to="/privacy" style={{ color: '#64748B', textDecoration: 'none', fontWeight: 600 }}>Privacy Policy</Link>
             <Link to="/terms" style={{ color: '#64748B', textDecoration: 'none', fontWeight: 600 }}>Terms of Service</Link>
