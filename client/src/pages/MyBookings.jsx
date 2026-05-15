@@ -7,7 +7,7 @@ import { getMyRentalBookings, cancelMyRentalBooking, createRentalBalanceOrder, v
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { PageLoader } from '../components/common/LoadingSpinner';
-import { Wrench, TrendingUp, ShoppingBag, Clock, CheckCircle, XCircle, Loader, MessageSquare, Car, Calendar } from 'lucide-react';
+import { Wrench, TrendingUp, ShoppingBag, Clock, CheckCircle, XCircle, Loader, MessageSquare, Car, Calendar, MapPin } from 'lucide-react';
 
 const statusBadge = (status) => {
   const map = {
