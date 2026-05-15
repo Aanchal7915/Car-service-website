@@ -27,26 +27,29 @@ const getBikes = asyncHandler(async (req, res) => {
     { model: new RegExp(search, 'i') },
   ];
 
+  const p = Number(page);
+  const l = Number(limit);
+
   const sortOptions = {
-    newest: { createdAt: -1 },
-    oldest: { createdAt: 1 },
-    price_asc: { price: 1 },
-    price_desc: { price: -1 },
-    popular: { views: -1 },
+    newest: { createdAt: -1, _id: -1 },
+    oldest: { createdAt: 1, _id: 1 },
+    price_asc: { price: 1, _id: 1 },
+    price_desc: { price: -1, _id: -1 },
+    popular: { views: -1, _id: -1 },
   };
 
   const total = await Bike.countDocuments(query);
   const bikes = await Bike.find(query)
     .populate('seller', 'name phone')
-    .sort(sortOptions[sort] || { createdAt: -1 })
-    .skip((page - 1) * limit)
-    .limit(Number(limit));
+    .sort(sortOptions[sort] || { createdAt: -1, _id: -1 })
+    .skip((p - 1) * l)
+    .limit(l);
 
   res.json({
     success: true,
     total,
-    page: Number(page),
-    pages: Math.ceil(total / limit),
+    page: p,
+    pages: Math.ceil(total / l),
     bikes,
   });
 });

@@ -358,6 +358,7 @@ export default function Home() {
           <style>{`
             @media (min-width: 1024px) {
               .home-why-grid, .home-services-grid { grid-template-columns: repeat(6, 1fr) !important; gap: 0.8rem !important; }
+              .home-parts-grid, .home-bikes-grid { grid-template-columns: repeat(5, 1fr) !important; gap: 1rem !important; }
             }
             @media (max-width: 768px) {
               .home-why-grid, .home-services-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 0.6rem !important; }
@@ -665,4 +666,3 @@ export default function Home() {
     </div>
   );
 }
-
