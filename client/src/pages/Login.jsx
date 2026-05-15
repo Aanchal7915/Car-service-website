@@ -37,22 +37,38 @@ export default function Login() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem' }}>
+    <div style={{ minHeight: '100vh', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.5rem 1rem' }}>
+      <style>{`
+        @media (max-width: 640px) {
+          .login-container { padding: 1rem !important; border-radius: 16px !important; }
+          .login-logo img { height: 36px !important; }
+          .login-logo span { font-size: 1.15rem !important; }
+          .login-title { font-size: 1.2rem !important; margin-top: 0.6rem !important; }
+          .login-subtitle { font-size: 0.7rem !important; margin-top: 0.1rem !important; }
+          .mode-toggle { margin-bottom: 1rem !important; border-radius: 10px !important; }
+          .mode-toggle button { font-size: 0.7rem !important; padding: 0.4rem !important; }
+          .form-label { font-size: 0.7rem !important; margin-bottom: 0.2rem !important; }
+          .form-input-wrapper { margin-bottom: 0.8rem !important; }
+          .form-input { height: 40px !important; font-size: 0.8rem !important; }
+          .submit-btn { padding: 0.7rem !important; font-size: 0.85rem !important; border-radius: 10px !important; }
+          .signup-text { margin-top: 0.8rem !important; font-size: 0.8rem !important; }
+        }
+      `}</style>
       <div style={{ width: '100%', maxWidth: 440 }}>
         {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-          <Link to="/" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.6rem' }}>
-            <div style={{ background: 'linear-gradient(135deg, #1E3A8A, #172554)', borderRadius: '10px', padding: '10px 14px' }}>
-              <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 800, color: 'white', fontSize: '1.4rem' }}>AUTO</span>
-            </div>
-            <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 800, color: '#111', fontSize: '1.6rem' }}>XPRESS</span>
+        <div style={{ textAlign: 'center', marginBottom: '1.2rem' }}>
+          <Link to="/" className="login-logo" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+            <img src="/logo.png" alt="Auto Xpress" style={{ height: 54, objectFit: 'contain' }} />
+            <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 900, color: '#0F172A', fontSize: '1.6rem', letterSpacing: '0.03em' }}>
+              Auto Xpress
+            </span>
           </Link>
-          <h1 style={{ color: '#111', fontSize: '1.8rem', fontWeight: 900, marginTop: '2rem', fontFamily: 'Rajdhani, sans-serif' }}>Welcome Back</h1>
-          <p style={{ color: '#666', marginTop: '0.5rem', fontWeight: 500 }}>Login to continue to your account</p>
+          <h1 className="login-title" style={{ color: '#111', fontSize: '1.6rem', fontWeight: 900, marginTop: '1rem', fontFamily: 'Rajdhani, sans-serif' }}>Welcome Back</h1>
+          <p className="login-subtitle" style={{ color: '#666', marginTop: '0.3rem', fontWeight: 500, fontSize: '0.9rem' }}>Login to continue to your account</p>
         </div>
  
         {/* Mode toggle */}
-        <div style={{ display: 'flex', background: '#F5F5F5', borderRadius: '12px', padding: '5px', marginBottom: '2.2rem', border: '1px solid #EEE' }}>
+        <div className="mode-toggle" style={{ display: 'flex', background: '#F5F5F5', borderRadius: '12px', padding: '4px', marginBottom: '1.5rem', border: '1px solid #EEE' }}>
           {['password', 'otp'].map((m) => (
             <button key={m} onClick={() => { setMode(m); setOtpSent(false); }}
               style={{
@@ -68,14 +84,14 @@ export default function Login() {
         </div>
  
         {/* Form card */}
-        <div style={{ background: '#FFF', border: '1px solid #EEE', borderRadius: '20px', padding: '2.5rem', boxShadow: '0 10px 40px rgba(0,0,0,0.03)' }}>
+        <div className="login-container" style={{ background: '#FFF', border: '1px solid #EEE', borderRadius: '20px', padding: '1.8rem', boxShadow: '0 10px 40px rgba(0,0,0,0.03)' }}>
           <form onSubmit={handleSubmit(onSubmit)}>
             {/* Email */}
-            <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ color: '#333', fontSize: '0.85rem', fontWeight: 700, display: 'block', marginBottom: '0.6rem' }}>Email Address</label>
+            <div className="form-input-wrapper" style={{ marginBottom: '1.2rem' }}>
+              <label className="form-label" style={{ color: '#333', fontSize: '0.8rem', fontWeight: 700, display: 'block', marginBottom: '0.4rem' }}>Email Address</label>
               <div style={{ position: 'relative' }}>
-                <Mail size={16} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#AAA' }} />
-                <input type="email" className="input-light" style={{ paddingLeft: '2.8rem', height: '52px' }}
+                <Mail size={15} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#AAA' }} />
+                <input type="email" className="input-light form-input" style={{ paddingLeft: '2.8rem', height: '48px', fontSize: '0.9rem' }}
                   placeholder="you@example.com"
                   {...register('email', { pattern: { value: /^\S+@\S+$/i, message: 'Invalid email' } })} />
               </div>
@@ -84,13 +100,13 @@ export default function Login() {
  
             {/* For OTP - phone option */}
             {mode === 'otp' && (
-              <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ color: '#333', fontSize: '0.85rem', fontWeight: 700, display: 'block', marginBottom: '0.6rem' }}>
+              <div className="form-input-wrapper" style={{ marginBottom: '1.2rem' }}>
+                <label className="form-label" style={{ color: '#333', fontSize: '0.8rem', fontWeight: 700, display: 'block', marginBottom: '0.4rem' }}>
                   Or Mobile Number
                 </label>
                 <div style={{ position: 'relative' }}>
-                  <Phone size={16} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#AAA' }} />
-                  <input type="tel" className="input-light" style={{ paddingLeft: '2.8rem', height: '52px' }}
+                  <Phone size={15} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#AAA' }} />
+                  <input type="tel" className="input-light form-input" style={{ paddingLeft: '2.8rem', height: '48px', fontSize: '0.9rem' }}
                     placeholder="+91 98765 43210"
                     {...register('phone')} />
                 </div>
@@ -99,11 +115,11 @@ export default function Login() {
  
             {/* Password */}
             {mode === 'password' && (
-              <div style={{ marginBottom: '1.8rem' }}>
-                <label style={{ color: '#333', fontSize: '0.85rem', fontWeight: 700, display: 'block', marginBottom: '0.6rem' }}>Password</label>
+              <div className="form-input-wrapper" style={{ marginBottom: '1.2rem' }}>
+                <label className="form-label" style={{ color: '#333', fontSize: '0.8rem', fontWeight: 700, display: 'block', marginBottom: '0.4rem' }}>Password</label>
                 <div style={{ position: 'relative' }}>
-                  <Lock size={16} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#AAA' }} />
-                  <input type={showPass ? 'text' : 'password'} className="input-light" style={{ paddingLeft: '2.8rem', paddingRight: '2.8rem', height: '52px' }}
+                  <Lock size={15} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#AAA' }} />
+                  <input type={showPass ? 'text' : 'password'} className="input-light form-input" style={{ paddingLeft: '2.8rem', paddingRight: '2.8rem', height: '48px', fontSize: '0.9rem' }}
                     placeholder="••••••••"
                     {...register('password', { required: 'Password is required' })} />
                   <button type="button" onClick={() => setShowPass(!showPass)}
@@ -117,16 +133,16 @@ export default function Login() {
  
             {/* OTP Input */}
             {mode === 'otp' && otpSent && (
-              <div style={{ marginBottom: '1.8rem' }}>
-                <label style={{ color: '#333', fontSize: '0.85rem', fontWeight: 700, display: 'block', marginBottom: '0.6rem' }}>Enter OTP</label>
-                <input type="text" className="input-light" placeholder="6-digit OTP"
-                  maxLength={6} style={{ textAlign: 'center', fontSize: '1.4rem', letterSpacing: '0.6rem', height: '60px' }}
+              <div className="form-input-wrapper" style={{ marginBottom: '1.2rem' }}>
+                <label className="form-label" style={{ color: '#333', fontSize: '0.8rem', fontWeight: 700, display: 'block', marginBottom: '0.4rem' }}>Enter OTP</label>
+                <input type="text" className="input-light form-input" placeholder="6-digit OTP"
+                  maxLength={6} style={{ textAlign: 'center', fontSize: '1.2rem', letterSpacing: '0.4rem', height: '50px' }}
                   {...register('otp', { required: 'OTP is required', minLength: { value: 6, message: 'Enter 6 digits' } })} />
                 {errors.otp && <p style={{ color: '#E53935', fontSize: '0.82rem', marginTop: '0.4rem', fontWeight: 600 }}>{errors.otp.message}</p>}
               </div>
             )}
  
-            <button type="submit" className="btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '1.1rem', fontSize: '1.05rem', fontWeight: 700, borderRadius: '12px' }} disabled={loading}>
+            <button type="submit" className="btn-primary submit-btn" style={{ width: '100%', justifyContent: 'center', padding: '0.9rem', fontSize: '1rem', fontWeight: 700, borderRadius: '12px' }} disabled={loading}>
               {loading ? <Loader size={20} style={{ animation: 'spin 1s linear infinite' }} /> : (
                 <>
                   {mode === 'password' ? 'LOGIN' : otpSent ? 'VERIFY OTP' : 'SEND OTP'}
@@ -137,7 +153,7 @@ export default function Login() {
           </form>
         </div>
  
-        <p style={{ textAlign: 'center', color: '#666', marginTop: '2rem', fontSize: '0.95rem', fontWeight: 500 }}>
+        <p className="signup-text" style={{ textAlign: 'center', color: '#666', marginTop: '1.2rem', fontSize: '0.9rem', fontWeight: 500 }}>
           Don't have an account?{' '}
           <Link to="/register" style={{ color: '#1E3A8A', textDecoration: 'none', fontWeight: 700 }}>Sign Up Now</Link>
         </p>
