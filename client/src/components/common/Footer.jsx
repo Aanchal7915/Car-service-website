@@ -10,7 +10,7 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-3 mb-6">
-              <img src="/logo.png" alt="Avani Enterprises" style={{ height: '75px', objectFit: 'contain' }} />
+              <img src="/logo.png" alt="Auto Xpress" style={{ height: '75px', objectFit: 'contain' }} />
               <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 950, color: 'white', fontSize: '1.4rem', letterSpacing: '0.05em' }}>Avani Enterprises</span>
             </div>
             <p style={{ fontSize: '0.95rem', lineHeight: 1.8, color: '#94A3B8', fontWeight: 500 }}>The ultimate destination for premium car enthusiasts. Buy, sell, and service elite vehicles with India's most trusted automotive platform.</p>
